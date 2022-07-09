@@ -1,0 +1,59 @@
+#app {
+
+  .main-container {
+    min-width: 100%;
+    height: calc(100% - #{$navbarHeight});
+    transition: margin-left .28s;
+    position: relative;
+  }
+
+  .navbar-container {
+    transition: width 0.28s;
+    height: $navbarHeight !important;
+    width: 100%;
+    font-size: 0px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1001;
+    overflow: hidden;
+
+    a {
+      display: inline-block;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .el-menu {
+      border: none;
+      height: 100%;
+      width: 100% !important;
+      background-color: $menuBg !important;
+
+      .el-menu-item {
+        color: $menuText;
+        &:hover {
+          color: $menuHoverText !important;
+          background-color: $menuHoverBg !important;
+        }
+      }
+      .el-menu-item.is-active {
+        color: $menuActiveText !important;
+        background-color: $menuActiveBg !important;
+      }
+    }
+  }
+
+  // mobile responsive
+  .mobile {
+    .main-container {
+      margin-left: 0px;
+    }
+
+    .navbar-container {
+      transition: transform .28s;
+      height: $navbarHeight !important;
+    }
+  }
+}
+

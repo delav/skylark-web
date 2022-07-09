@@ -1,11 +1,12 @@
 <template>
-  <router-view></router-view>
+  <div>plan</div>
 </template>
 
 <script>
-
 export default {
-  name: 'App'
 }
 </script>
 
+<style scoped>
+
+</style>

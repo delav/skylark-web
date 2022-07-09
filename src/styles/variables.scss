@@ -1,0 +1,20 @@
+// navbar
+$menuBg:#304156;
+$menuText:#bfcbd9;
+
+$menuActiveBg:#263445;
+$menuActiveText:#409EFF;
+
+$menuHoverBg:#263445;
+$menuHoverText:#bfcbd9;
+
+$navbarHeight: 55px;
+
+:export {
+  menuBg: $menuBg;
+  menuText: $menuText;
+  menuActiveBg: $menuActiveBg;
+  menuActiveText: $menuActiveText;
+  menuHoverBg: $menuHoverBg;
+  menuHoverText: $menuHoverText;
+}
