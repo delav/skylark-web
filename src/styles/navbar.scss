@@ -11,23 +11,35 @@
     transition: width 0.28s;
     height: $navbarHeight !important;
     width: 100%;
-    font-size: 0px;
+    font-size: 0;
     top: 0;
     bottom: 0;
     left: 0;
     z-index: 1001;
     overflow: hidden;
+    background-color: $menuBg !important;
 
-    a {
-      display: inline-block;
-      width: 100%;
+    .logo {
+      position: relative;
+      width: $logoWith;
+      height: 100%;
+      float: left;
+      text-align: center;
       overflow: hidden;
+
+      .navbar-logo {
+        width: 36px;
+        height: 36px;
+        margin-top: 10px;
+        margin-right: 12px;
+      }
     }
 
     .el-menu {
+      float: left;
+      width: calc(100% - #{$logoWith} - #{$profileWith});
       border: none;
       height: 100%;
-      width: 100% !important;
       background-color: $menuBg !important;
 
       .el-menu-item {
@@ -37,9 +49,34 @@
           background-color: $menuHoverBg !important;
         }
       }
+
       .el-menu-item.is-active {
         color: $menuActiveText !important;
         background-color: $menuActiveBg !important;
+      }
+    }
+    .profile {
+      float: left;
+      height: 100%;
+      width: $profileWith;
+
+      .avatar-wrapper {
+        cursor: pointer;
+        margin-top: 8px;
+        position: relative;
+
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+
+        .btn-avatar {
+          position: absolute;
+          right: -20px;
+          top: 25px;
+          font-size: 12px;
+        }
       }
     }
   }
@@ -47,7 +84,7 @@
   // mobile responsive
   .mobile {
     .main-container {
-      margin-left: 0px;
+      margin-left: 0;
     }
 
     .navbar-container {

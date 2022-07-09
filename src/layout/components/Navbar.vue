@@ -1,28 +1,42 @@
 <template>
-  <div>
-    <logo v-if="showLogo" :collapse="isCollapse" />
-    <el-menu
-        :default-active="activeMenu"
-        mode="horizontal"
-        @select="handleSelect"
-        router>
+  <div style="width:100%;height:100%">
+    <div class="logo">
+      <img :src="logo" class="navbar-logo" alt="">
+    </div>
+    <el-menu :default-active="activeMenu" mode="horizontal">
       <el-menu-item v-for="(route, i) in routes" :key="i" :index="resolvePath(route)">
         <span>{{ route.meta.title }}</span>
       </el-menu-item>
     </el-menu>
+    <el-dropdown class="profile" trigger="click">
+      <div class="avatar-wrapper">
+        <el-avatar :size="40" :src="avatar" />
+        <svg-icon icon-class="caret-bottom" class="btn-avatar"></svg-icon>
+      </div>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item>Setting</el-dropdown-item>
+          <el-dropdown-item divided @click.native="logout">
+            <span>Logout</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 </template>
 
 <script>
 import path from 'path'
-import Logo from './Logo'
 import { isExternal } from '@/utils/validate'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
   name: 'Navbar',
-  components: { Logo },
+  components: {SvgIcon},
   data() {
     return {
+      logo: require('@/assets/logo.png'),
+      avatar: require('@/assets/avatar.gif')
     }
   },
   computed: {
@@ -60,8 +74,9 @@ export default {
       }
       return route.path
     },
-    handleSelect(key, keyPath) {
-      console.log(key + keyPath)
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      return this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
 }
