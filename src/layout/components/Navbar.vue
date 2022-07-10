@@ -1,9 +1,9 @@
 <template>
-  <div style="width:100%;height:100%">
+  <div class="navbar">
     <div class="logo">
       <img :src="logo" class="navbar-logo" alt="">
     </div>
-    <el-menu :default-active="activeMenu" mode="horizontal">
+    <el-menu class="menu" :default-active="activeMenu" mode="horizontal" router>
       <el-menu-item v-for="(route, i) in routes" :key="i" :index="resolvePath(route)">
         <span>{{ route.meta.title }}</span>
       </el-menu-item>
@@ -15,7 +15,9 @@
       </div>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>Setting</el-dropdown-item>
+          <el-dropdown-item>
+            <span>Setting</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span>Logout</span>
           </el-dropdown-item>
@@ -28,11 +30,11 @@
 <script>
 import path from 'path'
 import { isExternal } from '@/utils/validate'
-import SvgIcon from "@/components/SvgIcon";
+import SvgIcon from '@/components/SvgIcon'
 
 export default {
   name: 'Navbar',
-  components: {SvgIcon},
+  components: { SvgIcon },
   data() {
     return {
       logo: require('@/assets/logo.png'),

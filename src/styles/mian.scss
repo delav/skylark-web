@@ -1,0 +1,20 @@
+#app {
+
+  .main-container {
+    min-width: 100%;
+    height: calc(100% - #{$navbarHeight});
+    transition: margin-left .28s;
+    position: relative;
+
+    .app-container {
+      height: 100%;
+    }
+  }
+
+  // mobile responsive
+  .mobile {
+    .main-container {
+      margin-left: 0;
+    }
+  }
+}

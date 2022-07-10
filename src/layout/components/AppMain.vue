@@ -1,8 +1,12 @@
 <template>
   <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
-      <router-view :key="key" />
-    </transition>
+    <router-view :key="key" v-slot="{ Component }" class="app-main">
+      <transition name="fade-transform" mode="out-in">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </transition>
+    </router-view>
   </section>
 </template>
 
@@ -19,8 +23,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  /*55 = navbar  */
-  min-height: calc(100vh - 55px);
+  height: calc(100vh - 55px);
   width: 100%;
   position: relative;
   overflow: hidden;

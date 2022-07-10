@@ -1,6 +1,7 @@
 @import './variables.scss';
-@import './element.scss';
 @import './navbar.scss';
+@import './mian.scss';
+@import './element.scss';
 
 body {
   height: 100%;
@@ -56,9 +57,4 @@ div:focus {
     clear: both;
     height: 0;
   }
-}
-
-// main-container global css
-.app-container {
-  padding: 20px;
 }
