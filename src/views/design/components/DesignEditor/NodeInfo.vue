@@ -1,10 +1,10 @@
 <template>
-  <div>EditDetail</div>
+  <div class="node-info"></div>
 </template>
 
 <script>
 export default {
-  name: "EditDetail"
+  name: "NodeInfo"
 }
 </script>
 

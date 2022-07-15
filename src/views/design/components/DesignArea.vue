@@ -1,14 +1,16 @@
 <template>
-  <div class="design-box" id="c-box">
-    <div class='left' id="d-left">
+  <div class="design-box">
+    <div class='project' id="left">
       <project-tree />
     </div>
-    <div class="resize" id="lam" title="收缩侧边栏"></div>
-    <div class="middle" id="d-middle">
+    <div class="resize-l" id="resize-x">
+      <svg-icon icon-class="more-vertical" class="ellipsis-icon"></svg-icon>
+    </div>
+    <div class="detail" id="middle">
       <edit-detail />
     </div>
-    <div class="resize" id="ram" title="收缩侧边栏"></div>
-    <div class='right' id="d-right">
+    <div class="resize-r"></div>
+    <div class='keyword'>
       <keyword-list />
     </div>
   </div>
@@ -16,19 +18,22 @@
 
 <script>
 import ProjectTree from './DesignEditor/ProjectTree'
-import EditDetail from './DesignEditor/EditDetail'
+import EditDetail from './DesignEditor/CaseDetail'
 import KeywordList from './DesignEditor/KeywordList'
-import { dragController } from './DesignEditor/resize'
+import { dragWController } from '@/utils/resize'
+import SvgIcon from '@/components/SvgIcon'
 export default {
-  name: "DesignArea",
+  name: 'DesignArea',
   components: {
+    SvgIcon,
     ProjectTree,
     EditDetail,
     KeywordList
   },
   mounted() {
-    dragController('c-box', 'd-left', 'd-middle', 'lam')
-    dragController('c-box', 'd-middle', 'd-right', 'ram')
+    dragWController('left', 'middle', 'resize-x')
+  },
+  methods: {
   }
 }
 </script>
@@ -38,37 +43,58 @@ export default {
   width: 100%;
   height: calc(100% - 28px);
 
-  .left {
+  .project {
     width: 25%;
     height: 100%;
     float: left;
   }
 
-  .middle {
-    width: 55%;
+  .detail {
+    width: calc(75% - 258px);
     height: 100%;
     float: left;
   }
 
-  .right {
+  .keyword {
+    width: 250px;
     height: 100%;
     float: left;
   }
 
-  .resize {
+  .resize-l {
     cursor: col-resize;
     float: left;
     position: relative;
     background-color: #d6d6d6;
-    width: 3px;
+    width: 5px;
     height: 100%;
     background-size: cover;
     background-position: center;
     font-size: 0.32rem;
     color: white;
+    &:hover {
+      color: #444444;
+    }
+
+    .ellipsis-icon {
+      width: 20px;
+      height: 30px;
+      position: relative;
+      top: 48%;
+      transform: translateX(-38%);
+      transition: opacity 0.3s ease 0s, transform 0.3s ease 0s;
+    }
   }
-  .resize:hover {
-    color: #444444;
+  .resize-r {
+    float: left;
+    position: relative;
+    background-color: #d6d6d6;
+    width: 2px;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    font-size: 0.32rem;
+    color: white;
   }
 }
 </style>
