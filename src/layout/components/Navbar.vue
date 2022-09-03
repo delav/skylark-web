@@ -10,7 +10,7 @@
     </el-menu>
     <el-dropdown class="profile" trigger="click">
       <div class="avatar-wrapper">
-        <el-avatar :size="40" :src="avatar" />
+        <el-avatar :size="36" :src="avatar" />
         <svg-icon icon-class="caret-bottom" class="btn-avatar"></svg-icon>
       </div>
       <template #dropdown>

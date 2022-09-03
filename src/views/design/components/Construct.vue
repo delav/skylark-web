@@ -1,15 +1,15 @@
 <template>
-  <div class="design-box">
+  <div class="construct">
     <div class='project' id="left">
       <project-tree />
     </div>
-    <div class="resize-l" id="resize-x">
+    <div class="resize-left" id="resize-x">
       <svg-icon icon-class="more-vertical" class="ellipsis-icon"></svg-icon>
     </div>
     <div class="detail" id="middle">
-      <edit-detail />
+      <case-detail />
     </div>
-    <div class="resize-r"></div>
+    <div class="resize-right"></div>
     <div class='keyword'>
       <keyword-list />
     </div>
@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import ProjectTree from './DesignEditor/ProjectTree'
-import EditDetail from './DesignEditor/CaseDetail'
+import ProjectTree from './DesignEditor/ProjectTree.vue'
+import CaseDetail from './DesignEditor/CaseDetail'
 import KeywordList from './DesignEditor/KeywordList'
 import { dragWController } from '@/utils/resize'
 import SvgIcon from '@/components/SvgIcon'
@@ -27,7 +27,7 @@ export default {
   components: {
     SvgIcon,
     ProjectTree,
-    EditDetail,
+    CaseDetail,
     KeywordList
   },
   mounted() {
@@ -39,29 +39,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.design-box {
-  width: 100%;
-  height: calc(100% - 28px);
+@import "src/styles/variables.scss";
 
+.construct {
+  width: 100%;
+  height: calc(100% - #{$toolbarHeight});
   .project {
     width: 25%;
     height: 100%;
     float: left;
   }
-
   .detail {
     width: calc(75% - 258px);
     height: 100%;
     float: left;
   }
-
   .keyword {
     width: 250px;
     height: 100%;
     float: left;
   }
-
-  .resize-l {
+  .resize-left {
     cursor: col-resize;
     float: left;
     position: relative;
@@ -75,7 +73,6 @@ export default {
     &:hover {
       color: #444444;
     }
-
     .ellipsis-icon {
       width: 20px;
       height: 30px;
@@ -85,7 +82,7 @@ export default {
       transition: opacity 0.3s ease 0s, transform 0.3s ease 0s;
     }
   }
-  .resize-r {
+  .resize-right {
     float: left;
     position: relative;
     background-color: #d6d6d6;

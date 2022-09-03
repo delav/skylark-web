@@ -23,9 +23,8 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  height: calc(100vh - 55px);
+  height: 100%;
   width: 100%;
   position: relative;
-  overflow: hidden;
 }
 </style>

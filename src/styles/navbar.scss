@@ -27,8 +27,8 @@
         .navbar-logo {
           width: 36px;
           height: 36px;
-          margin-top: 10px;
-          margin-right: 12px;
+          margin-top: 5px;
+          margin-right: 20px;
         }
       }
 
@@ -41,6 +41,8 @@
 
         .el-menu-item {
           color: $menuText;
+          font-weight: 600;
+          font-size: 15px;
           &:hover {
             color: $menuHoverText !important;
             background-color: $menuHoverBg !important;
@@ -60,15 +62,9 @@
         width: $profileWith;
 
         .avatar-wrapper {
+          margin-top: 5px;
           cursor: pointer;
-          margin-top: 8px;
           position: relative;
-
-          .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-          }
 
           .btn-avatar {
             position: absolute;

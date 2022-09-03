@@ -1,3 +1,8 @@
+const treeMinWith = 225
+const caseMinWith = 300
+const caseMinHeight = 100
+const argMinHeight = 50
+
 export function dragWController(leftId, rightId, resizeId) {
 
   const left = document.getElementById(leftId)
@@ -17,9 +22,9 @@ export function dragWController(leftId, rightId, resizeId) {
       // （endX-startX）=移动的距离。resize.left+移动的距离=左边区域最后的宽度
       let moveLen = resizeW.left + (endX - startX)
       // 左边区域的最小宽度为
-      if (moveLen < 150) moveLen = 150
+      if (moveLen < treeMinWith) moveLen = treeMinWith
       // 右边区域最小宽度为
-      if (moveLen > boxWidth - 300) moveLen = boxWidth - 300
+      if (moveLen > boxWidth - caseMinWith) moveLen = boxWidth - caseMinWith
       // 设置左侧区域的宽度
       resizeW.style.left = moveLen
       left.style.width = (moveLen/document.body.clientWidth)*100 + '%'
@@ -57,11 +62,11 @@ export function dragHController(topId, bottomId, resizeId) {
       resizeH.top = startY
       const endY = e.clientY
       // （endY-startY）=移动的距离。resize.top+移动的距离-导航栏高度=上边区域最后的高度
-      let moveLen = resizeH.top + (endY - startY - 83 - 40)
+      let moveLen = resizeH.top + (endY - startY - 75 - 40)
       // 上边区域的最小宽度
-      if (moveLen < 100) moveLen = 100
+      if (moveLen < caseMinHeight) moveLen = caseMinHeight
       // 下边区域最小宽度为
-      if (moveLen > boxHeight - 50) moveLen = boxHeight - 50
+      if (moveLen > boxHeight - argMinHeight) moveLen = boxHeight - argMinHeight
       // 设置上侧区域的宽度
       resizeH.style.top = moveLen
       top.style.height = (moveLen/(boxHeight + resizeH.offsetHeight))*100 + '%'

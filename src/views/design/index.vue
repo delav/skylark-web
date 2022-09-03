@@ -1,22 +1,22 @@
 <template>
   <div class="app-container">
-    <action-bar />
-    <design-area />
+    <toolbar />
+    <construct />
   </div>
 </template>
 
 <script>
-import ActionBar from './components/ActionBar'
-import DesignArea from './components/DesignArea'
+import Toolbar from './components/Toolbar'
+import Construct from './components/Construct'
 export default {
   components: {
-    ActionBar,
-    DesignArea
+    Toolbar,
+    Construct
   },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .app-container {
   width: 100%;
   height: 100%;

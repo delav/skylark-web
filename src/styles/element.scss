@@ -1,22 +1,5 @@
 // cover some element-ui styles
 
-.el-breadcrumb__inner,
-.el-breadcrumb__inner a {
-  font-weight: 400 !important;
-}
-
-.el-upload {
-  input[type="file"] {
-    display: none !important;
-  }
-}
-
-.el-upload__input {
-  display: none;
-}
-
-
-// to fixed https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
   transform: none;
   left: 0;
@@ -24,26 +7,56 @@
   margin: 0 auto;
 }
 
-// refine element ui upload
-.upload-container {
-  .el-upload {
-    width: 100%;
+// custom button color
+.el-button--goon {
+  color: #344563e5;
+  background-color: #f4f5f7;
+  border-color: #f4f5f7;
+}
+.el-button--goon.is-active,
+.el-button--goon:active {
+  color: #344563e5;
+  background: #dfe1e5;
+  border-color: #f4f5f7;
+}
+.el-button--goon:focus,
+.el-button--goon:hover {
+  color: #0065ff;
+  background: #dfe1e5;
+  border-color: #f4f5f7;
+}
 
-    .el-upload-dragger {
-      width: 100%;
-      height: 200px;
+// custom selector
+.el-select {
+  width: calc(100% - 4px);
+  height: 30px;
+  margin: 2px;
+  border-radius: 1px;
+  .el-input--suffix {
+    height: 100%;
+    .el-select__caret {
+      font-size: 20px;
+    }
+    .el-input__wrapper {
+      border-radius: 1px;
+      padding: 1px 8px;
+      .el-input__inner {
+        font-size: 13px;
+        border-color: #DCDFE6
+      }
+      .el-input__suffix {
+        height: 30px;
+      }
     }
   }
 }
-
-// dropdown
-.el-dropdown-menu {
-  a {
-    display: block
+.el-select-dropdown {
+  border: 0;
+  border-radius: 2px;
+  .el-select-dropdown__item {
+    height: 28px;
   }
-}
-
-// to fix el-date-picker css style
-.el-range-separator {
-  box-sizing: content-box;
+  .el-select-dropdown__item span {
+    font-size: 13px;
+  }
 }

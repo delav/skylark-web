@@ -1,16 +1,20 @@
 // navbar
-$menuBg:#304156;
-$menuText:#bfcbd9;
-
-$menuActiveBg:#263445;
-$menuActiveText:#409EFF;
-
-$menuHoverBg:#263445;
-$menuHoverText:#bfcbd9;
-
-$logoWith: 100px;
+$menuBg: #42526e;
+$menuText: #fff;
+$menuActiveBg: #091E4214;
+$menuActiveText: #0065ff;
+$menuHoverBg: #263445;
+$menuHoverText: #bfcbd9;
+$logoWith: 80px;
 $profileWith: 70px;
-$navbarHeight: 55px;
+$navbarHeight: 45px;
+// body
+$bodyBg: #fff;
+$bodyText: #5e6c84;
+$bodyActiveText: #0065ff;
+//toolbar
+$toolbarHeight: 30px;
+$toolbarBg: #dfe1e6;
 
 :export {
   menuBg: $menuBg;
@@ -19,4 +23,7 @@ $navbarHeight: 55px;
   menuActiveText: $menuActiveText;
   menuHoverBg: $menuHoverBg;
   menuHoverText: $menuHoverText;
+  bodyBg: $bodyBg;
+  toolbarHeight: $toolbarHeight;
+  toolbarBg: $toolbarBg;
 }

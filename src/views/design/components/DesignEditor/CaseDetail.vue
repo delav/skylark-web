@@ -7,7 +7,7 @@
           <span>{{n}}</span>
         </div>
       </div>
-<!--      <div class="entity-info">-->
+      <div class="entity-info">
 <!--        <template>-->
 <!--          <draggable v-model="caseEntities" id="editArea" :group="entityGroup">-->
 <!--            <dl v-for="(item, index) in caseEntities" :key="index"-->
@@ -22,7 +22,7 @@
 <!--            </dl>-->
 <!--          </draggable>-->
 <!--        </template>-->
-<!--      </div>-->
+      </div>
     </div>
     <div class="resize-h" id="resize-y">
       <svg-icon icon-class="more-indicator" class="ellipsis-icon"></svg-icon>

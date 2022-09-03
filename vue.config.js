@@ -1,11 +1,12 @@
 const { defineConfig } = require('@vue/cli-service')
-const path = require("path");
+const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+const webpack = require('webpack')
 const name = defaultSettings.title
 const port = process.env.PORT || process.env.npm_config_port || 9091
 
@@ -26,7 +27,14 @@ module.exports = defineConfig({
       fallback: {
         path: require.resolve('path-browserify')
       }
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+        'windows.jQuery': 'jquery'
+      })
+    ]
   },
   chainWebpack(config) {
     // set svg-sprite-loader
