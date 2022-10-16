@@ -1,13 +1,17 @@
 
 
-export function addSvgHover(idPrefix, tId, nodeIcon, callback) {
+export function addSvgHover(idPrefix, tId, className, title=null, callback) {
+  const selector = $('#' + tId + '_a')
   const iconId = idPrefix + tId
-  const btn = $('#' + iconId)
-  if (btn.length > 0) return
-  const obj = $('#' + tId + '_span')
-  obj.after(nodeIcon)
-  if (btn) {
-    btn.bind('click', callback)
+  if (document.getElementById(iconId)) return
+  let nodeIcon = formatString('<span class="{0}" id="{1}"></span>', className, iconId)
+  if (title) {
+    nodeIcon = formatString('<span class="{0}" id="{1}" title="{2}"></span>', className, iconId, title)
+  }
+  selector.append(nodeIcon)
+  const iconBtn = document.getElementById(iconId)
+  if (iconBtn) {
+    iconBtn.addEventListener('click', callback)
   }
 }
 

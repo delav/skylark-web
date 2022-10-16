@@ -5,14 +5,18 @@
 
 .vue-giant-tree .node_name {
   padding: 0 !important;
+  margin-right: 2px !important;
   border-radius: 3px !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
 }
 
 .vue-giant-tree .button {
   line-height: 20px !important;
-  height: 20px !important;
+}
+
+.vue-giant-tree .button.switch {
   width: 18px !important;
+  height: 20px !important;
 }
 
 .vue-giant-tree .button.chk {

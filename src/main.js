@@ -8,9 +8,10 @@ import '@/styles/index.scss'
 
 import store from './store'
 
-import '@/icons'
+import '@/icons/iconsvg'
 import SvgIcon from '@/components/SvgIcon'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import '@/icons/iconfont/iconfont.css'
 
 import '@/permission'
 

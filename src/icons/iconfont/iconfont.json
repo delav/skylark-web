@@ -1,0 +1,44 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "24341074",
+      "name": "addition file-line",
+      "font_class": "a-additionfile-line",
+      "unicode": "e9d1",
+      "unicode_decimal": 59857
+    },
+    {
+      "icon_id": "24341078",
+      "name": "add line-line",
+      "font_class": "a-addline-line",
+      "unicode": "e9d2",
+      "unicode_decimal": 59858
+    },
+    {
+      "icon_id": "24341414",
+      "name": "cloud upload-line",
+      "font_class": "a-cloudupload-line",
+      "unicode": "e9de",
+      "unicode_decimal": 59870
+    },
+    {
+      "icon_id": "24341715",
+      "name": "folder add-line",
+      "font_class": "a-folderadd-line",
+      "unicode": "e9eb",
+      "unicode_decimal": 59883
+    },
+    {
+      "icon_id": "24341987",
+      "name": "more 2-line",
+      "font_class": "a-morevertical-line",
+      "unicode": "e9f4",
+      "unicode_decimal": 59892
+    }
+  ]
+}

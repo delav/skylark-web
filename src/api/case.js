@@ -7,3 +7,26 @@ export function fetchCaseNode(suiteId) {
     params: { suite: suiteId }
   })
 }
+
+export function createCase(data) {
+  return request({
+    url: '/test-case',
+    method: 'post',
+    data
+  })
+}
+
+export function updateCase(caseId, data) {
+  return request({
+    url: `/test-case/${caseId}`,
+    method: 'patch',
+    data
+  })
+}
+
+export function deleteCase(caseId) {
+  return request({
+    url: `/test-case/${caseId}`,
+    method: 'delete',
+  })
+}

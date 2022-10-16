@@ -23,7 +23,7 @@ import KeywordList from './DesignEditor/KeywordList'
 import { dragWController } from '@/utils/resize'
 import SvgIcon from '@/components/SvgIcon'
 export default {
-  name: 'DesignArea',
+  name: 'Construct',
   components: {
     SvgIcon,
     ProjectTree,
@@ -63,16 +63,13 @@ export default {
     cursor: col-resize;
     float: left;
     position: relative;
-    background-color: #d6d6d6;
+    background-color: $resizeBg;
     width: 5px;
     height: 100%;
     background-size: cover;
     background-position: center;
     font-size: 0.32rem;
     color: white;
-    &:hover {
-      color: #444444;
-    }
     .ellipsis-icon {
       width: 20px;
       height: 30px;

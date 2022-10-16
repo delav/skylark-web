@@ -1,0 +1,38 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('iconfont.ttf?t=1663991511452') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  margin-left: 1px;
+  font-style: normal;
+  vertical-align: -10%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.iconfont:hover {
+  color: #0065ff;
+}
+
+.icon-a-additionfile-line:before {
+  content: "\e9d1";
+}
+
+.icon-a-addline-line:before {
+  content: "\e9d2";
+}
+
+.icon-a-cloudupload-line:before {
+  content: "\e9de";
+}
+
+.icon-a-folderadd-line:before {
+  content: "\e9eb";
+}
+
+.icon-a-morevertical-line:before {
+  content: "\e9f4";
+}
+

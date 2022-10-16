@@ -1,3 +1,4 @@
+import store from '@/store'
 const treeMinWith = 225
 const caseMinWith = 300
 const caseMinHeight = 100
@@ -11,6 +12,10 @@ export function dragWController(leftId, rightId, resizeId) {
 
   // 鼠标按下事件
   resizeW.onmousedown = function (e) {
+    // 如果隐藏项目树，则禁止拖动宽度
+    const hideTree = store.getters['hidden']
+    console.log('66666:' + hideTree)
+    if (hideTree) return
     const boxWidth = left.offsetWidth + right.offsetWidth
     // 颜色改变提醒
     resizeW.style.background = '#818181'

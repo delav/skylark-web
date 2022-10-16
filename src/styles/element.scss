@@ -1,29 +1,22 @@
 // cover some element-ui styles
 
-.el-dialog {
-  transform: none;
-  left: 0;
-  position: relative;
-  margin: 0 auto;
-}
-
 // custom button color
-.el-button--goon {
-  color: #344563e5;
-  background-color: #f4f5f7;
-  border-color: #f4f5f7;
+.el-button--info {
+  color: $buttonText;
+  background-color: $buttonBg;
+  border-color: $buttonBg;
 }
-.el-button--goon.is-active,
-.el-button--goon:active {
-  color: #344563e5;
-  background: #dfe1e5;
-  border-color: #f4f5f7;
+.el-button--info.is-active,
+.el-button--info:active {
+  color: $buttonText;
+  background: $buttonHoverBg;
+  border-color: $buttonHoverBg;
 }
-.el-button--goon:focus,
-.el-button--goon:hover {
-  color: #0065ff;
-  background: #dfe1e5;
-  border-color: #f4f5f7;
+.el-button--info:focus,
+.el-button--info:hover {
+  color: $buttonHoverText;
+  background: $buttonHoverBg;
+  border-color: $buttonBg;
 }
 
 // custom selector

@@ -2,7 +2,8 @@
 
 const getTreeState = () => {
   return {
-    expandNodes: [],
+    projectId: null,
+    hideTree: false,
   }
 }
 
@@ -12,12 +13,12 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getTreeState())
   },
-  SET_EXPAND_NODES: (state, nodeId) => {
-    state.expandNodes.push(nodeId)
+  SET_CURRENT_PROJECT: (state, projectId) => {
+    state.projectId = projectId
   },
-  GET_EXPAND_NODES: (state) => {
-    return state.expandNodes
-  },
+  SET_HIDE_TREE: (state, isHide) => {
+    state.hideTree = isHide
+  }
 }
 
 const actions = {

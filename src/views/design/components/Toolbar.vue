@@ -1,7 +1,7 @@
 <template>
   <div class="actionbar">
-    <svg-icon icon-class="run" class="btn-table"></svg-icon>
-    <svg-icon icon-class="stop" class="btn-table"></svg-icon>
+    <svg-icon icon-class="run"></svg-icon>
+    <svg-icon icon-class="stop"></svg-icon>
   </div>
 </template>
 

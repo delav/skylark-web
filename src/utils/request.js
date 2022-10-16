@@ -51,7 +51,6 @@ service.interceptors.response.use(
                 duration: 5 * 1000
             })
 
-            // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
             if (res.code === 40100) {
                 // to re-login
                 ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {

@@ -14,7 +14,14 @@ $bodyText: #5e6c84;
 $bodyActiveText: #0065ff;
 //toolbar
 $toolbarHeight: 30px;
-$toolbarBg: #dfe1e6;
+$toolbarBg: #f4f5f7;
+// resize
+$resizeBg: #dfe1e5;
+//button
+$buttonBg: #f4f5f7;
+$buttonText: #344563e5;
+$buttonHoverBg: #dfe1e5;
+$buttonHoverText: #0065ff;
 
 :export {
   menuBg: $menuBg;
@@ -26,4 +33,9 @@ $toolbarBg: #dfe1e6;
   bodyBg: $bodyBg;
   toolbarHeight: $toolbarHeight;
   toolbarBg: $toolbarBg;
+  resizeBg: $resizeBg;
+  buttonBg: $buttonBg;
+  buttonText: $buttonText;
+  buttonHoverBg: $buttonHoverBg;
+  buttonHoverText: $buttonHoverText;
 }
