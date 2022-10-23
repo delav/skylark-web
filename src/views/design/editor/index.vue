@@ -3,37 +3,37 @@
     <div class='project' id="left">
       <project-tree />
     </div>
-    <div class="resize-left" id="resize-x">
+    <div class="resize-left" id="resize-x1">
       <svg-icon icon-class="more-vertical" class="ellipsis-icon"></svg-icon>
     </div>
     <div class="detail" id="middle">
-      <case-detail />
+      <tree-detail />
     </div>
-    <div class="resize-right"></div>
-    <div class='keyword'>
+    <div class="resize-right" id="resize-x2"></div>
+    <div class='keyword' id="right">
       <keyword-list />
     </div>
   </div>
 </template>
 
 <script>
-import ProjectTree from './DesignEditor/ProjectTree.vue'
-import CaseDetail from './DesignEditor/CaseDetail'
-import KeywordList from './DesignEditor/KeywordList'
-import { dragWController } from '@/utils/resize'
+import ProjectTree from './ProjectTree'
+import TreeDetail from './TreeDetail'
+import KeywordList from './KeywordList'
 import SvgIcon from '@/components/SvgIcon'
+import { setConstructWith, dragWController } from '@/utils/resize'
+
 export default {
-  name: 'Construct',
+  name: 'Editor',
   components: {
     SvgIcon,
     ProjectTree,
-    CaseDetail,
+    TreeDetail,
     KeywordList
   },
   mounted() {
-    dragWController('left', 'middle', 'resize-x')
-  },
-  methods: {
+    setConstructWith('25%', 'calc(75% - 258px)', '250px')
+    dragWController('left', 'middle', 'resize-x1')
   }
 }
 </script>
@@ -45,17 +45,14 @@ export default {
   width: 100%;
   height: calc(100% - #{$toolbarHeight});
   .project {
-    width: 25%;
     height: 100%;
     float: left;
   }
   .detail {
-    width: calc(75% - 258px);
     height: 100%;
     float: left;
   }
   .keyword {
-    width: 250px;
     height: 100%;
     float: left;
   }

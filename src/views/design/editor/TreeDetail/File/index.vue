@@ -1,10 +1,10 @@
 <template>
-  <div>KeywordList</div>
+  <div>File</div>
 </template>
 
 <script>
 export default {
-  name: "KeywordList"
+  name: 'File'
 }
 </script>
 

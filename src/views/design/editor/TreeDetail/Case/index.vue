@@ -8,20 +8,17 @@
         </div>
       </div>
       <div class="entity-info">
-<!--        <template>-->
-<!--          <draggable v-model="caseEntities" id="editArea" :group="entityGroup">-->
-<!--            <dl v-for="(item, index) in caseEntities" :key="index"-->
-<!--                :class="selectedEntities.includes(item)? 'chosen':''"-->
-<!--                :style="isInt(index, gripColumn)? 'margin-left:2px':'margin-left:6px'"-->
-<!--                @click="clickEntity(selectedEntities, item)">-->
-<!--              <dt>-->
-<!--                <img :src="getInfoByKeywordId(item.keyword, 'image')" alt="">-->
-<!--              </dt>-->
-<!--              <dd>{{getInfoByKeywordId(item.keyword, 'alias')}}</dd>-->
-<!--              <dd>{{item['out_args']}}</dd>-->
-<!--            </dl>-->
-<!--          </draggable>-->
-<!--        </template>-->
+        <draggable
+          :list="caseEntities"
+          :group="dragSetting"
+          item-key="id"
+          class="list-group"
+          ghost-class="ghost"
+        >
+          <template #item="{ element }">
+            <case-entity @click="clickEntity(element)" :entity-data="element" :grip-column="gripColumn" />
+          </template>
+        </draggable>
       </div>
     </div>
     <div class="resize-h" id="resize-y">
@@ -32,30 +29,48 @@
 </template>
 
 <script>
-import { dragHController } from '@/utils/resize'
+// import { dragHController } from '@/utils/resize'
 import SvgIcon from '@/components/SvgIcon'
-// import draggable from 'vuedraggable'
+import draggable from 'vuedraggable'
+import CaseEntity from './components/CaseEntity'
+
 export default {
-  name: 'CaseDetail',
+  name: 'Case',
   components: {
     SvgIcon,
-    // draggable
+    draggable,
+    CaseEntity
   },
   data () {
     return {
       caseEntities: [],
       keywordList: [],
-      selectedEntities: [],
       gripColumn: 0,
-      entityGroup: {
-        name: 'entity', //组名entity
-        pull: false, //是否允许拖出当前组
-        put: true, //是否允许拖入当前组
+      dragSetting: {
+        name: 'kws',
+        pull: false,
+        put: true,
       }
     }
   },
+  computed: {
+    nodeData() {
+      return this.$store.state.tree.nodeData
+    }
+  },
+  watch: {
+    nodeData: {
+      handler() {
+        const nodeType = this.$store.state.tree.detailType
+        if (nodeType === 1) {
+          this.caseEntities = this.nodeData
+        }
+      },
+      deep: true,
+    }
+  },
   mounted() {
-    dragHController('entity', 'param', 'resize-y')
+    // dragHController('entity', 'param', 'resize-y')
     // window.onresize = () => {
     //   this.calcNum()
     // }
@@ -65,28 +80,13 @@ export default {
     // window.onresize = null
   },
   methods: {
-    clickEntity(caseArray, item) {
-      console.log(item)
-      console.log(caseArray)
-    },
-    isInt(num1, num2) {
-      // console.log((num1 / num2) - Math.floor(num1 / num2) === 0)
-      return ((num1 / num2) - Math.floor(num1 / num2)) === 0
+    clickEntity(item) {
+      this.$store.commit('entity/SET_SELECTED_ENTITIES', item)
     },
     calcNum () {
       let oContainer = document.querySelector('.entity-grid')
       let oChild = document.querySelector('.entity-grid .small-grid')
       this.gripColumn = Math.floor(oContainer.clientWidth / oChild.clientWidth)
-    },
-    getInfoByKeywordId (keywordId, field) {
-      let keywords = this.keywordList
-      for (let i = 0; keywords.length; i++) {
-        let item = keywords[i]
-        if (item.id === keywordId) {
-          return item[field]
-        }
-      }
-      return ''
     },
     cancelCopyEntities() {},
     pasteEntities() {}

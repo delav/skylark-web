@@ -14,7 +14,6 @@ export function dragWController(leftId, rightId, resizeId) {
   resizeW.onmousedown = function (e) {
     // 如果隐藏项目树，则禁止拖动宽度
     const hideTree = store.getters['hidden']
-    console.log('66666:' + hideTree)
     if (hideTree) return
     const boxWidth = left.offsetWidth + right.offsetWidth
     // 颜色改变提醒
@@ -90,4 +89,14 @@ export function dragHController(topId, bottomId, resizeId) {
     resizeH.setCapture && resizeH.setCapture()
     return false
   }
+}
+
+
+export function setConstructWith(leftWith ,middleWith, rightWith) {
+  const left = document.getElementById('left')
+  const middle = document.getElementById('middle')
+  const right = document.getElementById('right')
+  left.style.width = leftWith
+  middle.style.width = middleWith
+  right.style.width = rightWith
 }

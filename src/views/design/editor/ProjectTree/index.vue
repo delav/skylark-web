@@ -1,19 +1,15 @@
 <template>
   <div class="project-tree">
     <div v-if="!hideTree" class="project-show">
-      <div class="project">
-        <el-select
-          v-model="projectId"
-          @change="getBaseNodes"
-          filterable
-          placeholder="选择项目">
-          <el-option
-            v-for="item in projectList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
+      <div class="head">
+        <el-input class="search-input" v-model="currentMenuNodeId" placeholder="Please input"></el-input>
+        <el-tooltip
+          effect="dark"
+          content="收起"
+          placement="bottom"
+        >
+          <svg-icon class="fold-expand-icon" icon-class="fold" @click="hideOrShowTreeArea(true)" />
+        </el-tooltip>
       </div>
       <div class="tree">
         <tree
@@ -34,13 +30,20 @@
       <span class="setting-button">
         <el-button type="info" size="small"><svg-icon icon-class="setting"></svg-icon>变量配置</el-button>
       </span>
-        <span class="setting-button">
+      <span class="setting-button">
         <el-button type="info" size="small"><svg-icon icon-class="new"></svg-icon>新建项目</el-button>
       </span>
-        <span class="arrow-icon"><svg-icon icon-class="arrow-left" @click="hideProjectTree"></svg-icon></span>
       </div>
     </div>
-    <div v-else class="project-hide"></div>
+    <div v-else class="project-hide">
+      <el-tooltip
+        effect="dark"
+        content="展开"
+        placement="bottom"
+      >
+        <svg-icon class="fold-expand-icon" icon-class="expand" @click="hideOrShowTreeArea(false)"/>
+      </el-tooltip>
+    </div>
     <div class="node-dialog">
       <el-dialog
         width="35%"
@@ -76,26 +79,29 @@
 import tree from 'vue-giant-tree-3'
 import { ElMessageBox } from 'element-plus'
 import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
-import {fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite} from '@/api/suite'
+import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { addSvgHover } from '@/utils/hover'
-import { fetchProjectList } from '@/api/project'
+import { setConstructWith } from '@/utils/resize'
 
 export default {
+  name: 'ProjectTree',
   components: {
     tree
   },
   computed: {
     hideTree() {
       return this.$store.state.tree.hideTree
+    },
+    projectId() {
+      return this.$store.state.tree.projectId
     }
   },
   watch: {
-    hideTree: {
+    projectId: {
       handler() {
-        // this.hideTree = this.$store.state.tree.hideTree
-      },
-      immediate: true,
+        this.getBaseNodes()
+      }
     }
   },
   data() {
@@ -120,8 +126,6 @@ export default {
           onCollapse: this.zTreeOnCollapse,
         },
       },
-      projectList: [],
-      projectId: null,
       zTreeObj: null,
       zTreeNodes: [],
       showNodeMenu: false,
@@ -138,29 +142,24 @@ export default {
       nodeDialogForm: {}
     }
   },
-  created() {
-    this.getProjects()
-  },
   methods: {
-    getProjects() {
-      fetchProjectList(1, 20).then(response => {
-        this.projectList = response.data
-        this.getBaseNodes(2)
-      })
-    },
-    getBaseNodes(projectId) {
-      if (!projectId) return
-      fetchBaseDir(projectId).then(response => {
+    getBaseNodes() {
+      if (!this.projectId) return
+      fetchBaseDir(this.projectId).then(response => {
         this.zTreeNodes = response.data
-        this.$store.commit('tree/SET_CURRENT_PROJECT', projectId)
       })
     },
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
       zTreeObj.expandNode(zTreeObj.getNodes()[0], true)
     },
-    hideProjectTree () {
-      this.$store.commit('tree/SET_HIDE_TREE', true)
+    hideOrShowTreeArea(bool) {
+      this.$store.commit('tree/SET_HIDE_TREE', bool)
+      if (bool) {
+        setConstructWith('40px', 'calc(100% - 298px)', '250px')
+      } else {
+        setConstructWith('25%', 'calc(75% - 258px)', '250px')
+      }
     },
     zTreeOnCheck() {},
     // expand node, get children nodes
@@ -185,7 +184,17 @@ export default {
         this.zTreeObj.removeChildNodes(treeNode)
       }
     },
-    zTreeOnClick() {},
+    zTreeOnClick(event, treeId, treeNode) {
+      if (treeNode.desc === 'c') {
+        this.$store.commit('tree/SET_DETAIL_TYPE', 1)
+      } else {
+        if (treeNode.type === 3) {
+          this.$store.commit('tree/SET_DETAIL_TYPE', 3)
+        } else {
+          this.$store.commit('tree/SET_DETAIL_TYPE', 2)
+        }
+      }
+    },
     showTreeMenu(type, x, y) {
       y = y - 20
       this.nodeMenuPosition.top = y + 'px'
@@ -326,9 +335,9 @@ export default {
           deleteCase(node.id)
           that.zTreeObj.removeNode(node)
         }
-        }).catch(() => {
-          console.log('取消删除')
-        })
+      }).catch(() => {
+        console.log('取消删除')
+      })
     },
     copyNode(nodeTId) {
       const node = this.zTreeObj.getNodeByTId(nodeTId)
@@ -424,12 +433,16 @@ $toolHeight: 40px;
   height: 100%;
   .project-show {
     height: 100%;
-    .project {
+    .head {
       height: $selectorHeight;
+      .search-input {
+        width: calc(100% - 40px);
+      }
     }
     .tree {
       height: calc(100% - #{$toolHeight} - #{$selectorHeight});
       overflow: auto;
+      padding: 0 5px;
       .node-menu {
         position: absolute;
         background: #ffffff;
@@ -488,6 +501,13 @@ $toolHeight: 40px;
       }
     }
   }
-  .project-hide {}
+  .project-hide {
+  }
+  .fold-expand-icon {
+    width: 36px;
+    height: 36px;
+    color: #5e6c84;
+    cursor: pointer;
+  }
 }
 </style>

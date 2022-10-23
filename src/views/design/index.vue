@@ -1,17 +1,19 @@
 <template>
   <div class="app-container">
-    <toolbar />
-    <construct />
+    <action-bar />
+    <design-editor />
   </div>
 </template>
 
 <script>
-import Toolbar from './components/Toolbar'
-import Construct from './components/Construct'
+import ActionBar from './actionbar'
+import DesignEditor from './editor'
+
 export default {
+  name: 'Design',
   components: {
-    Toolbar,
-    Construct
+    ActionBar,
+    DesignEditor
   },
 }
 </script>

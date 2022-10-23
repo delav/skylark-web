@@ -2,8 +2,10 @@
 
 const getTreeState = () => {
   return {
-    projectId: null,
+    projectId: 0,
     hideTree: false,
+    detailType: 1,
+    nodeData: {}
   }
 }
 
@@ -18,6 +20,9 @@ const mutations = {
   },
   SET_HIDE_TREE: (state, isHide) => {
     state.hideTree = isHide
+  },
+  SET_DETAIL_TYPE: (state, dtType) => {
+    state.detailType = dtType
   }
 }
 

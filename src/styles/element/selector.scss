@@ -1,0 +1,20 @@
+ //custom selector
+:deep(.el-select) {
+  height: $toolbarHeight;
+  display: inline-block;
+  .el-select__caret {
+    font-size: 18px;
+  }
+  .el-input__wrapper {
+    padding: 0 8px;
+    box-shadow: none;
+    border-radius: 0;
+    .el-input__inner {
+      font-size: 14px;
+      background: none;
+    }
+  }
+  .el-input--suffix.is-focus{
+    box-shadow: none;
+  }
+}

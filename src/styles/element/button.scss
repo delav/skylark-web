@@ -1,0 +1,18 @@
+// custom button style
+.el-button--info {
+  color: $buttonText;
+  background-color: $buttonBg;
+  border-color: $buttonBg;
+}
+.el-button--info.is-active,
+.el-button--info:active {
+  color: $buttonText;
+  background: $buttonHoverBg;
+  border-color: $buttonHoverBg;
+}
+.el-button--info:focus,
+.el-button--info:hover {
+  color: $buttonHoverText;
+  background: $buttonHoverBg;
+  border-color: $buttonBg;
+}
