@@ -1,0 +1,6 @@
+@import '../variables.scss';
+.el-input {
+  --el-input-focus-border-color: $mainColor;
+  --el-input-border-radius: 2px;
+  --el-input-icon-color: #5c5c66;
+}

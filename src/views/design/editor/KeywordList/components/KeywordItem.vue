@@ -1,6 +1,6 @@
 <template>
   <div class="keyword-item">
-    <p>{{keywordData.name}}</p>
+    <p>{{keywordData['ext_name']}}</p>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
 .keyword-list {
   p {
     margin: 0;
-    cursor: move;
+    cursor: copy;
   }
 }
 </style>

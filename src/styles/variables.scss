@@ -1,3 +1,5 @@
+// main color
+$mainColor: #1fb496;
 // navbar
 $menuBg: #42526e;
 $menuText: #fff;
@@ -17,13 +19,9 @@ $toolbarHeight: 30px;
 $toolbarBg: #f4f5f7;
 // resize
 $resizeBg: #dfe1e5;
-//button
-$buttonBg: #f4f5f7;
-$buttonText: #344563e5;
-$buttonHoverBg: #dfe1e5;
-$buttonHoverText: #0065ff;
 
 :export {
+  mainColor: $mainColor;
   menuBg: $menuBg;
   menuText: $menuText;
   menuActiveBg: $menuActiveBg;
@@ -34,8 +32,4 @@ $buttonHoverText: #0065ff;
   toolbarHeight: $toolbarHeight;
   toolbarBg: $toolbarBg;
   resizeBg: $resizeBg;
-  buttonBg: $buttonBg;
-  buttonText: $buttonText;
-  buttonHoverBg: $buttonHoverBg;
-  buttonHoverText: $buttonHoverText;
 }

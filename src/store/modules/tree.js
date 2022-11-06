@@ -23,6 +23,9 @@ const mutations = {
   },
   SET_DETAIL_TYPE: (state, dtType) => {
     state.detailType = dtType
+  },
+  SET_NODE_DATA: (state, data) => {
+    state.nodeData = data
   }
 }
 

@@ -1,6 +1,5 @@
- //custom selector
+//custom selector
 :deep(.el-select) {
-  height: $toolbarHeight;
   display: inline-block;
   .el-select__caret {
     font-size: 18px;

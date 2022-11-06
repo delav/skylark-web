@@ -1,11 +1,19 @@
 <template>
   <div class="keyword-list">
     <div class="head">
-      <p class="kw-title">
-        <svg-icon style="height: 36px;width: 36px" icon-class="fold" />
-        <span style="line-height: 36px;font-weight: bold;">组件库</span>
-        <el-input style="width: 100px" v-model="searchKeyword" placeholder="Please input"></el-input>
-      </p>
+      <el-tooltip
+        class="tooltip-icon"
+        effect="dark"
+        content="收起"
+        placement="bottom"
+      >
+        <el-icon class="fold-expand-icon"><Expand /></el-icon>
+      </el-tooltip>
+      <el-input
+        class="keyword-search"
+        v-model="searchKeyword"
+        placeholder="搜索">
+      </el-input>
     </div>
     <div class="content">
       <el-collapse v-model="groupNames">
@@ -13,9 +21,8 @@
           <draggable
             :list="group['keywords']"
             :group="dragSetting"
+            :clone="cloneKeyword"
             item-key="id"
-            class="list-group"
-            ghost-class="ghost"
           >
             <template #item="{ element }">
               <keyword-item :keyword-data="element" v-on:dblclick="appendKeywordToCase"/>
@@ -28,14 +35,15 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+import axios from 'axios'
 import KeywordItem from './components/KeywordItem'
 import { getLibKeyword } from '@/api/keyword'
+import { getKeywordGroup } from '@/api/kgroup'
+import { guid } from '@/utils/other'
 
 export default {
   name: 'KeywordList',
   components: {
-    draggable,
     KeywordItem,
   },
   data() {
@@ -56,13 +64,40 @@ export default {
     }
   },
   created() {
-    this.getLibKeywords()
+    this.getGroupsLibKeywords()
   },
   methods: {
-    getLibKeywords() {
-      getLibKeyword(this.projectId).then(response => {
-        this.keywordArray = response.data
-      })
+    getGroupsLibKeywords() {
+      let keywordDict = {}
+      const r1 = getKeywordGroup()
+      const r2 = getLibKeyword()
+      axios.all([r1, r2]).then(
+        axios.spread((r1, r2) => {
+          const groups = r1.data
+          const keywords = r2.data
+          const groupDict = {}
+          for (let i = 0; i < groups.length; i++) {
+            groups[i]['keywords'] = []
+            groupDict[groups[i].id] = groups[i]
+          }
+          for (let j = 0; j < keywords.length; j++) {
+            const kw = keywords[j]
+            keywordDict[kw.id] = kw
+            groupDict[kw['group_id']]['keywords'].push(kw)
+          }
+          this.$store.commit('entity/SET_KEYWORDS_OBJECT', keywordDict)
+          this.keywordArray = Object.values(groupDict)
+        })
+      )
+    },
+    cloneKeyword(original) {
+      return {
+        'keyword_id': original['id'],
+        'keyword_type': 1,
+        'input_args': original['input_params'],
+        'output_args': original['output_params'],
+        'uuid': guid()
+      }
     },
     appendKeywordToCase() {}
   }
@@ -70,16 +105,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$selectorHeight: 40px;
+@import "src/styles/variables.scss";
+$searchHeight: 40px;
+$foldExpandIconSize: 32px;
 
 .keyword-list {
   width: 100%;
   height: 100%;
   .head {
-    height: $selectorHeight;
-    .kw-title {
-      margin: 0;
+    height: $searchHeight;
+    .tooltip-icon {
+      float: right;
+      width: $foldExpandIconSize;
     }
+    .keyword-search {
+      float: right;
+      width: calc(100% - #{$foldExpandIconSize});
+    }
+  }
+  .content {
+    height: calc(100% - #{$searchHeight});
+  }
+  .fold-expand-icon {
+    font-size: $foldExpandIconSize;
+    color: $mainColor;
+    cursor: pointer;
   }
 }
 </style>

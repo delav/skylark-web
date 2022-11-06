@@ -1,7 +1,8 @@
 const getEntityState = () => {
   return {
+    keywordsObject: {},
     currentEntity: {},
-    selectedEntities: [],
+    caseEntityChange: false
   }
 }
 
@@ -11,23 +12,15 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getEntityState())
   },
-
-  SET_SELECTED_ENTITIES: (state, entity) => {
+  SET_CURRENT_ENTITY: (state, entity) => {
     state.currentEntity = entity
-    let isExist = false
-    let existIndex = 0
-    for (let i = 0; i < state.selectedEntities.length; i++) {
-      if (state.selectedEntities[i].id === entity.id) {
-        existIndex = i
-        isExist = true
-      }
-    }
-    if (isExist) {
-      state.selectedEntities.splice(existIndex, 1)
-    } else {
-      state.selectedEntities.append(entity)
-    }
   },
+  SET_KEYWORDS_OBJECT: (state, keywordObj) => {
+    state.keywordsObject = keywordObj
+  },
+  SET_CASE_CHANGE: (state, changeFlag) => {
+    state.caseEntityChange = changeFlag
+  }
 }
 
 const actions = {

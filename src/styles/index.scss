@@ -1,9 +1,10 @@
 @import './variables.scss';
 @import './navbar.scss';
 @import './mian.scss';
-@import 'element/button.scss';
 @import './scrollbar.scss';
 @import './tree.scss';
+@import 'element/button.scss';
+@import 'element/input.scss';
 
 body {
   height: 100%;

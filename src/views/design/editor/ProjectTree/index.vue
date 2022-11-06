@@ -2,13 +2,25 @@
   <div class="project-tree">
     <div v-if="!hideTree" class="project-show">
       <div class="head">
-        <el-input class="search-input" v-model="currentMenuNodeId" placeholder="Please input"></el-input>
+        <el-select
+          class="project-selector"
+          v-model="projectId"
+          @change="changeProject"
+          placeholder="选择项目">
+          <el-option
+            v-for="(item, index) in projectList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
         <el-tooltip
+          class="tooltip-icon"
           effect="dark"
           content="收起"
           placement="bottom"
         >
-          <svg-icon class="fold-expand-icon" icon-class="fold" @click="hideOrShowTreeArea(true)" />
+          <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(true)"><Fold /></el-icon>
         </el-tooltip>
       </div>
       <div class="tree">
@@ -41,7 +53,7 @@
         content="展开"
         placement="bottom"
       >
-        <svg-icon class="fold-expand-icon" icon-class="expand" @click="hideOrShowTreeArea(false)"/>
+        <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(false)"><Expand /></el-icon>
       </el-tooltip>
     </div>
     <div class="node-dialog">
@@ -58,7 +70,7 @@
           label-width="80px"
         >
           <el-form-item
-            size="large"
+            size="default"
             :label="nodeDialogForm.label"
             prop="name"
             :rules="[{ required: true, message: 'name is required' }]"
@@ -78,11 +90,14 @@
 <script>
 import tree from 'vue-giant-tree-3'
 import { ElMessageBox } from 'element-plus'
+import { fetchProjectList } from '@/api/project'
 import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
+import { fetchEntities } from '@/api/entity'
 import { addSvgHover } from '@/utils/hover'
 import { setConstructWith } from '@/utils/resize'
+import { guid } from '@/utils/other'
 
 export default {
   name: 'ProjectTree',
@@ -92,16 +107,6 @@ export default {
   computed: {
     hideTree() {
       return this.$store.state.tree.hideTree
-    },
-    projectId() {
-      return this.$store.state.tree.projectId
-    }
-  },
-  watch: {
-    projectId: {
-      handler() {
-        this.getBaseNodes()
-      }
     }
   },
   data() {
@@ -126,6 +131,8 @@ export default {
           onCollapse: this.zTreeOnCollapse,
         },
       },
+      projectId: '',
+      projectList: [],
       zTreeObj: null,
       zTreeNodes: [],
       showNodeMenu: false,
@@ -142,10 +149,17 @@ export default {
       nodeDialogForm: {}
     }
   },
+  created() {
+    this.getProjects()
+  },
   methods: {
-    getBaseNodes() {
-      if (!this.projectId) return
-      fetchBaseDir(this.projectId).then(response => {
+    getProjects() {
+      fetchProjectList(1, 20).then(response => {
+        this.projectList = response.data
+      })
+    },
+    changeProject(pId) {
+      fetchBaseDir(pId).then(response => {
         this.zTreeNodes = response.data
       })
     },
@@ -156,7 +170,7 @@ export default {
     hideOrShowTreeArea(bool) {
       this.$store.commit('tree/SET_HIDE_TREE', bool)
       if (bool) {
-        setConstructWith('40px', 'calc(100% - 298px)', '250px')
+        setConstructWith('32px', 'calc(100% - 290px)', '250px')
       } else {
         setConstructWith('25%', 'calc(75% - 258px)', '250px')
       }
@@ -187,6 +201,13 @@ export default {
     zTreeOnClick(event, treeId, treeNode) {
       if (treeNode.desc === 'c') {
         this.$store.commit('tree/SET_DETAIL_TYPE', 1)
+        fetchEntities(treeNode.id).then(response => {
+          const entityList = response.data
+          for (let i = 0; i < entityList.length; i++) {
+            entityList[i]['uuid'] = guid()
+          }
+          this.$store.commit('tree/SET_NODE_DATA', entityList)
+        })
       } else {
         if (treeNode.type === 3) {
           this.$store.commit('tree/SET_DETAIL_TYPE', 3)
@@ -426,8 +447,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.scss";
-$selectorHeight: 40px;
+$selectorHeight: 45px;
 $toolHeight: 40px;
+$foldExpandIconSize: 32px;
 
 .project-tree {
   height: 100%;
@@ -435,8 +457,14 @@ $toolHeight: 40px;
     height: 100%;
     .head {
       height: $selectorHeight;
-      .search-input {
-        width: calc(100% - 40px);
+      width: 100%;
+      .project-selector {
+        float: left;
+        width: calc(100% - #{$foldExpandIconSize});
+      }
+      .tooltip-icon {
+        float: left;
+        width: $foldExpandIconSize;
       }
     }
     .tree {
@@ -465,12 +493,11 @@ $toolHeight: 40px;
             padding: 3px 16px;
             margin: 0;
             font-size: 14px;
-            color: $buttonText;
             cursor: pointer;
             outline: none;
             &:hover {
-              color: $buttonHoverText;
-              background-color: $buttonHoverBg;
+              color: $mainColor;
+              background-color: #dfe1e5;
             }
           }
         }
@@ -487,26 +514,13 @@ $toolHeight: 40px;
           margin-right: 5px;
         }
       }
-      .arrow-icon {
-        float: right;
-        padding-right: 10px;
-        cursor: pointer;
-        &:hover {
-          color: $buttonHoverText;
-        }
-        .svg-icon {
-          width: 14px;
-          height: 14px;
-        }
-      }
     }
   }
   .project-hide {
   }
   .fold-expand-icon {
-    width: 36px;
-    height: 36px;
-    color: #5e6c84;
+    font-size: $foldExpandIconSize;
+    color: $mainColor;
     cursor: pointer;
   }
 }
