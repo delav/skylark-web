@@ -1,0 +1,46 @@
+/* global settings */
+// main color
+$mainColor: #1fb496;
+// navbar
+$menuBg: #42526e;
+$menuText: #fff;
+$menuActiveBg: #091E4214;
+$menuActiveText: #0065ff;
+$menuHoverBg: #263445;
+$menuHoverText: #bfcbd9;
+$logoWidth: 80px;
+$languageWidth: 100px;
+$profileWidth: 70px;
+$navbarHeight: 45px;
+// body
+$bodyBg: #fff;
+$bodyText: #5e6c84;
+$bodyActiveText: #0065ff;
+
+/* part settings*/
+//actionbar
+$toolbarHeight: 30px;
+$toolbarBg: #f4f5f7;
+// resize
+$resizeBg: #e6eaee;
+$resizeHoverBg: #bdc6ce;
+$leftResizeWidth: 5px;
+$rightResizeWidth: 0px;
+// tree with
+$treeDefaultWidth: 25%;
+// fold with
+$foldWidth: 32px;
+$foldIconColor: #dfe1e5;
+// keyword group with
+$keywordWidth: 250px;
+
+:export {
+  mainColor: $mainColor;
+  resizeBg: $resizeBg;
+  resizeHoverBg: $resizeHoverBg;
+  leftResizeWidth: $leftResizeWidth;
+  rightResizeWidth: $rightResizeWidth;
+  treeDefaultWidth: $treeDefaultWidth;
+  foldWidth: $foldWidth;
+  keywordWidth: $keywordWidth;
+}

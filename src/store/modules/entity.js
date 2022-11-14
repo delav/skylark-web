@@ -1,6 +1,5 @@
 const getEntityState = () => {
   return {
-    keywordsObject: {},
     currentEntity: {},
     caseEntityChange: false
   }
@@ -14,9 +13,6 @@ const mutations = {
   },
   SET_CURRENT_ENTITY: (state, entity) => {
     state.currentEntity = entity
-  },
-  SET_KEYWORDS_OBJECT: (state, keywordObj) => {
-    state.keywordsObject = keywordObj
   },
   SET_CASE_CHANGE: (state, changeFlag) => {
     state.caseEntityChange = changeFlag

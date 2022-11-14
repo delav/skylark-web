@@ -1,4 +1,5 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
+import i18n from '@/locales/index'
 
 import Layout from '@/layout'
 
@@ -7,7 +8,7 @@ export const routes = [
         path: '/',
         component: Layout,
         redirect: '/home',
-        meta: { navbar: true, title: '首页' },
+        meta: { navbar: true, title: i18n.global.t('Navbar._home') },
         children: [
             {
                 path: 'home',
@@ -20,7 +21,7 @@ export const routes = [
     {
         path: '/design',
         component: Layout,
-        meta: { navbar: true, title: '用例设计' },
+        meta: { navbar: true, title: i18n.global.t('Navbar._design') },
         children: [
             {
                 path: 'index',
@@ -31,22 +32,22 @@ export const routes = [
         ]
     },
     {
-        path: '/plan',
+        path: '/build',
         component: Layout,
-        meta: { navbar: true, title: '测试计划' },
+        meta: { navbar: true, title: i18n.global.t('Navbar._build') },
         children: [
             {
                 path: 'index',
                 name: 'Plan',
-                component: () => import('@/views/plan/index'),
-                meta: { title: 'Plan', icon: 'plan' }
+                component: () => import('@/views/build/index'),
+                meta: { title: 'Plan', icon: 'build' }
             }
         ]
     },
     {
         path: '/analyze',
         component: Layout,
-        meta: { navbar: true, title: '数据分析' },
+        meta: { navbar: true, title: i18n.global.t('Navbar._analyze') },
         children: [
             {
                 path: 'index',

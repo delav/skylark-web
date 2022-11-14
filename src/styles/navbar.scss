@@ -18,7 +18,7 @@
 
       .logo {
         position: relative;
-        width: $logoWith;
+        width: $logoWidth;
         height: 100%;
         float: left;
         text-align: center;
@@ -32,34 +32,58 @@
         }
       }
 
-      .menu {
+      .router {
         float: left;
-        width: calc(100% - #{$logoWith} - #{$profileWith});
-        border: none;
         height: 100%;
-        background-color: $menuBg !important;
+        width: calc(100% - #{$logoWidth} - #{$languageWidth} - #{$profileWidth});
 
-        .el-menu-item {
-          color: $menuText;
-          font-weight: 600;
-          font-size: 15px;
-          &:hover {
-            color: $menuHoverText !important;
-            background-color: $menuHoverBg !important;
+        .menu {
+          height: 100%;
+          border: none;
+          background-color: $menuBg !important;
+
+          .el-menu-item {
+            color: $menuText;
+            font-weight: 600;
+            font-size: 15px;
+
+            &:hover {
+              color: $menuHoverText !important;
+              background-color: $menuHoverBg !important;
+            }
+          }
+
+          .el-menu-item.is-active {
+            color: $menuActiveText !important;
+            background-color: $menuActiveBg !important;
+            border-bottom: none !important;
           }
         }
+      }
 
-        .el-menu-item.is-active {
-          color: $menuActiveText !important;
-          background-color: $menuActiveBg !important;
-          border-bottom: none !important;
+      .language {
+        float: left;
+        height: 100%;
+        width: $languageWidth;
+
+        .lang-desc {
+          height: 100%;
+          line-height: $navbarHeight;
+
+          .lang-text {
+            font-size: 14px;
+            color: #ffffff;
+          }
+          .lang-icon {
+            vertical-align: -10%;
+          }
         }
       }
 
       .profile {
         float: left;
         height: 100%;
-        width: $profileWith;
+        width: $profileWidth;
 
         .avatar-wrapper {
           margin-top: 5px;
@@ -71,6 +95,9 @@
             right: -20px;
             top: 25px;
             font-size: 12px;
+          }
+          .avatar-icon {
+            color: #ffffff;
           }
         }
       }

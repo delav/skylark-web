@@ -1,6 +1,6 @@
 <template>
   <div class="case-detail">
-    <div class="infos">
+    <div class="information" id="infos">
       <case-config />
       <case-entity />
     </div>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-// import { dragHController } from '@/utils/resize'
+import { dragHController } from '@/utils/resize'
 import SvgIcon from '@/components/SvgIcon'
 import CaseEntity from './components/CaseEntity'
 import EntityArgs from './components/EntityArgs'
@@ -29,7 +29,7 @@ export default {
     CaseConfig,
   },
   mounted() {
-    // dragHController('entity', 'args', 'resize-y')
+    dragHController('infos', 'args', 'resize-y')
   },
   methods: {
   }
@@ -43,7 +43,7 @@ $resizeHeight: 5px;
   width: 100%;
   height: 100%;
   position: relative;
-  .infos {
+  .information {
     width: 100%;
     height: 60%;
     position: relative;
@@ -65,12 +65,9 @@ $resizeHeight: 5px;
     background-position: center;
     font-size: 0.32rem;
     color: white;
-    &:hover {
-      color: #444444;
-    }
     .ellipsis-icon {
       width: 30px;
-      height: 20px;
+      height: 18px;
       position: relative;
       left: 48%;
       transform: translateY(-38%);

@@ -6,6 +6,7 @@
           class="project-selector"
           v-model="projectId"
           @change="changeProject"
+          placement="bottom-start"
           placeholder="选择项目">
           <el-option
             v-for="(item, index) in projectList"
@@ -88,6 +89,7 @@
 </template>
 
 <script>
+import variables from '@/styles/variables.module.scss'
 import tree from 'vue-giant-tree-3'
 import { ElMessageBox } from 'element-plus'
 import { fetchProjectList } from '@/api/project'
@@ -96,7 +98,6 @@ import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/a
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { fetchEntities } from '@/api/entity'
 import { addSvgHover } from '@/utils/hover'
-import { setConstructWith } from '@/utils/resize'
 import { guid } from '@/utils/other'
 
 export default {
@@ -156,6 +157,8 @@ export default {
     getProjects() {
       fetchProjectList(1, 20).then(response => {
         this.projectList = response.data
+        //debug
+        this.changeProject(2)
       })
     },
     changeProject(pId) {
@@ -167,12 +170,16 @@ export default {
       this.zTreeObj = zTreeObj
       zTreeObj.expandNode(zTreeObj.getNodes()[0], true)
     },
-    hideOrShowTreeArea(bool) {
-      this.$store.commit('tree/SET_HIDE_TREE', bool)
-      if (bool) {
-        setConstructWith('32px', 'calc(100% - 290px)', '250px')
+    hideOrShowTreeArea(isHide) {
+      this.$store.commit('tree/SET_HIDE_TREE', isHide)
+      const left = document.getElementById('left')
+      const middle = document.getElementById('middle')
+      if (isHide) {
+        left.style.width = variables.foldWidth
+        middle.style.width = `calc(100% - ${variables.foldWidth} - ${variables.leftResizeWidth})`
       } else {
-        setConstructWith('25%', 'calc(75% - 258px)', '250px')
+        left.style.width = variables.treeDefaultWidth
+        middle.style.width = `calc(100% - ${variables.treeDefaultWidth} - ${variables.leftResizeWidth})`
       }
     },
     zTreeOnCheck() {},
@@ -228,7 +235,6 @@ export default {
       document.removeEventListener('click', this.onDocMouseDown)
     },
     onDocMouseDown(event) {
-      console.log('click:' + this.showNodeMenu)
       if (event.target.id !== this.currentMenuNodeId) {
         this.hideTreeMenu()
       }
@@ -446,10 +452,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "src/styles/variables.scss";
+@import "src/styles/variables.module.scss";
 $selectorHeight: 45px;
 $toolHeight: 40px;
-$foldExpandIconSize: 32px;
 
 .project-tree {
   height: 100%;
@@ -460,11 +465,11 @@ $foldExpandIconSize: 32px;
       width: 100%;
       .project-selector {
         float: left;
-        width: calc(100% - #{$foldExpandIconSize});
+        width: calc(100% - #{$foldWidth});
       }
       .tooltip-icon {
         float: left;
-        width: $foldExpandIconSize;
+        width: $foldWidth;
       }
     }
     .tree {
@@ -519,8 +524,8 @@ $foldExpandIconSize: 32px;
   .project-hide {
   }
   .fold-expand-icon {
-    font-size: $foldExpandIconSize;
-    color: $mainColor;
+    font-size: $foldWidth;
+    color: $foldIconColor;
     cursor: pointer;
   }
 }

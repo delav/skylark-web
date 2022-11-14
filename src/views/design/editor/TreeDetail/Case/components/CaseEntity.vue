@@ -66,7 +66,7 @@ export default {
       return this.$store.state.tree.nodeData
     },
     keywordDict() {
-      return this.$store.state.entity.keywordsObject
+      return this.$store.state.keyword.keywordsObject
     },
   },
   methods: {
@@ -184,7 +184,7 @@ export default {
   .entity-grid {
     width:100%;
     height:100%;
-    //padding: 5px;
+    padding-left: 10px;
     .small-grid {
       float: left;
       width: 104px;

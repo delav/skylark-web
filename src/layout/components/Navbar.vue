@@ -3,42 +3,61 @@
     <div class="logo">
       <img :src="logo" class="navbar-logo" alt="">
     </div>
-    <el-menu class="menu" :default-active="activeMenu" mode="horizontal" router>
-      <el-menu-item v-for="(route, i) in routes" :key="i" :index="resolvePath(route)">
-        <span>{{ route.meta.title }}</span>
-      </el-menu-item>
-    </el-menu>
-    <el-dropdown class="profile" trigger="click">
-      <div class="avatar-wrapper">
-        <el-avatar :size="36" :src="avatar" />
-        <svg-icon icon-class="caret-bottom" class="btn-avatar"></svg-icon>
-      </div>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item>
-            <span>Setting</span>
-          </el-dropdown-item>
-          <el-dropdown-item divided @click.native="logout">
-            <span>Logout</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
+    <div class="router">
+      <el-menu class="menu" :default-active="activeMenu" mode="horizontal" router>
+        <el-menu-item v-for="(route, i) in routes" :key="i" :index="resolvePath(route)">
+          {{ route.meta.title }}
+        </el-menu-item>
+      </el-menu>
+    </div>
+    <div class="language">
+      <el-dropdown class="lang-desc" :command="changeLanguage">
+        <span class="lang-text">
+          {{ $t('Navbar._language') }}
+          <el-icon class="lang-icon"><ArrowDown /></el-icon>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu v-for="(value, key, index) in lang" :key="index">
+            <el-dropdown-item>{{ value }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+    <div class="profile">
+      <el-dropdown trigger="click">
+        <div class="avatar-wrapper">
+          <el-avatar :size="36" :src="avatar" />
+          <el-icon class="avatar-icon"><CaretBottom /></el-icon>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>
+              <span>Setting</span>
+            </el-dropdown-item>
+            <el-dropdown-item divided @click.native="logout">
+              <span>Logout</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
   </div>
 </template>
 
 <script>
 import path from 'path'
 import { isExternal } from '@/utils/validate'
-import SvgIcon from '@/components/SvgIcon'
 
 export default {
   name: 'Navbar',
-  components: { SvgIcon },
   data() {
     return {
       logo: require('@/assets/logo.png'),
-      avatar: require('@/assets/avatar.gif')
+      avatar: require('@/assets/avatar.gif'),
+      lang: {
+        'CN': '中文',
+        'US': 'English',
+      }
     }
   },
   computed: {
@@ -57,6 +76,9 @@ export default {
     }
   },
   methods: {
+    changeLanguage(val) {
+      this.$i18n.locale = val
+    },
     hasOneShowingChild(children = []) {
       const showingChildren = children.filter(item => {
         return !item.hidden;
