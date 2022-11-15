@@ -212,7 +212,7 @@ export default {
     width: 100%;
     user-select: none;
     position: absolute;
-    //padding: 5px;
+    padding-left: 10px;
     top: 0;
     left: 0;
     z-index: 10;

@@ -1,17 +1,17 @@
 <template>
   <div class="action-bar">
-    <svg-icon icon-class="run"></svg-icon>
-    <svg-icon icon-class="stop"></svg-icon>
+    <icon-item :condition="true" i-class="run" @func="run" description="执行用例"></icon-item>
+    <icon-item :condition="true" i-class="stop" @func="stop" description="终止执行"></icon-item>
   </div>
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import IconItem from './components/IconItem'
 
 export default {
   name: 'ActionBar',
   components: {
-    SvgIcon
+    IconItem
   },
   data() {
     return {
@@ -20,6 +20,9 @@ export default {
   created() {
   },
   methods: {
+    run() {},
+    stop() {},
+    save() {},
   }
 }
 </script>
@@ -30,13 +33,5 @@ export default {
 .action-bar {
   height: $toolbarHeight;
   background-color: $toolbarBg;
-  text-align: center;
-  .svg-icon {
-    width: 22px;
-    height: 22px;
-    margin-top: 4px;
-    margin-left: 10px;
-    color: #888888;
-  }
 }
 </style>
