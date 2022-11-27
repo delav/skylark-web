@@ -1,6 +1,8 @@
 @font-face {
-  font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1663991511452') format('truetype');
+  font-family: "iconfont"; /* Project id 3795284 */
+  src: url('iconfont.woff2?t=1669558368921') format('woff2'),
+       url('iconfont.woff?t=1669558368921') format('woff'),
+       url('iconfont.ttf?t=1669558368921') format('truetype');
 }
 
 .iconfont {
@@ -12,8 +14,17 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .iconfont:hover {
   color: #0065ff;
+}
+
+.icon-download:before {
+  content: "\e74d";
+}
+
+.icon-edit:before {
+  content: "\e7e1";
 }
 
 .icon-a-additionfile-line:before {

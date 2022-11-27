@@ -5,6 +5,7 @@ import tree from './modules/tree'
 import project from './modules/project'
 import entity from './modules/entity'
 import keyword from './modules/keyword'
+import execute from './modules/execute'
 
 const store = createStore({
     modules: {
@@ -13,6 +14,7 @@ const store = createStore({
       project,
       entity,
       keyword,
+      execute,
     },
     getters
 })

@@ -37,6 +37,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 $resizeHeight: 5px;
 
 .case-detail {
@@ -58,7 +59,7 @@ $resizeHeight: 5px;
   .resize-h {
     cursor: row-resize;
     position: relative;
-    background-color: #d6d6d6;
+    background-color: $resizeBg;
     width: 100%;
     height: $resizeHeight;
     background-size: cover;

@@ -155,9 +155,11 @@ $labelWidth: 100px;
 .entity-args {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
   .entity-desc {
     height: 60px;
+    p {
+      margin: 0;
+    }
   }
   .entity-input {
     width: 100%;
@@ -210,6 +212,7 @@ $labelWidth: 100px;
   }
   .entity-output {
     width: 100%;
+    padding-bottom: 5px;
     .output-title {
       height: 30px;
       span {

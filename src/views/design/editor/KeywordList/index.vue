@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     projectId() {
-      return this.$store.state.tree.projectId
+      return this.$store.state.project.projectId
     },
     hideKeyword() {
       return this.$store.state.keyword.hideKeyword
@@ -85,9 +85,7 @@ export default {
   methods: {
     getGroupsLibKeywords() {
       let keywordDict = {}
-      const r1 = getKeywordGroup()
-      const r2 = getLibKeyword()
-      axios.all([r1, r2]).then(
+      axios.all([getKeywordGroup(), getLibKeyword()]).then(
         axios.spread((r1, r2) => {
           const groups = r1.data
           const keywords = r2.data

@@ -1,7 +1,7 @@
 const getEntityState = () => {
   return {
     currentEntity: {},
-    caseEntityChange: false
+    entityChange: false
   }
 }
 
@@ -15,7 +15,7 @@ const mutations = {
     state.currentEntity = entity
   },
   SET_CASE_CHANGE: (state, changeFlag) => {
-    state.caseEntityChange = changeFlag
+    state.entityChange = changeFlag
   }
 }
 

@@ -45,10 +45,10 @@ export default {
     margin-left: 10px;
     cursor: pointer;
     .available {
-      color: #0052cc;
+      color: $availableIconColor;
     }
     .unavailable {
-      color: #7a869a;
+      color: $unavailableIconColor;
     }
   }
 }

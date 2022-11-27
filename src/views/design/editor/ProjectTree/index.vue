@@ -41,10 +41,10 @@
       </div>
       <div class="tool">
       <span class="setting-button">
-        <el-button type="info" size="small"><svg-icon icon-class="setting"></svg-icon>变量配置</el-button>
+        <el-button type="info" size="small" @click="showEnvDialog=true"><el-icon><Setting /></el-icon>变量配置</el-button>
       </span>
       <span class="setting-button">
-        <el-button type="info" size="small"><svg-icon icon-class="new"></svg-icon>新建项目</el-button>
+        <el-button type="info" size="small"><el-icon><Plus /></el-icon>新建项目</el-button>
       </span>
       </div>
     </div>
@@ -57,33 +57,48 @@
         <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(false)"><Expand /></el-icon>
       </el-tooltip>
     </div>
-    <div class="node-dialog">
-      <el-dialog
-        width="35%"
-        v-model="showNodeDialog"
-        :title="nodeDialogTitle"
-        :close-on-click-modal="false"
-        :destroy-on-close="true"
-        @close="closeNodeDialog"
-      >
-        <el-form
-          :model="nodeDialogForm"
-          label-width="80px"
+    <div class="dialog">
+      <div class="node-dialog">
+        <el-dialog
+          width="35%"
+          v-model="showNodeDialog"
+          :title="nodeDialogTitle"
+          :close-on-click-modal="false"
+          :destroy-on-close="true"
+          @close="closeNodeDialog"
         >
-          <el-form-item
-            size="default"
-            :label="nodeDialogForm.label"
-            prop="name"
-            :rules="[{ required: true, message: 'name is required' }]"
+          <el-form
+            :model="nodeDialogForm"
+            label-width="80px"
           >
-            <el-input v-model="nodeDialogForm.name" />
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <el-button @click="closeNodeDialog">取消</el-button>
-          <el-button type="primary" @click="commitNodeDialog">确定</el-button>
-        </template>
-      </el-dialog>
+            <el-form-item
+              size="default"
+              :label="nodeDialogForm.label"
+              prop="name"
+              :rules="[{ required: true, message: 'name is required' }]"
+            >
+              <el-input v-model="nodeDialogForm.name" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <el-button @click="closeNodeDialog">取消</el-button>
+            <el-button type="primary" @click="commitNodeDialog">确定</el-button>
+          </template>
+        </el-dialog>
+      </div>
+      <div class="env-dialog">
+        <el-dialog
+          width="75%"
+          v-model="showEnvDialog"
+          title="环境变量配置"
+          :close-on-click-modal="false"
+          :destroy-on-close="true"
+        >
+          <div class="env-content">
+            <env-variable :project-id="projectId" />
+          </div>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>
@@ -91,8 +106,8 @@
 <script>
 import variables from '@/styles/variables.module.scss'
 import tree from 'vue-giant-tree-3'
-import { ElMessageBox } from 'element-plus'
-import { fetchProjectList } from '@/api/project'
+import EnvVariable from './components/EnvVariable'
+import ElMessageBox from 'element-plus'
 import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
@@ -103,11 +118,15 @@ import { guid } from '@/utils/other'
 export default {
   name: 'ProjectTree',
   components: {
-    tree
+    tree,
+    EnvVariable
   },
   computed: {
     hideTree() {
       return this.$store.state.tree.hideTree
+    },
+    projectList() {
+      return this.$store.state.project.projectList
     }
   },
   data() {
@@ -133,9 +152,9 @@ export default {
         },
       },
       projectId: '',
-      projectList: [],
       zTreeObj: null,
       zTreeNodes: [],
+      showEnvDialog: false,
       showNodeMenu: false,
       nodeMenuPosition: {
         top: '0',
@@ -150,20 +169,12 @@ export default {
       nodeDialogForm: {}
     }
   },
-  created() {
-    this.getProjects()
-  },
+
   methods: {
-    getProjects() {
-      fetchProjectList(1, 20).then(response => {
-        this.projectList = response.data
-        //debug
-        this.changeProject(2)
-      })
-    },
     changeProject(pId) {
       fetchBaseDir(pId).then(response => {
         this.zTreeNodes = response.data
+        this.$store.commit('project/SET_CURRENT_PROJECT', pId)
       })
     },
     zTreeOnCreated(zTreeObj) {
@@ -223,6 +234,7 @@ export default {
         }
       }
     },
+    saveEnvVariables() {},
     showTreeMenu(type, x, y) {
       y = y - 20
       this.nodeMenuPosition.top = y + 'px'
@@ -254,10 +266,21 @@ export default {
       this.nodeDialogTitle = ''
       this.nodeDialogForm = {}
     },
-    // create or update dir/suite/case
+    // rename project, create or update dir/suite/case
     commitNodeDialog() {
       const that = this
       const node = this.nodeParams.meta_data
+      if (this.nodeParams.post_type === 'p') {
+        if (this.nodeParams.action_type === 2) {
+          // rename project
+          const params = {'project_name': this.nodeDialogForm.name}
+          updateDir(node.id, params).then(response => {
+            node.name = response.data.name
+            that.zTreeObj.updateNode(node)
+            that.closeNodeDialog()
+          })
+        }
+      }
       if (this.nodeParams.post_type === 'd') {
         if (this.nodeParams.action_type === 1) {
           // create dir
@@ -386,7 +409,9 @@ export default {
         }
       } else if (action === 'update') {
         this.nodeDialogTitle = '重命名'
-        if (createType === 'd') {
+        if (createType === 'p') {
+          this.nodeDialogForm = {label: '项目名称', name: name}
+        } else if (createType === 'd') {
           this.nodeDialogForm = {label: '目录名称', name: name}
         } else if (createType === 's') {
           this.nodeDialogForm = {label: '套件名称', name: name}
@@ -404,6 +429,15 @@ export default {
         {id: treeNode.tId, method: 'renameNode', title: '重命名'},
         {id: treeNode.tId, method: 'deleteNode', title: '删除'},
       ]
+      if (treeNode.desc === 'p') {
+        addSvgHover('edit_', treeNode.tId, 'iconfont icon-edit', 'rename',function () {
+          that.nodeParams = {
+            'action_type': 2, 'post_type': 'p',
+            'meta_data': treeNode
+          }
+          that.initDialogInfo('update', '')
+        })
+      }
       if (treeNode.desc === 'd') {
         addSvgHover('folder_add_', treeNode.tId, 'iconfont icon-a-folderadd-line', 'create directory',function () {
           that.nodeParams = {
@@ -442,6 +476,7 @@ export default {
       }
     },
     removeHoverDom(treeId, treeNode) {
+      $("#edit_" + treeNode.tId).unbind().remove()
       $("#folder_add_" + treeNode.tId).unbind().remove()
       $("#suite_add_" + treeNode.tId).unbind().remove()
       $("#case_add_" + treeNode.tId).unbind().remove()
@@ -453,6 +488,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
+//@import "src/styles/element/dialog.scss";
 $selectorHeight: 45px;
 $toolHeight: 40px;
 
@@ -522,6 +558,13 @@ $toolHeight: 40px;
     }
   }
   .project-hide {
+  }
+  .dialog {
+    .node-dialog {
+
+    }
+    .env-dialog {
+    }
   }
   .fold-expand-icon {
     font-size: $foldWidth;

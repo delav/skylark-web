@@ -88,7 +88,7 @@ export default {
   .resize-right {
     float: left;
     position: relative;
-    background-color: #d6d6d6;
+    background-color: $resizeBg;
     width: $rightResizeWidth;
     height: 100%;
     background-size: cover;

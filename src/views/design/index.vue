@@ -15,6 +15,10 @@ export default {
     ActionBar,
     DesignEditor
   },
+  created() {
+    this.$store.dispatch('project/setenv')
+    this.$store.dispatch('project/getProjects')
+  },
 }
 </script>
 

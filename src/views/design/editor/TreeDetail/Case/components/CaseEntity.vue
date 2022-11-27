@@ -136,31 +136,10 @@ export default {
       body.style.cursor= 'auto'
     },
     deleteEntities() {
-      let inputFlag = false
-      let oInputs = document.querySelectorAll('input')
-      for (let ele of oInputs) {
-        if (ele === document.activeElement) {
-          inputFlag = true
-        }
-      }
-      this.inputStatus = inputFlag
-      if (!inputFlag) {
-        for (let i = this.selectedContent.length - 1; i >= 0; i--) {
-          let delItem = this.selectedContent[i]
-          let delIndex = delItem.sort - 1
-          this.caseEntities.splice(delIndex, 1)
-          // console.log(JSON.stringify(copyCaseContent))
-        }
-        // this.caseContent = copyCaseContent
-        for (let i = 0; i < this.caseEntities.length; i++) {
-          this.caseEntities[i]['sort'] = i + 1
-        }
-        // console.log(this.caseContent)
-        // 用例内容变化
-        this.caseChange = true
-        this.selectedContent = []
-        this.initKeywordParams()
-      }
+      if (document.hasFocus()) return
+      this.caseEntities = this.caseEntities.filter((item1) => !this.selectedEntities.some((item2) => item1.id === item2.id))
+      this.$store.commit('entity/SET_CASE_CHANGE', true)
+      this.$store.commit('entity/SET_SELECTED_ENTITIES', [])
     },
     getKeywordAttrByEntityId(attr, kid) {
       return this.keywordDict[kid][attr]
@@ -180,7 +159,6 @@ export default {
   height: calc(100% - 49px);
   position: relative;
   box-sizing: border-box;
-  border-bottom: 1px solid #dcdcdc;
   .entity-grid {
     width:100%;
     height:100%;
