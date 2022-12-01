@@ -1,6 +1,6 @@
 <template>
-  <div class="case-entity" id="entity" @click.right="cancelCopyEntities" @click.left="pasteEntities">
-    <div class="entity-grid">
+  <div class="case-entity" id="entity">
+    <div class="entity-grid" @click.left="clickGrid">
       <div class="small-grid" v-for="n in 100" :key="n">
         <span>{{n}}</span>
       </div>
@@ -13,10 +13,11 @@
       class="entity-info"
       ghost-class="ghost"
       chosen-class="chosen"
-      v-on:keyup.delete="deleteEntities"
+      @add="entityChange"
+      @update="entityChange"
     >
       <template #item="{ element, index }">
-        <div class="single-entity" :style="entityStyle(element)" @click="selectEntity(element, index)">
+        <div class="single-entity" :style="entityStyle(element)" @click="clickEntity(element, index)">
           <dl>
             <dt>
               <img :src="getKeywordAttrByEntityId('image', element['keyword_id'])" alt="">
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+import { guid } from '@/utils/other'
+
 export default {
   name: 'CaseEntity',
   data() {
@@ -41,19 +44,22 @@ export default {
         put: true,
       },
       caseEntities: [],
-      selectedEntities: [],
       keyboardOnKey: '',
-      isCopyFlag: false,
-      copiedEntities: [],
     }
   },
   watch: {
-    nodeData: {
-      handler() {
+    '$store.state.tree.nodeData': {
+      handler(value) {
         const nodeType = this.$store.state.tree.detailType
         if (nodeType === 1) {
-          this.caseEntities = this.nodeData
+          this.caseEntities = value
         }
+      },
+      deep: true,
+    },
+    caseEntities: {
+      handler() {
+        this.$store.commit('entity/SET_CASE_ENTITIES', this.caseEntities)
       },
       deep: true,
     }
@@ -61,10 +67,10 @@ export default {
   created() {
     this.addKeyboardEvent()
   },
+  unmounted() {
+    this.removeKeyboardEvent()
+  },
   computed: {
-    nodeData() {
-      return this.$store.state.tree.nodeData
-    },
     keywordDict() {
       return this.$store.state.keyword.keywordsObject
     },
@@ -86,66 +92,80 @@ export default {
           case 17:
             that.keyboardOnKey = status ? 'ctrl' : ''
             break
+          case 46:
+            if (status) {
+              that.deleteEntities()
+            }
+            break
         }
+      }
+    },
+    removeKeyboardEvent() {
+      document.onkeydown = null
+      document.onkeyup = null
+    },
+    entityChange() {
+      this.$store.commit('entity/SET_ENTITY_CHANGE', true)
+    },
+    clickGrid() {
+      console.log('点击小格子')
+      const copiedEntities = this.$store.state.entity.copiedEntities
+      if (copiedEntities.length === 0) return
+      this.pasteEntities(this.caseEntities.length)
+    },
+    clickEntity(entityItem, index) {
+      const copiedEntities = this.$store.state.entity.copiedEntities
+      if (copiedEntities.length !== 0) {
+        this.pasteEntities(index)
+      } else {
+        this.selectEntity(entityItem, index)
       }
     },
     selectEntity(entityItem, index) {
-      if (this.isCopyFlag) {
-        this.pasteEntities(index)
-      } else {
-        if (this.keyboardOnKey === 'shift') {
-          if (this.selectedEntities !== []) {
-            let startIndex = this.caseEntities.findIndex((item) => item['uuid'] === this.selectedEntities[0]['uuid'])
-            this.selectedEntities = this.caseEntities.slice(startIndex, index+1)
-          }
-        } else if (this.keyboardOnKey === 'ctrl') {
-          if (this.selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) === -1) {
-            this.selectedEntities.push(entityItem)
-          }
+      let selectedEntities = this.$store.state.entity.selectedEntities
+      if (this.keyboardOnKey === 'shift') {
+        if (selectedEntities.length === 0) {
+          selectedEntities = [entityItem]
         } else {
-          this.selectedEntities = [entityItem]
+          let startIndex = this.caseEntities.findIndex((item) => item['uuid'] === selectedEntities[0]['uuid'])
+          selectedEntities = this.caseEntities.slice(startIndex, index+1)
         }
-        this.$store.commit('entity/SET_CURRENT_ENTITY', entityItem)
+      } else if (this.keyboardOnKey === 'ctrl') {
+        if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) === -1) {
+          selectedEntities.push(entityItem)
+        }
+      } else {
+        selectedEntities = [entityItem]
       }
-    },
-    copyEntities() {
-      const selectedEntities = this.$store.state.entity.selectedEntities
-      if (selectedEntities !== []) {
-        this.copiedEntities = JSON.parse(JSON.stringify(selectedEntities))
-        this.$store.commit('entity/SET_CASE_CHANGE', true)
-        this.$store.commit('entity/SET_SELECTED_ENTITIES', [])
-        const body = document.querySelector('#case-entity')
-        body.style.cursor= 'copy'
-        body.oncontextmenu = this.cancelCopyEntities
-        this.$message.success('复制成功，编辑区域内右键取消')
-      }
+      this.$store.commit('entity/SET_CURRENT_ENTITY', entityItem)
+      this.$store.commit('entity/SET_SELECTED_ENTITIES', selectedEntities)
     },
     pasteEntities(index) {
-      this.copiedEntities.unshift(index, 0)
-      Array.prototype.splice.apply(this.caseEntities, this.copyEntities)
-      this.isCopyFlag = false
-      this.copiedEntities = []
-      this.$store.commit('entity/SET_CASE_CHANGE', true)
-      const body = document.querySelector('#case-entity')
-      body.style.cursor= 'auto'
-    },
-    cancelCopyEntities() {
-      this.isCopyFlag = false
-      this.copiedEntities = []
-      const body = document.querySelector('#case-entity')
+      let copiedEntities = this.$store.state.entity.selectedEntities
+      copiedEntities = [].concat(JSON.parse(JSON.stringify(copiedEntities)))
+      for (let i = 0; i < copiedEntities.length; i++) {
+        copiedEntities[i]['uuid'] = guid()
+      }
+      copiedEntities.unshift(index, 0)
+      Array.prototype.splice.apply(this.caseEntities, copiedEntities)
+      this.$store.commit('entity/SET_COPY_ENTITIES', [])
+      const body = document.querySelector('#entity')
       body.style.cursor= 'auto'
     },
     deleteEntities() {
-      if (document.hasFocus()) return
-      this.caseEntities = this.caseEntities.filter((item1) => !this.selectedEntities.some((item2) => item1.id === item2.id))
-      this.$store.commit('entity/SET_CASE_CHANGE', true)
-      this.$store.commit('entity/SET_SELECTED_ENTITIES', [])
+      for (let ele of document.querySelectorAll('input')) {
+        if (ele === document.activeElement) return
+      }
+      const selectedEntities = this.$store.state.entity.selectedEntities
+      this.caseEntities = this.caseEntities.filter((item1) => !selectedEntities.some((item2) => item1.id === item2.id))
+      this.$store.commit('entity/SET_CURRENT_ENTITY', {})
     },
     getKeywordAttrByEntityId(attr, kid) {
       return this.keywordDict[kid][attr]
     },
     entityStyle(entityItem) {
-      if (this.selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) !== -1) {
+      const selectedEntities = this.$store.state.entity.selectedEntities
+      if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) !== -1) {
         return 'background: #dfe1e5'
       }
     }
@@ -163,6 +183,7 @@ export default {
     width:100%;
     height:100%;
     padding-left: 10px;
+    user-select: none;
     .small-grid {
       float: left;
       width: 104px;
@@ -186,8 +207,8 @@ export default {
     }
   }
   .entity-info {
-    height: 100%;
-    width: 100%;
+    //height: 100%;
+    //width: 100%;
     user-select: none;
     position: absolute;
     padding-left: 10px;

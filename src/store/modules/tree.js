@@ -17,8 +17,8 @@ const mutations = {
   SET_HIDE_TREE: (state, isHide) => {
     state.hideTree = isHide
   },
-  SET_DETAIL_TYPE: (state, dtType) => {
-    state.detailType = dtType
+  SET_DETAIL_TYPE: (state, typeNum) => {
+    state.detailType = typeNum
   },
   SET_NODE_DATA: (state, data) => {
     state.nodeData = data

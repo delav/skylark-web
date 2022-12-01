@@ -99,6 +99,10 @@ export default {
       return ''
     },
     getEntityArgs(entity) {
+      if (JSON.stringify(entity) === '{}') {
+        Object.assign(this.$data, this.$options.data())
+        return
+      }
       this.inputType = this.getRelatedKeywordAttrById('input_type', entity['keyword_id'])
       if (this.inputType === 0) {
         // not input args
