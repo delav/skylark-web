@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
           <template #header>
-            <el-button size="small" type="primary" @click="showNewEnvDialog=true">新建变量</el-button>
+            <el-button size="small" type="primary" @click="showVarDialog">新建变量</el-button>
           </template>
           <template #default="scope">
             <el-button-group>
@@ -158,18 +158,21 @@ export default {
         this.changeVariableList(this.defaultEvn)
       })
     },
+    showVarDialog() {
+      if (this.projectId === '') return
+      this.showNewEnvDialog = true
+    },
     createEnvVariable() {
       this.$refs['ruleForm'].validate((valid) => {
         if (!valid) {
           return
         }
-        const proId = this.$store.state.project.projectId
-        if (!proId) {
+        if (this.projectId === '') {
           this.$message.warning('请先选择项目')
           return
         }
         const defaultFields = {
-          'module_id': proId,
+          'module_id': this.projectId,
           'module_type': 0,
           'name': '',
           'value': '',
@@ -188,7 +191,6 @@ export default {
           return
         }
         $.extend(true,defaultFields, this.variableForm)
-        console.log(defaultFields)
         createVariable(defaultFields).then(response => {
           this.envVariables.push(this.addEditor(response.data))
           this.showNewEnvDialog = false
@@ -226,6 +228,7 @@ export default {
       const fromEnvList = this.allVariables[fromEnv]
       this.envVariables = []
       this.allVariables[toEnv] = []
+      if (fromEnvList === undefined) return
       for (let i = 0; i < fromEnvList.length; i++) {
         fromEnvList[i]['env'] = toEnv
         createVariable(fromEnvList[i]).then(response => {

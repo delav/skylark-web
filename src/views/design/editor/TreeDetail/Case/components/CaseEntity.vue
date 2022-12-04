@@ -1,12 +1,16 @@
 <template>
   <div class="case-entity" id="entity">
-    <div class="entity-grid" @click.left="clickGrid">
+    <div
+      id="et-grid"
+      class="entity-grid"
+      @click.left="clickGrid"
+    >
       <div class="small-grid" v-for="n in 100" :key="n">
         <span>{{n}}</span>
       </div>
     </div>
     <draggable
-      id="case-entity"
+      id="et-case"
       v-model="caseEntities"
       :group="dragSetting"
       item-key="id"
@@ -33,6 +37,8 @@
 
 <script>
 import { guid } from '@/utils/other'
+import { deepCopy } from '@/utils/dcopy'
+import { setCursorStyle } from '@/utils/hover'
 
 export default {
   name: 'CaseEntity',
@@ -48,7 +54,7 @@ export default {
     }
   },
   watch: {
-    '$store.state.tree.nodeData': {
+    '$store.state.tree.nodeDetail': {
       handler(value) {
         const nodeType = this.$store.state.tree.detailType
         if (nodeType === 1) {
@@ -94,7 +100,7 @@ export default {
             break
           case 46:
             if (status) {
-              that.deleteEntities()
+              that.deleteEntity()
             }
             break
         }
@@ -111,12 +117,12 @@ export default {
       console.log('点击小格子')
       const copiedEntities = this.$store.state.entity.copiedEntities
       if (copiedEntities.length === 0) return
-      this.pasteEntities(this.caseEntities.length)
+      this.pasteEntity(copiedEntities, this.caseEntities.length)
     },
     clickEntity(entityItem, index) {
       const copiedEntities = this.$store.state.entity.copiedEntities
       if (copiedEntities.length !== 0) {
-        this.pasteEntities(index)
+        this.pasteEntity(copiedEntities, index)
       } else {
         this.selectEntity(entityItem, index)
       }
@@ -127,11 +133,14 @@ export default {
         if (selectedEntities.length === 0) {
           selectedEntities = [entityItem]
         } else {
-          let startIndex = this.caseEntities.findIndex((item) => item['uuid'] === selectedEntities[0]['uuid'])
+          let startIndex = this.caseEntities.findIndex((item) => item.uuid === selectedEntities[0].uuid)
+          if (startIndex > index) {
+            [index, startIndex] = [startIndex, index]
+          }
           selectedEntities = this.caseEntities.slice(startIndex, index+1)
         }
       } else if (this.keyboardOnKey === 'ctrl') {
-        if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) === -1) {
+        if (selectedEntities.findIndex((item) => item.uuid === entityItem.uuid) === -1) {
           selectedEntities.push(entityItem)
         }
       } else {
@@ -140,25 +149,26 @@ export default {
       this.$store.commit('entity/SET_CURRENT_ENTITY', entityItem)
       this.$store.commit('entity/SET_SELECTED_ENTITIES', selectedEntities)
     },
-    pasteEntities(index) {
-      let copiedEntities = this.$store.state.entity.selectedEntities
-      copiedEntities = [].concat(JSON.parse(JSON.stringify(copiedEntities)))
+    pasteEntity(copiedEntities, index) {
+      copiedEntities = deepCopy(copiedEntities)
       for (let i = 0; i < copiedEntities.length; i++) {
         copiedEntities[i]['uuid'] = guid()
       }
       copiedEntities.unshift(index, 0)
       Array.prototype.splice.apply(this.caseEntities, copiedEntities)
+      this.entityChange()
       this.$store.commit('entity/SET_COPY_ENTITIES', [])
-      const body = document.querySelector('#entity')
-      body.style.cursor= 'auto'
+      setCursorStyle(['entity'], 'auto')
     },
-    deleteEntities() {
+    deleteEntity() {
       for (let ele of document.querySelectorAll('input')) {
         if (ele === document.activeElement) return
       }
       const selectedEntities = this.$store.state.entity.selectedEntities
-      this.caseEntities = this.caseEntities.filter((item1) => !selectedEntities.some((item2) => item1.id === item2.id))
+      this.caseEntities = this.caseEntities.filter((item1) => !selectedEntities.some((item2) => item1.uuid === item2.uuid))
+      this.entityChange()
       this.$store.commit('entity/SET_CURRENT_ENTITY', {})
+      this.$store.commit('entity/SET_SELECTED_ENTITIES', [])
     },
     getKeywordAttrByEntityId(attr, kid) {
       return this.keywordDict[kid][attr]

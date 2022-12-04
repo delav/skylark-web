@@ -25,8 +25,23 @@
 }
 
 .vue-giant-tree .button.chk {
-  width: 13px !important;
-  height: 13px !important;
+  //width: 13px !important;
+  //height: 13px !important;
+}
+
+.vue-giant-tree .button.checkbox_true_disable,
+.vue-giant-tree .button.checkbox_true_full,
+.vue-giant-tree .button.checkbox_true_full_focus,
+.vue-giant-tree .button.checkbox_true_part,
+.vue-giant-tree .button.checkbox_true_part_focus {
+  border-color: $mainColor !important;
+  background-color: $mainColor !important;
+}
+
+.vue-giant-tree .button.checkbox_true_part:after,
+.vue-giant-tree .button.checkbox_true_part_focus:after {
+  left: 1px !important;
+  width: 10px !important;
 }
 
 .vue-giant-tree li a {

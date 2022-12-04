@@ -4,7 +4,7 @@ import {fetchProjectList} from '@/api/project'
 
 const getProjectState = () => {
   return {
-    projectId: 0,
+    projectId: '',
     envList: [],
     projectList: [],
     currentEnv: '',

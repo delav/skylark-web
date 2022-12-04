@@ -15,7 +15,15 @@ export function addSvgHover(idPrefix, tId, className, title=null, callback) {
   }
 }
 
-export function formatString(str, data) {
+export function setCursorStyle(idList, cursorStyle) {
+  for (let i = 0; i < idList.length; i++) {
+    const selector = '#' + idList[i]
+    const item = document.querySelector(selector)
+    item.style.cursor= cursorStyle
+  }
+}
+
+function formatString(str, data) {
   if (!str || data === undefined) {
     return str
   }
@@ -36,3 +44,5 @@ export function formatString(str, data) {
   }
   return str
 }
+
+

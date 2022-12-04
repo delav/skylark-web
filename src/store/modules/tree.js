@@ -4,7 +4,9 @@ const getTreeState = () => {
   return {
     hideTree: false,
     detailType: 1,
-    nodeData: {}
+    selectedNodeId: '',
+    nodeDetail: [],
+    checkedNodes: []
   }
 }
 
@@ -17,11 +19,17 @@ const mutations = {
   SET_HIDE_TREE: (state, isHide) => {
     state.hideTree = isHide
   },
+  SET_SELECT_NODE_ID: (state, nid) => {
+    state.selectedNodeId = nid
+  },
   SET_DETAIL_TYPE: (state, typeNum) => {
     state.detailType = typeNum
   },
-  SET_NODE_DATA: (state, data) => {
-    state.nodeData = data
+  SET_NODE_DETAIL: (state, data) => {
+    state.nodeDetail = data
+  },
+  SET_CHECKED_NODES: (state, nodes) => {
+    state.checkedNodes = nodes
   }
 }
 

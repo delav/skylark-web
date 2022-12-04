@@ -8,7 +8,7 @@ export function fetchEntities(caseId) {
   })
 }
 
-export function saveEntities(data) {
+export function updateEntities(data) {
   return request({
     url: '/case-entity',
     method: 'post',

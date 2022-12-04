@@ -1,8 +1,7 @@
 const getExecuteState = () => {
   return {
-    canRun: false,
-    canStop: false,
-    seeLog: false,
+    isRunning: false,
+    runFinish: false,
   }
 }
 
@@ -12,14 +11,11 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getExecuteState())
   },
-  SET_CAN_RUN: (state, runFlag) => {
-    state.canRun = runFlag
+  SET_RUNNING: (state, runFlag) => {
+    state.isRunning = runFlag
   },
-  SET_CAN_STOP: (state, stopFlag) => {
-    state.canStop = stopFlag
-  },
-  SET_SEE_LOG: (state, seeFlag) => {
-    state.seeLog = seeFlag
+  SET_RUN_FINISH: (state, finFlag) => {
+    state.runFinish = finFlag
   }
 }
 

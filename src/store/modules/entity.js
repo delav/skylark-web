@@ -1,3 +1,7 @@
+import { deepCopy } from '@/utils/dcopy'
+import { fetchEntities } from '@/api/entity'
+import { guid } from '@/utils/other'
+
 const getEntityState = () => {
   return {
     caseEntities: [],
@@ -12,9 +16,7 @@ const state = getEntityState()
 
 const mutations = {
   RESET_STATE: (state) => {
-    const cpEntities = [].concat(JSON.parse(JSON.stringify(state.copiedEntities)))
     Object.assign(state, getEntityState())
-    state.copiedEntities = cpEntities
   },
   SET_CASE_ENTITIES: (state, entities) => {
     state.caseEntities = entities
@@ -34,6 +36,28 @@ const mutations = {
 }
 
 const actions = {
+
+  getEntities({ commit, state }, caseId) {
+    if (state.copiedEntities.length === 0) {
+      commit('RESET_STATE')
+    } else {
+      const cpEntities = deepCopy(state.copiedEntities)
+      commit('RESET_STATE')
+      state.copiedEntities = cpEntities
+    }
+    return new Promise((resolve, reject) => {
+      fetchEntities(caseId).then(response => {
+        const entityList = response.data
+        for (let i = 0; i < entityList.length; i++) {
+          entityList[i]['uuid'] = guid()
+        }
+        commit('tree/SET_NODE_DETAIL', entityList, {root: true})
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  }
 }
 
 export default {
