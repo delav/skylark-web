@@ -99,11 +99,11 @@ export default {
     log() {},
     saveEntity() {
       const postData = {
-        'case_id': this.$store.state.tree.selectedNodeId,
+        'case_id': this.$store.state.tree.selectedNode['mid'],
         'entity_list': this.$store.state.entity.caseEntities
       }
       updateEntities(postData).then(() => {
-        this.$message.success('保存成功')
+        // this.$message.success('保存成功')
         this.$store.commit('entity/SET_ENTITY_CHANGE', false)
       })
     },
@@ -111,7 +111,7 @@ export default {
       const selectedEntities = this.$store.state.entity.selectedEntities
       if (selectedEntities.length === 0) return
       this.$store.commit('entity/SET_COPY_ENTITIES', selectedEntities)
-      setCursorStyle(['entity'], 'copy')
+      setCursorStyle(['et-case'], 'copy')
       const body = document.querySelector('#entity')
       body.oncontextmenu = this.cancelCopyEntity
       this.$message.success('复制成功，单击鼠标右键取消')
@@ -133,7 +133,7 @@ export default {
       const copiedEntities = this.$store.state.entity.copiedEntities
       if (copiedEntities.length === 0) return
       this.$store.commit('entity/SET_COPY_ENTITIES', [])
-      setCursorStyle(['entity'], 'auto')
+      setCursorStyle(['et-case'], 'auto')
     },
     pushProject() {},
   }

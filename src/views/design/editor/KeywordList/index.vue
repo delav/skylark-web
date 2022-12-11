@@ -23,10 +23,13 @@
               :list="group['keywords']"
               :group="dragSetting"
               :clone="cloneKeyword"
+              ghost-class="ghost"
+              drag-class="drag"
+              chosen-class="chosen"
               item-key="id"
             >
               <template #item="{ element }">
-                <keyword-item :keyword-data="element" v-on:dblclick="appendKeywordToCase"/>
+                <keyword-item :keyword-data="element" />
               </template>
             </draggable>
           </el-collapse-item>
@@ -109,11 +112,10 @@ export default {
         'keyword_id': original['id'],
         'keyword_type': 1,
         'input_args': '',
-        'output_args': original['input_params'],
+        'output_args': original['output_params'],
         'uuid': guid()
       }
     },
-    appendKeywordToCase() {},
     hideOrShowKeywordArea(isHide) {
       this.$store.commit('keyword/SET_HIDE_KEYWORD', isHide)
       const left = document.getElementById('left-and-middle')
@@ -161,5 +163,43 @@ $foldExpandIconSize: 32px;
     color: $foldIconColor;
     cursor: pointer;
   }
+}
+/deep/ .el-collapse-item__content {
+  border-top: 1px solid #000;
+  padding-bottom: 15px
+}
+.ghost {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  .keyword-item {
+    width: 100%;
+    height: 100%;
+    .item-image {
+      padding: 5px 0;
+    }
+    .item-text {
+      width: 140px;
+      margin-right: 15px;
+      .text-name {
+        font-size: 14px;
+        margin: 0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+    .item-tip {
+      display: none !important;
+    }
+  }
+}
+.chosen {
+  background-color: #7a869a;
+}
+.drag {
+  width: 100px;
+  height: 100px;
+  background-color: #0052cc;
 }
 </style>

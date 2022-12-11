@@ -8,3 +8,10 @@ export function fetchProjectList(page, size) {
   })
 }
 
+export function updateProject(pId, data) {
+  return request({
+    url: `/project/${pId}`,
+    method: 'patch',
+    data
+  })
+}

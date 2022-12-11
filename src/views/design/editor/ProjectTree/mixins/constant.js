@@ -1,3 +1,5 @@
+const RootPId = 0
+
 const NodeType = {
   TESTCASE: 0,
   RESOURCE: 1,
@@ -25,6 +27,7 @@ const DetailType = {
 }
 
 export default {
+  RootPId,
   NodeType,
   NodeDesc,
   ActionType,

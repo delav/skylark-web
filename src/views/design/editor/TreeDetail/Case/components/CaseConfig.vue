@@ -6,12 +6,7 @@
           <span class="collapse-title"></span>
         </template>
         <div>
-          Consistent with real life: in line with the process and logic of real
-          life, and comply with languages and habits that the users are used to;
-        </div>
-        <div>
-          Consistent within interface: all elements should be consistent, such
-          as: design style, icons and texts, position of elements, etc.
+          {{caseInfo}}
         </div>
       </el-collapse-item>
     </el-collapse>
@@ -20,7 +15,20 @@
 
 <script>
 export default {
-  name: 'CaseConfig'
+  name: 'CaseConfig',
+  data() {
+    return {
+      caseInfo: {}
+    }
+  },
+  watch: {
+    '$store.state.tree.selectedNode': {
+      handler() {
+        this.caseInfo = this.$store.state.tree.selectedNode.meta
+      },
+      deep: true,
+    },
+  }
 }
 </script>
 

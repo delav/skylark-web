@@ -1,8 +1,8 @@
 <template>
   <div class="tree-detail">
-    <case v-if="detailType===1"></case>
-    <category v-else-if="detailType===2"></category>
-    <file v-else-if="detailType===3"></file>
+    <case v-if="isCase(detailType)"></case>
+    <category v-else-if="isCategory(detailType)"></category>
+    <file v-else-if="isFile(detailType)"></file>
   </div>
 </template>
 
@@ -10,6 +10,7 @@
 import Case from './Case'
 import Category from './Category'
 import File from './File'
+import CONSTANT from '../ProjectTree/mixins/constant'
 
 export default {
   name: 'TreeDetail',
@@ -21,6 +22,22 @@ export default {
   computed: {
     detailType() {
       return this.$store.state.tree.detailType
+    }
+  },
+  methods: {
+    isCase(type) {
+      return type === CONSTANT.DetailType.CASE
+    },
+    isCategory(type) {
+      const category = [
+        CONSTANT.DetailType.ROOT,
+        CONSTANT.DetailType.DIR,
+        CONSTANT.DetailType.SUITE
+      ]
+      return category.indexOf(type) !== -1
+    },
+    isFile(type) {
+      return type === CONSTANT.DetailType.FILE
     }
   }
 }

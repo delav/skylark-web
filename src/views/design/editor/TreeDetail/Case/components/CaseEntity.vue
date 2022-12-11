@@ -1,10 +1,6 @@
 <template>
   <div class="case-entity" id="entity">
-    <div
-      id="et-grid"
-      class="entity-grid"
-      @click.left="clickGrid"
-    >
+    <div id="et-grid" class="entity-grid">
       <div class="small-grid" v-for="n in 100" :key="n">
         <span>{{n}}</span>
       </div>
@@ -14,14 +10,14 @@
       v-model="caseEntities"
       :group="dragSetting"
       item-key="id"
+      animation="300"
       class="entity-info"
-      ghost-class="ghost"
-      chosen-class="chosen"
       @add="entityChange"
       @update="entityChange"
+      @click.left="clickOutOfEntity"
     >
       <template #item="{ element, index }">
-        <div class="single-entity" :style="entityStyle(element)" @click="clickEntity(element, index)">
+        <div id="et-single" class="single-entity" :style="entityStyle(element)" @click="clickEntity(element, index)">
           <dl>
             <dt>
               <img :src="getKeywordAttrByEntityId('image', element['keyword_id'])" alt="">
@@ -54,12 +50,9 @@ export default {
     }
   },
   watch: {
-    '$store.state.tree.nodeDetail': {
-      handler(value) {
-        const nodeType = this.$store.state.tree.detailType
-        if (nodeType === 1) {
-          this.caseEntities = value
-        }
+    '$store.state.tree.selectedNode': {
+      handler() {
+        this.caseEntities = this.$store.state.entity.initEntities
       },
       deep: true,
     },
@@ -113,8 +106,7 @@ export default {
     entityChange() {
       this.$store.commit('entity/SET_ENTITY_CHANGE', true)
     },
-    clickGrid() {
-      console.log('点击小格子')
+    clickOutOfEntity() {
       const copiedEntities = this.$store.state.entity.copiedEntities
       if (copiedEntities.length === 0) return
       this.pasteEntity(copiedEntities, this.caseEntities.length)
@@ -158,7 +150,7 @@ export default {
       Array.prototype.splice.apply(this.caseEntities, copiedEntities)
       this.entityChange()
       this.$store.commit('entity/SET_COPY_ENTITIES', [])
-      setCursorStyle(['entity'], 'auto')
+      setCursorStyle(['et-case'], 'auto')
     },
     deleteEntity() {
       for (let ele of document.querySelectorAll('input')) {
@@ -184,24 +176,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$gridWidth: 104px;
+$gridHeight: 104px;
+
 .case-entity {
   width: 100%;
   height: calc(100% - 49px);
   position: relative;
   box-sizing: border-box;
   .entity-grid {
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     padding-left: 10px;
     user-select: none;
     .small-grid {
       float: left;
-      width: 104px;
-      height: 104px;
+      width: $gridWidth;
+      height: $gridHeight;
       border: 1px dashed #D3D3D3;
       //border-bottom: 2px dashed #D3D3D3;
       text-align: center;
-      line-height: 102px;
+      line-height: calc(#{$gridHeight} - 2px);
       position: relative;
       color: #A9A9A9;
       i{
@@ -217,8 +212,8 @@ export default {
     }
   }
   .entity-info {
-    //height: 100%;
-    //width: 100%;
+    height: 100%;
+    width: 100%;
     user-select: none;
     position: absolute;
     padding-left: 10px;
@@ -227,8 +222,8 @@ export default {
     z-index: 10;
     font-size: 0;
     .single-entity {
-      width: 100px;
-      height: 100px;
+      width: calc(#{$gridWidth} - 4px);
+      height: calc(#{$gridHeight} - 4px);
       margin: 2px;
       overflow: hidden;
       display: inline-block;
@@ -252,12 +247,6 @@ export default {
         }
       }
     }
-  }
-  .ghost {
-    background-color: #008489;
-  }
-  .chosen {
-    background-color: #9a6e3a;
   }
 }
 </style>

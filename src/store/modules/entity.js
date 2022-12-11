@@ -4,6 +4,7 @@ import { guid } from '@/utils/other'
 
 const getEntityState = () => {
   return {
+    initEntities: [],
     caseEntities: [],
     currentEntity: {},
     entityChange: false,
@@ -17,6 +18,9 @@ const state = getEntityState()
 const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getEntityState())
+  },
+  SER_INIT_ENTITIES: (state, entities) => {
+    state.initEntities = entities
   },
   SET_CASE_ENTITIES: (state, entities) => {
     state.caseEntities = entities
@@ -51,7 +55,7 @@ const actions = {
         for (let i = 0; i < entityList.length; i++) {
           entityList[i]['uuid'] = guid()
         }
-        commit('tree/SET_NODE_DETAIL', entityList, {root: true})
+        commit('SER_INIT_ENTITIES', entityList)
         resolve()
       }).catch(error => {
         reject(error)

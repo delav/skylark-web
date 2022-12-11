@@ -2,13 +2,13 @@ import CONSTANT from './constant'
 import {deepCopy} from '@/utils/dcopy'
 import {guid} from '@/utils/other'
 
-const rootPid = 0
-const baseNode = {'id': 1, 'pid': 0, 'name': 'DEFAULT', 'desc': null, 'type': 0, 'open': false, 'nocheck': false, 'isParent': true}
+const caseType = 0
+const baseNode = {id: 1, pid: 0, name: 'DEFAULT', desc: null, type: 0, open: false, nocheck: false, isParent: true, meta: {}}
 
 function fillNode(data) {
   const node = deepCopy(baseNode)
   Object.assign(node, data)
-  if (node.type !== 0) {
+  if (node.type !== caseType) {
     node.nocheck = true
   }
   if (node.desc === CONSTANT.NodeDesc.CASE) {
@@ -22,24 +22,25 @@ export function formatBaseNodes(dataObject) {
   if (!('root' in dataObject) || !('dirs' in dataObject)) {
     return treeNodes
   }
-  const rootId = guid()
-  const project = dataObject['root']
-  const rootNode = fillNode(
-    {
-      mid: project['id'],
-      id: rootId,
-      pid: rootPid,
-      name: project['name'],
-      desc: CONSTANT.NodeDesc.ROOT,
-      type: null
-    }
-  )
-  treeNodes.push(rootNode)
+  // project root node not use
+  // const rootId = guid()
+  // const project = dataObject['root']
+  // const rootNode = fillNode(
+  //   {
+  //     mid: project['id'],
+  //     id: rootId,
+  //     pid: CONSTANT.RootId,
+  //     name: project['name'],
+  //     desc: CONSTANT.NodeDesc.ROOT,
+  //     type: null
+  //   }
+  // )
+  // treeNodes.push(rootNode)
   for (let i = 0; i < dataObject['dirs'].length; i++) {
-    const dirNode = handlerDirNode(dataObject['dirs'][i], rootId)
+    const dirNode = handlerNode(dataObject['dirs'][i], CONSTANT.RootPId, CONSTANT.NodeDesc.DIR)
     treeNodes.push(dirNode)
   }
-  return treeNodes
+  return treeNodes.sort(sortBy('type'))
 }
 
 export function formatDirNodes(dataObject, parentId) {
@@ -48,11 +49,11 @@ export function formatDirNodes(dataObject, parentId) {
     return treeNodes
   }
   for (let i = 0; i < dataObject['dirs'].length; i++) {
-    const dirNode = handlerDirNode(dataObject['dirs'][i], parentId)
+    const dirNode = handlerNode(dataObject['dirs'][i], parentId, CONSTANT.NodeDesc.DIR)
     treeNodes.push(dirNode)
   }
   for (let j = 0; j < dataObject['suites'].length; j++) {
-    const suiteNode = handlerSuiteNode(dataObject['suites'][j], parentId)
+    const suiteNode = handlerNode(dataObject['suites'][j], parentId, CONSTANT.NodeDesc.SUITE)
     treeNodes.push(suiteNode)
   }
   return treeNodes
@@ -64,47 +65,28 @@ export function formatSuiteNodes(dataObject, parentId) {
     return treeNodes
   }
   for (let i = 0; i < dataObject['cases'].length; i++) {
-    const caseNode = handlerCaseNode(dataObject['cases'][i], parentId)
+    const caseNode = handlerNode(dataObject['cases'][i], parentId, CONSTANT.NodeDesc.CASE)
     treeNodes.push(caseNode)
   }
   return treeNodes
 }
 
-export function handlerDirNode(dirObject, parentId) {
+export function handlerNode(obj, parentId, nodeDesc) {
   return fillNode(
     {
-      mid: dirObject['id'],
+      mid: obj['id'],
       id: guid(),
       pid: parentId,
-      name: dirObject['dir_name'],
-      desc: CONSTANT.NodeDesc.DIR,
-      type: dirObject['dir_type']
+      name: obj['name'],
+      desc: nodeDesc,
+      type: obj['category'],
+      meta: obj
     }
   )
 }
 
-export function handlerSuiteNode(suiteObject, parentId) {
-  return fillNode(
-    {
-      mid: suiteObject['id'],
-      id: guid(),
-      pid: parentId,
-      name: suiteObject['suite_name'],
-      desc: CONSTANT.NodeDesc.SUITE,
-      type: suiteObject['suite_type']
-    }
-  )
-}
-
-export function handlerCaseNode(caseObject, parentId) {
-  return fillNode(
-    {
-      mid: caseObject['id'],
-      id: guid(),
-      pid: parentId,
-      name: caseObject['case_name'],
-      desc: CONSTANT.NodeDesc.CASE,
-      type: caseObject['case_type']
-    }
-  )
+function sortBy (field) {
+  return (x, y) => {
+    return x[field] - y[field]
+  }
 }
