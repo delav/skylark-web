@@ -62,7 +62,7 @@ service.interceptors.response.use(
         status = true
         clearTimeout(timeout)
       }, 1500)
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.msg || 'Error'))
     } else {
       return res
     }

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import constant from '@/views/design/editor/ProjectTree/mixins/constant'
+import constant from '@/constans/node'
 import { guid } from '@/utils/other'
 import { deepCopy } from '@/utils/dcopy'
 

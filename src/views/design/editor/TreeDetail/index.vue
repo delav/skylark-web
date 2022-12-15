@@ -10,7 +10,7 @@
 import Case from './Case'
 import Category from './Category'
 import File from './File'
-import CONSTANT from '../ProjectTree/mixins/constant'
+import NODE from '@/constans/node'
 
 export default {
   name: 'TreeDetail',
@@ -26,18 +26,18 @@ export default {
   },
   methods: {
     isCase(type) {
-      return type === CONSTANT.DetailType.CASE
+      return type === NODE.DetailType.CASE
     },
     isCategory(type) {
       const category = [
-        CONSTANT.DetailType.ROOT,
-        CONSTANT.DetailType.DIR,
-        CONSTANT.DetailType.SUITE
+        NODE.DetailType.ROOT,
+        NODE.DetailType.DIR,
+        NODE.DetailType.SUITE
       ]
       return category.indexOf(type) !== -1
     },
     isFile(type) {
-      return type === CONSTANT.DetailType.FILE
+      return type === NODE.DetailType.FILE
     }
   }
 }
