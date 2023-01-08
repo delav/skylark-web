@@ -87,8 +87,8 @@ export default {
       }
     },
     removeMouseEvent() {
-      document.getElementById('entity').onmousedown = null
       document.oncontextmenu = function(){ return true }
+      document.onmousedown = function () { return true }
     },
     getCurrentEnv(envId) {
       const envList = this.$store.state.project.envList
@@ -145,7 +145,9 @@ export default {
         // this.getProgress(buildId)
       })
     },
-    stopBuild() {},
+    stopBuild() {
+      this.$store.commit('action/SET_RUNNING', false)
+    },
     log() {},
     saveEntity() {
       const postData = {
@@ -162,8 +164,8 @@ export default {
       if (selectedEntities.length === 0) return
       this.$store.commit('entity/SET_COPY_ENTITIES', selectedEntities)
       setCursorStyle(['et-case'], 'copy')
-      const body = document.querySelector('#entity')
-      body.oncontextmenu = this.cancelCopyEntity
+      // const body = document.querySelector('#entity')
+      document.oncontextmenu = this.cancelCopyEntity
       this.$message.success('复制成功，单击鼠标右键取消')
     },
     deleteEntity() {

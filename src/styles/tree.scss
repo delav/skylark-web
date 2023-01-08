@@ -15,8 +15,8 @@
 }
 
 .vue-giant-tree .button::before {
-  top: 4px !important;
-  border-color: transparent transparent transparent #a8abb2 !important;
+  top: 5px !important;
+  //border-color: transparent transparent transparent #a8abb2 !important;
 }
 
 .vue-giant-tree .button.switch {
@@ -52,3 +52,21 @@
   border-radius: 1px !important;
   background-color: #dfe1e5 !important;
 }
+
+.vue-giant-tree .button.bottom_close:before,
+.vue-giant-tree .button.bottom_open:before,
+.vue-giant-tree .button.center_close:before,
+.vue-giant-tree .button.center_open:before,
+.vue-giant-tree .button.noline_close:before,
+.vue-giant-tree .button.noline_open:before,
+.vue-giant-tree .button.root_close:before,
+.vue-giant-tree .button.root_open:before,
+.vue-giant-tree .button.roots_close:before,
+.vue-giant-tree .button.roots_open:before {
+  width: 0;
+  height: 0;
+  border-left: 6px solid #a8abb2 !important;
+  border-top: 5.2px solid transparent !important;
+  border-bottom: 5.2px solid transparent !important;
+}
+

@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import NODE from '@/constans/node'
+
 export default {
   name: 'CaseConfig',
   data() {
@@ -22,11 +24,12 @@ export default {
     }
   },
   watch: {
-    '$store.state.tree.selectedNode': {
+    '$store.state.tree.currentNodeId': {
       handler() {
-        this.caseInfo = this.$store.state.tree.selectedNode.meta
-      },
-      deep: true,
+        const detailType = this.$store.state.tree.detailType
+        if (detailType !== NODE.DetailType.CASE) return
+        this.caseInfo = this.$store.state.tree.selectedNode
+      }
     },
   }
 }

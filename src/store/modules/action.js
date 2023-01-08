@@ -1,6 +1,7 @@
 const getExecuteState = () => {
   return {
     isRunning: false,
+    runFinish: false
   }
 }
 
@@ -13,6 +14,9 @@ const mutations = {
   SET_RUNNING: (state, runFlag) => {
     state.isRunning = runFlag
   },
+  SET_RUN_FINISH: (state, finishFlag) => {
+    state.runFinish = finishFlag
+  }
 }
 
 const actions = {

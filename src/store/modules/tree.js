@@ -3,9 +3,11 @@
 const getTreeState = () => {
   return {
     hideTree: false,
+    treeId: '',
     detailType: 1,
+    currentNodeId: '',
     selectedNode: {},
-    checkedNodes: []
+    checkedNodes: [],
   }
 }
 
@@ -17,6 +19,12 @@ const mutations = {
   },
   SET_HIDE_TREE: (state, isHide) => {
     state.hideTree = isHide
+  },
+  SET_TREE_ID: (state, treeId) => {
+    state.treeId = treeId
+  },
+  SET_CURRENT_NODE_ID: (state, nodeId) => {
+    state.currentNodeId = nodeId
   },
   SET_SELECT_NODE: (state, node) => {
     state.selectedNode = node

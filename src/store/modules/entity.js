@@ -1,6 +1,6 @@
-import { deepCopy } from '@/utils/dcopy'
-import { fetchEntities } from '@/api/entity'
-import { guid } from '@/utils/other'
+import {deepCopy} from '@/utils/dcopy'
+import {fetchEntities} from '@/api/entity'
+import {guid} from '@/utils/other'
 
 const getEntityState = () => {
   return {
@@ -19,7 +19,16 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getEntityState())
   },
-  SER_INIT_ENTITIES: (state, entities) => {
+  RELOAD_STATE: (state) => {
+    if (state.copiedEntities.length === 0) {
+      Object.assign(state, getEntityState())
+    } else {
+      const cpEntities = deepCopy(state.copiedEntities)
+      Object.assign(state, getEntityState())
+      state.copiedEntities = cpEntities
+    }
+  },
+  SET_INIT_ENTITIES: (state, entities) => {
     state.initEntities = entities
   },
   SET_CASE_ENTITIES: (state, entities) => {
@@ -41,21 +50,15 @@ const mutations = {
 
 const actions = {
 
-  getEntities({ commit, state }, caseId) {
-    if (state.copiedEntities.length === 0) {
-      commit('RESET_STATE')
-    } else {
-      const cpEntities = deepCopy(state.copiedEntities)
-      commit('RESET_STATE')
-      state.copiedEntities = cpEntities
-    }
+  getEntities({ commit }, caseId) {
+    commit('RELOAD_STATE')
     return new Promise((resolve, reject) => {
       fetchEntities(caseId).then(response => {
         const entityList = response.data
         for (let i = 0; i < entityList.length; i++) {
           entityList[i]['uuid'] = guid()
         }
-        commit('SER_INIT_ENTITIES', entityList)
+        commit('SET_INIT_ENTITIES', entityList)
         resolve()
       }).catch(error => {
         reject(error)

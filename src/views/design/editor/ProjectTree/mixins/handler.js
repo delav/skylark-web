@@ -106,15 +106,20 @@ export function handlerNode(obj, parentId, nodeDesc, checked=false) {
   )
 }
 
-export function arrayToTree(data) {
+export function transformData(data, nodeId, entities) {
   const retainField = ['mid', 'id', 'pid', 'name', 'desc', 'type', 'meta']
   let containCase = false
   let result = []
   let itemMap = {}
   for (let i = 0; i < data.length; i++) {
     let item = getTargetObject(data[i], retainField)
+    // selected node if contain case
     if (item.desc === NODE.NodeDesc.CASE) {
       containCase = true
+      // add current selected case to run data
+      if (item.id === nodeId) {
+        item.meta['extra_data']['entity'] = entities
+      }
     }
     let id = item.id
     let pid = item.pid
@@ -128,7 +133,7 @@ export function arrayToTree(data) {
       children: itemMap[id]['children']
     }
     let treeItem = itemMap[id]
-    if (pid === 0) {
+    if (pid === NODE.RootPId) {
       result.push(treeItem)
     } else {
       if (!itemMap[pid]) {
@@ -139,7 +144,7 @@ export function arrayToTree(data) {
       itemMap[pid]['children'].push(treeItem)
     }
   }
-  return {containCase, result}
+  return {flag: containCase, data: result}
 }
 
 function sortBy (field) {

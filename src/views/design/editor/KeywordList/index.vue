@@ -52,7 +52,7 @@
 import variables from '@/styles/variables.module.scss'
 import axios from 'axios'
 import KeywordItem from './components/KeywordItem'
-import { getLibKeyword } from '@/api/keyword'
+import { getLibKeyword, getUserKeyword } from '@/api/keyword'
 import { getKeywordGroup } from '@/api/kgroup'
 import { guid } from '@/utils/other'
 
@@ -75,11 +75,17 @@ export default {
     }
   },
   computed: {
-    projectId() {
-      return this.$store.state.project.projectId
-    },
     hideKeyword() {
       return this.$store.state.keyword.hideKeyword
+    }
+  },
+  watch: {
+    '$store.state.project.projectId': {
+      handler(value) {
+        if (value === '') return
+        this.getGroupsUserKeywords(value)
+      },
+      immediate: true
     }
   },
   created() {
@@ -106,6 +112,16 @@ export default {
           this.keywordArray = Object.values(groupDict)
         })
       )
+    },
+    getGroupsUserKeywords (projectId) {
+      getUserKeyword(projectId).then(response => {
+        for (let i = 0; i < this.keywordArray.length; i++) {
+          if (this.keywordArray[i]['group_name'] === '用户类'){
+            this.keywordArray[i]['keywords'] = response.data
+            break
+          }
+        }
+      })
     },
     cloneKeyword(original) {
       return {

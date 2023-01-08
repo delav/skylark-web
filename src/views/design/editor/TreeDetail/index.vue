@@ -1,8 +1,8 @@
 <template>
   <div class="tree-detail">
-    <case v-if="isCase(detailType)"></case>
-    <category v-else-if="isCategory(detailType)"></category>
-    <file v-else-if="isFile(detailType)"></file>
+    <case v-show="isCase(detailType)"></case>
+    <category v-show="isCategory(detailType)"></category>
+    <file v-show="isFile(detailType)"></file>
   </div>
 </template>
 

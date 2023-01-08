@@ -113,7 +113,7 @@ import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { addSvgHover } from '@/utils/hover'
-import { getRootNode, formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, arrayToTree } from './mixins/handler'
+import { getRootNode, formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from './mixins/handler'
 import { deepCopy } from '@/utils/dcopy'
 
 export default {
@@ -188,6 +188,7 @@ export default {
     },
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
+      this.$store.commit('tree/SET_TREE_ID', zTreeObj.setting.treeId)
     },
     hideOrShowTreeArea(isHide) {
       this.$store.commit('tree/SET_HIDE_TREE', isHide)
@@ -203,14 +204,17 @@ export default {
     },
     zTreeOnCheck() {
       const checkedSimpleNodes = this.zTreeObj.getCheckedNodes(true)
-      const {containCase, treeNodes} = arrayToTree(checkedSimpleNodes)
-      if (!containCase) {
+      const selectedNode = this.$store.state.tree.selectedNode
+      const caseEntity = this.$store.state.entity.caseEntities
+      const transformResult = transformData(checkedSimpleNodes, selectedNode.id, caseEntity)
+      if (!transformResult.flag) {
         this.$store.commit('tree/SET_CHECKED_NODES', [])
         return
       }
       const addRootCheckedNodes = deepCopy(this.rootNode)
-      addRootCheckedNodes['children'] = treeNodes
+      addRootCheckedNodes['children'] = transformResult.data
       this.$store.commit('tree/SET_CHECKED_NODES', addRootCheckedNodes)
+      console.log(addRootCheckedNodes)
     },
     // expand node, get children nodes
     zTreeOnExpand(event, treeId, treeNode) {
@@ -244,25 +248,27 @@ export default {
     },
     // click node, get node detail data
     zTreeOnClick(event, treeId, treeNode) {
-      const selectNode = this.$store.state.tree.selectedNode
-      if (treeNode.id === selectNode.id) return
+      const selectNodeId = this.$store.state.tree.currentNodeId
+      if (treeNode.id === selectNodeId) return
       if (treeNode.desc === NODE.NodeDesc.CASE) {
         this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
         this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
           this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+          this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
         })
-      } else if (treeNode.desc === NODE.NodeDesc.SUITE) {
+      } else {
+        if (treeNode.desc === NODE.NodeDesc.SUITE) {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.SUITE)
+        } else if (treeNode.desc === NODE.NodeDesc.DIR) {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.DIR)
+        } else if (treeNode.desc === NODE.NodeDesc.ROOT) {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.ROOT)
+        } else if (treeNode.desc === NODE.NodeDesc.FILE) {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.FILE)
+        }
+        this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-        this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.SUITE)
-      } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-        this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-        this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.DIR)
-      } else if (treeNode.desc === NODE.NodeDesc.ROOT) {
-        this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-        this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.ROOT)
-      } else if (treeNode.desc === NODE.NodeDesc.FILE) {
-        this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-        this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.FILE)
+        this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
       }
     },
     saveEnvVariables() {},
@@ -328,7 +334,7 @@ export default {
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // update dir
           const params = {'name': this.nodeDialogForm.name}
-          updateDir(node.id, params).then(response => {
+          updateDir(node.mid, params).then(response => {
             node.name = response.data.name
             that.zTreeObj.updateNode(node)
             that.closeNodeDialog()
@@ -472,26 +478,24 @@ export default {
         })
       }
       if (treeNode.desc === NODE.NodeDesc.DIR) {
-        if (treeNode.type === NODE.NodeType.TESTCASE) {
-          addSvgHover('folder_add_', treeNode.tId, 'iconfont icon-a-folderadd-line', 'create directory',function () {
-            that.nodeParams = {
-              'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.DIR,
-              'meta_data': treeNode
-            }
-            that.initDialogInfo('create', '')
-          })
-          addSvgHover('suite_add_', treeNode.tId, 'iconfont icon-a-additionfile-line', 'create suite',function () {
-            that.nodeParams = {
-              'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.SUITE,
-              'meta_data': treeNode
-            }
-            that.initDialogInfo('create', '')
-          })
-          if (treeNode.pid !== NODE.RootPId) {
-            addSvgHover('more_menu_', treeNode.tId, 'iconfont icon-a-morevertical-line', 'more',function () {
-              that.showMenuCallback('more_menu_'+treeNode.tId)
-            })
+        addSvgHover('folder_add_', treeNode.tId, 'iconfont icon-a-folderadd-line', 'create dir',function () {
+          that.nodeParams = {
+            'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.DIR,
+            'meta_data': treeNode
           }
+          that.initDialogInfo('create', '')
+        })
+        addSvgHover('suite_add_', treeNode.tId, 'iconfont icon-a-additionfile-line', 'create suite',function () {
+          that.nodeParams = {
+            'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.SUITE,
+            'meta_data': treeNode
+          }
+          that.initDialogInfo('create', '')
+        })
+        if (treeNode.pid !== NODE.RootPId) {
+          addSvgHover('more_menu_', treeNode.tId, 'iconfont icon-a-morevertical-line', 'more',function () {
+            that.showMenuCallback('more_menu_'+treeNode.tId)
+          })
         }
       } else if (treeNode.desc === NODE.NodeDesc.SUITE) {
         addSvgHover('case_add_', treeNode.tId, 'iconfont icon-a-addline-line', 'create case',function () {

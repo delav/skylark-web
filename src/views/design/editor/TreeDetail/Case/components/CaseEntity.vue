@@ -35,6 +35,7 @@
 import { guid } from '@/utils/other'
 import { deepCopy } from '@/utils/dcopy'
 import { setCursorStyle } from '@/utils/hover'
+import NODE from '@/constans/node'
 
 export default {
   name: 'CaseEntity',
@@ -50,11 +51,12 @@ export default {
     }
   },
   watch: {
-    '$store.state.tree.selectedNode': {
+    '$store.state.tree.currentNodeId': {
       handler() {
+        const detailType = this.$store.state.tree.detailType
+        if (detailType !== NODE.DetailType.CASE) return
         this.caseEntities = this.$store.state.entity.initEntities
-      },
-      deep: true,
+      }
     },
     caseEntities: {
       handler() {

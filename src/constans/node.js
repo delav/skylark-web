@@ -26,10 +26,17 @@ const DetailType = {
   FILE: 5,
 }
 
+const ModuleType = {
+  PROJECT: 0,
+  DIR: 1,
+  SUITE: 2,
+}
+
 export default {
   RootPId,
   NodeType,
   NodeDesc,
   ActionType,
   DetailType,
+  ModuleType,
 }
