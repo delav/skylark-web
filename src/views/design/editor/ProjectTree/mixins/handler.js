@@ -20,23 +20,6 @@ function fillNode(data) {
   return node
 }
 
-export function getRootNode(dataObject) {
-  if (!('root' in dataObject)) {
-    return {}
-  }
-  const project = dataObject['root']
-  return fillNode(
-    {
-      mid: project['id'],
-      id: guid(),
-      pid: NODE.RootPId,
-      name: project['name'],
-      desc: NODE.NodeDesc.ROOT,
-      type: null
-    }
-  )
-}
-
 export function formatBaseNodes(dataObject) {
   const treeNodes = []
   if (!('root' in dataObject) || !('dirs' in dataObject)) {

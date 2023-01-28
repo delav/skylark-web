@@ -137,8 +137,16 @@ export default {
       }, 1000)
     },
     startBuild() {
-      const runData = {'cron_job': false, 'debug': true, 'data': this.$store.state.tree.checkedNodes}
-      createBuild(runData).then(response => {
+      const data = {
+        'online': false,
+        'cron_job': false,
+        'debug': true,
+        'env': this.$store.state.project.currentEnv,
+        'project_id': this.$store.state.project.projectId,
+        'project_name': this.$store.state.project.projectName,
+        'run_data': this.$store.state.tree.checkedNodes
+      }
+      createBuild(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
         let buildId = response.data['build_id']
         console.log(buildId)

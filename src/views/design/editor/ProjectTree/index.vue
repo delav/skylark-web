@@ -5,7 +5,6 @@
         <el-select
           class="project-selector"
           v-model="projectId"
-          @change="changeProject"
           placement="bottom-start"
           placeholder="选择项目">
           <el-option
@@ -13,6 +12,7 @@
             :key="index"
             :label="item.name"
             :value="item.id"
+            @click.native="changeProject(item.id, item.name)"
           />
         </el-select>
         <el-tooltip
@@ -113,7 +113,7 @@ import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { addSvgHover } from '@/utils/hover'
-import { getRootNode, formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from './mixins/handler'
+import { formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from './mixins/handler'
 import { deepCopy } from '@/utils/dcopy'
 
 export default {
@@ -158,7 +158,6 @@ export default {
         },
       },
       projectId: '',
-      rootNode: {},
       zTreeObj: null,
       zTreeNodes: [],
       showEnvDialog: false,
@@ -178,11 +177,11 @@ export default {
   },
 
   methods: {
-    changeProject(pId) {
+    changeProject(pId, name) {
       fetchBaseDir(pId).then(response => {
-        this.rootNode = getRootNode(response.data)
         this.zTreeNodes = formatBaseNodes(response.data)
-        this.$store.commit('project/SET_CURRENT_PROJECT', pId)
+        this.$store.commit('project/SET_PROJECT_ID', pId)
+        this.$store.commit('project/SET_PROJECT_NAME', name)
         this.$store.commit('tree/RESET_STATE')
       })
     },
@@ -211,10 +210,7 @@ export default {
         this.$store.commit('tree/SET_CHECKED_NODES', [])
         return
       }
-      const addRootCheckedNodes = deepCopy(this.rootNode)
-      addRootCheckedNodes['children'] = transformResult.data
-      this.$store.commit('tree/SET_CHECKED_NODES', addRootCheckedNodes)
-      console.log(addRootCheckedNodes)
+      this.$store.commit('tree/SET_CHECKED_NODES', transformResult.data)
     },
     // expand node, get children nodes
     zTreeOnExpand(event, treeId, treeNode) {

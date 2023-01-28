@@ -5,6 +5,7 @@ import {fetchProjectList} from '@/api/project'
 const getProjectState = () => {
   return {
     projectId: '',
+    projectName: '',
     envList: [],
     projectList: [],
     currentEnv: '',
@@ -17,8 +18,11 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getProjectState())
   },
-  SET_CURRENT_PROJECT: (state, projectId) => {
+  SET_PROJECT_ID: (state, projectId) => {
     state.projectId = projectId
+  },
+  SET_PROJECT_NAME: (state, projectName) => {
+    state.projectName = projectName
   },
   SET_ENV_LIST: (state, evnArray) => {
     state.envList = evnArray

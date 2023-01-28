@@ -3,7 +3,7 @@
     <div class="entity-desc">
       <p>{{getRelatedKeywordAttrById('desc', currentEntity['keyword_id'])}}</p>
     </div>
-    <div class="entity-input" v-if="inputType!==0">
+    <div class="entity-input" v-if="inputType!==getInputType('none')">
       <div class="input-title">
         <span class="title-desc" @click="expandInputArg=!expandInputArg">
           <span class="title-icon">
@@ -12,29 +12,47 @@
           </span>
           <span class="title-text">输入参数</span>
         </span>
-        <el-button class="new-button" v-if="inputType===3||inputType===4" type="success" size="small" @click="addInputArg">
+        <el-button
+          class="new-button"
+          v-if="inputType===getInputType('list')||inputType===getInputType('dict')"
+          type="success" size="small"
+          @click="addInputArg"
+        >
           添加<el-icon><Plus /></el-icon>
         </el-button>
       </div>
       <div v-if="expandInputArg" class="input-content">
-        <template v-if="inputType===1||inputType===2">
+        <template v-if="inputType===getInputType('single')||inputType===getInputType('multi')">
           <p class="argument-content" v-for="(name, index) in entityArgs['inputNames']" :key="index">
             <span :title="name" class="argument-name">{{name}}:</span>
-            <el-input class="argument-value" type="text" v-model="entityArgs['inputValues'][index]"></el-input>
+            <el-input
+              class="argument-value"
+              type="text"
+              @change="updateCaseEntities"
+              v-model="entityArgs['inputValues'][index]">
+            </el-input>
           </p>
         </template>
-        <template v-if="inputType===3||inputType===4">
+        <template v-if="inputType===getInputType('list')||inputType===getInputType('dict')">
           <draggable
             id="case-entity"
             v-model="entityArgs['inputValues']"
             group="people"
+            animation="300"
             item-key="id"
+            @update="updateCaseEntities"
           >
-            <template #item="{ element, index }">
+            <template #item="{ index }">
               <p class="argument-content">
                 <span class="argument-name">args{{index+1}}:</span>
-                <el-input class="argument-value" type="text" :v-model="element"></el-input>
-                <el-icon class="argument-icon" title="删除" @click="delInputArg(index)"><DeleteFilled /></el-icon>
+                <el-input
+                  class="argument-value"
+                  type="text"
+                  @change="updateCaseEntities"
+                  :v-model="entityArgs['inputValues'][index]">
+                </el-input>
+                <el-icon class="argument-icon" color="#f56c6c" title="删除" @click="delInputArg(index)"><DeleteFilled /></el-icon>
+                <el-icon class="argument-icon" color="#909399" title="移动"><Rank /></el-icon>
               </p>
             </template>
           </draggable>
@@ -50,7 +68,12 @@
       <div v-if="expandOutputArg" class="output-content">
         <p class="argument-content" v-for="(name, index) in entityArgs['outputNames']" :key="index">
           <span class="argument-name">{{name}}:</span>
-          <el-input class="argument-value" type="text" v-model="entityArgs['outputValues'][index]"></el-input>
+          <el-input
+            class="argument-value"
+            type="text"
+            @change="updateCaseEntities"
+            v-model="entityArgs['outputValues'][index]">
+          </el-input>
         </p>
       </div>
     </div>
@@ -59,6 +82,9 @@
 
 <script>
 // import SvgIcon from "@/components/SvgIcon";
+import { deepCopy } from '@/utils/dcopy'
+import KEYWORD from '@/constans/keyword'
+
 export default {
   name: 'EntityArgs',
   // components: {SvgIcon},
@@ -90,6 +116,34 @@ export default {
     }
   },
   methods: {
+    getInputType(v) {
+      if (v === 'none') {
+        return KEYWORD.KeywordArgType.NONE
+      } else if (v === 'single') {
+        return KEYWORD.KeywordArgType.SINGLE
+      } else if (v === 'multi') {
+        return KEYWORD.KeywordArgType.MULTI
+      } else if (v === 'list') {
+        return KEYWORD.KeywordArgType.LIST
+      } else if (v === 'dict') {
+        return KEYWORD.KeywordArgType.DICT
+      }
+      return null
+    },
+    updateCaseEntities() {
+      const entities = this.$store.state.entity.caseEntities
+      const newInputArgs = this.entityArgs['inputValues'].join(this.entityInputSplitSep)
+      const newOutputArgs = this.entityArgs['outputValues'].join(this.entityInputSplitSep)
+      for (let i = 0; i < entities.length; i++) {
+        if (entities[i]['uuid'] === this.entityArgs['meta']['uuid']) {
+          entities[i]['input_args'] = newInputArgs
+          entities[i]['output_args'] = newOutputArgs
+          break
+        }
+      }
+      this.$store.commit('entity/SET_CASE_ENTITIES', entities)
+      this.$store.commit('entity/SET_ENTITY_CHANGE', true)
+    },
     getRelatedKeywordAttrById(attr, keywordId) {
       if (keywordId in this.keywordDict) {
         if (attr in this.keywordDict[keywordId]) {
@@ -103,16 +157,17 @@ export default {
         Object.assign(this.$data, this.$options.data())
         return
       }
+      this.entityArgs['meta'] = deepCopy(entity)
       this.inputType = this.getRelatedKeywordAttrById('input_type', entity['keyword_id'])
-      if (this.inputType === 0) {
+      if (this.inputType === this.getInputType('none')) {
         // not input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = []
-      } else if (this.inputType === 1) {
+      } else if (this.inputType === this.getInputType('single')) {
         // single input args
         this.entityArgs['inputNames'] = [this.getRelatedKeywordAttrById('input_params', entity['keyword_id'])]
         this.entityArgs['inputValues'] = [entity['input_args']]
-      } else if (this.inputType === 2) {
+      } else if (this.inputType === this.getInputType('multi')) {
         // multi input args
         this.entityArgs['inputNames'] = this.getRelatedKeywordAttrById('input_params', entity['keyword_id']).split(this.keywordInputSplitSep)
         let values = entity['input_args'].split(this.entityInputSplitSep)
@@ -121,11 +176,11 @@ export default {
           values = values.concat(Array(diffValue))
         }
         this.entityArgs['inputValues'] = values
-      } else if (this.inputType === 3) {
+      } else if (this.inputType === this.getInputType('list')) {
         // list input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = entity['input_args'].split(this.entityInputSplitSep)
-      } else if (this.inputType === 4) {
+      } else if (this.inputType === this.getInputType('dict')) {
         // dict input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = entity['input_args'].split(this.entityInputSplitSep)
@@ -143,11 +198,13 @@ export default {
       const addInputArgs = this.entityArgs['inputValues']
       addInputArgs.push('')
       this.entityArgs['inputValues'] = addInputArgs
+      this.updateCaseEntities()
     },
     delInputArg(index) {
       const delInputArgs = this.entityArgs['inputValues']
       delInputArgs.splice(index, 1)
       this.entityArgs['inputValues'] = delInputArgs
+      this.updateCaseEntities()
     }
   }
 }
@@ -190,6 +247,7 @@ $labelWidth: 100px;
       .argument-content {
         position: relative;
         margin: 5px 10px;
+        background-color: #f4f5f7;
         .argument-name {
           width: $labelWidth;
           max-width: $labelWidth;
@@ -202,11 +260,11 @@ $labelWidth: 100px;
         }
         .argument-value {
           margin-left: $labelWidth;
-          width: calc(100% - #{$labelWidth} - 30px);
+          width: calc(100% - #{$labelWidth} - 40px);
         }
         .argument-icon {
-          width: 30px;
-          color: #f56c6c;
+          width: 16px;
+          margin: 0 2px 0 2px;
           cursor: pointer;
           vertical-align: -20%;
           font-size: 16px;
@@ -237,7 +295,7 @@ $labelWidth: 100px;
         }
         .argument-value {
           margin-left: $labelWidth;
-          width: calc(100% - #{$labelWidth} - 30px);
+          width: calc(100% - #{$labelWidth} - 40px);
         }
       }
     }
