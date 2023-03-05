@@ -19,6 +19,7 @@ const ActionType = {
 }
 
 const DetailType = {
+  EMPTY: 0,
   CASE: 1,
   SUITE: 2,
   DIR: 3,

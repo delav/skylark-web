@@ -5,8 +5,8 @@
     </div>
     <div class="entity-input" v-if="inputType!==getInputType('none')">
       <div class="input-title">
-        <span class="title-desc" @click="expandInputArg=!expandInputArg">
-          <span class="title-icon">
+        <span class="title-desc">
+          <span class="title-icon" @click="expandInputArg=!expandInputArg">
             <el-icon v-if="expandInputArg"><CirclePlusFilled /></el-icon>
             <el-icon v-else><RemoveFilled /></el-icon>
           </span>
@@ -23,7 +23,7 @@
       </div>
       <div v-if="expandInputArg" class="input-content">
         <template v-if="inputType===getInputType('single')||inputType===getInputType('multi')">
-          <p class="argument-content" v-for="(name, index) in entityArgs['inputNames']" :key="index">
+          <p class="fixate-argument" v-for="(name, index) in entityArgs['inputNames']" :key="index">
             <span :title="name" class="argument-name">{{name}}:</span>
             <el-input
               class="argument-value"
@@ -41,18 +41,19 @@
             animation="300"
             item-key="id"
             @update="updateCaseEntities"
+            handle=".mover"
           >
             <template #item="{ index }">
-              <p class="argument-content">
+              <p class="dynamic-argument">
                 <span class="argument-name">args{{index+1}}:</span>
+                <el-icon class="mover" color="#909399" title="移动"><Rank /></el-icon>
                 <el-input
                   class="argument-value"
                   type="text"
                   @change="updateCaseEntities"
-                  :v-model="entityArgs['inputValues'][index]">
+                  v-model="entityArgs['inputValues'][index]">
                 </el-input>
-                <el-icon class="argument-icon" color="#f56c6c" title="删除" @click="delInputArg(index)"><DeleteFilled /></el-icon>
-                <el-icon class="argument-icon" color="#909399" title="移动"><Rank /></el-icon>
+                <el-icon class="argument-icon" color="#f56c6c" title="删除" @click="delInputArg(index)"><Delete /></el-icon>
               </p>
             </template>
           </draggable>
@@ -60,9 +61,11 @@
       </div>
     </div>
     <div class="entity-output" v-if="outputExist">
-      <div class="output-title" @click="expandOutputArg=!expandOutputArg">
-        <el-icon style="vertical-align: -20%;" color="#1fb496" size="16" v-if="expandOutputArg"><CirclePlusFilled /></el-icon>
-        <el-icon style="vertical-align: -20%;" color="#1fb496" size="16" v-else><RemoveFilled /></el-icon>
+      <div class="output-title">
+        <span class="output-icon" @click="expandOutputArg=!expandOutputArg">
+          <el-icon style="vertical-align: -20%;" color="#1fb496" size="16" v-if="expandOutputArg"><CirclePlusFilled /></el-icon>
+          <el-icon style="vertical-align: -20%;" color="#1fb496" size="16" v-else><RemoveFilled /></el-icon>
+        </span>
         <span>输出参数</span>
       </div>
       <div v-if="expandOutputArg" class="output-content">
@@ -74,6 +77,7 @@
             @change="updateCaseEntities"
             v-model="entityArgs['outputValues'][index]">
           </el-input>
+          <el-icon class="argument-icon" color="#f56c6c" title="复制" @click="copyOutputArg(index)"><CopyDocument /></el-icon>
         </p>
       </div>
     </div>
@@ -205,27 +209,38 @@ export default {
       delInputArgs.splice(index, 1)
       this.entityArgs['inputValues'] = delInputArgs
       this.updateCaseEntities()
+    },
+    copyOutputArg(index) {
+      const cInput = document.createElement('input')
+      cInput.value = this.entityArgs['outputValues'][index]
+      document.body.appendChild(cInput)
+      cInput.select()
+      document.execCommand('Copy')
+      cInput.remove()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$labelWidth: 100px;
+$labelWidth: 80px;
 
 .entity-args {
   width: 100%;
   height: 100%;
+  margin: 5px 0;
   .entity-desc {
     height: 60px;
     p {
+      font-size: 14px;
       margin: 0;
     }
   }
   .entity-input {
     width: 100%;
+    margin-top: 15px;
     .input-title {
-      height: 30px;
+      height: 25px;
       .title-desc {
         cursor: pointer;
         .title-icon {
@@ -244,7 +259,7 @@ $labelWidth: 100px;
     }
     .input-content {
       width: 100%;
-      .argument-content {
+      .fixate-argument {
         position: relative;
         margin: 5px 10px;
         background-color: #f4f5f7;
@@ -259,11 +274,38 @@ $labelWidth: 100px;
           line-height: 32px;
         }
         .argument-value {
+          margin-left: calc(#{$labelWidth} + 20px);
+          width: calc(100% - #{$labelWidth});
+        }
+      }
+      .dynamic-argument {
+        position: relative;
+        margin: 5px 10px 0 10px;
+        background-color: #f4f5f7;
+        .argument-name {
+          width: $labelWidth;
+          max-width: $labelWidth;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          left: 0;
+          position: absolute;
+          line-height: 32px;
+        }
+        .mover {
           margin-left: $labelWidth;
-          width: calc(100% - #{$labelWidth} - 40px);
+          position: absolute;
+          width: 16px;
+          top: 25%;
+          cursor: pointer;
+          font-size: 16px;
+        }
+        .argument-value {
+          margin-left: calc(#{$labelWidth} + 20px);
+          width: calc(100% - #{$labelWidth} - 44px);
         }
         .argument-icon {
-          width: 16px;
+          width: 20px;
           margin: 0 2px 0 2px;
           cursor: pointer;
           vertical-align: -20%;
@@ -274,9 +316,12 @@ $labelWidth: 100px;
   }
   .entity-output {
     width: 100%;
-    padding-bottom: 5px;
+    margin-top: 15px;
     .output-title {
-      height: 30px;
+      height: 25px;
+      .output-icon {
+        cursor: pointer;
+      }
       span {
         font-size: 14px;
         color: #008489;
@@ -285,8 +330,9 @@ $labelWidth: 100px;
     .output-content {
       width: 100%;
       .argument-content {
+        background-color: #f4f5f7;
         position: relative;
-        margin: 5px 10px;
+        margin: 5px 10px 0 10px;
         .argument-name {
           width: $labelWidth;
           left: 0;
@@ -294,8 +340,15 @@ $labelWidth: 100px;
           line-height: 32px;
         }
         .argument-value {
-          margin-left: $labelWidth;
-          width: calc(100% - #{$labelWidth} - 40px);
+          margin-left: calc(#{$labelWidth} + 20px);
+          width: calc(100% - #{$labelWidth} - 44px);
+        }
+        .argument-icon {
+          width: 20px;
+          margin: 0 2px 0 2px;
+          cursor: pointer;
+          vertical-align: -20%;
+          font-size: 16px;
         }
       }
     }

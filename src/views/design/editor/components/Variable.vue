@@ -131,7 +131,7 @@ export default {
       return this.moduleFrom === 'node'
     },
     getModuleInfo() {
-      if (this.isFromNode) {
+      if (this.isFromNode()) {
         return this.getModuleInfoFromNode()
       }
       return this.getModuleInfoFromProject()

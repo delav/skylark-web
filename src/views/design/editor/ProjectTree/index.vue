@@ -44,7 +44,7 @@
         <el-button type="info" size="small" @click="envSetting"><el-icon><Setting /></el-icon>环境配置</el-button>
       </span>
       <span class="setting-button">
-        <el-button type="info" size="small"><el-icon><Plus /></el-icon>新建项目</el-button>
+        <el-button type="info" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
       </span>
       </div>
     </div>
@@ -95,7 +95,20 @@
           :destroy-on-close="true"
         >
           <div class="env-content">
-            <env-variable :project-id="projectId" />
+            <env-variable />
+          </div>
+        </el-dialog>
+      </div>
+      <div class="new-dialog">
+        <el-dialog
+          width="550px"
+          v-model="showNewDialog"
+          title="新建项目"
+          :close-on-click-modal="false"
+          :destroy-on-close="true"
+        >
+          <div class="env-content">
+            <new-project @closeDialog="closeNewDialog" @successAction="successNewProject" />
           </div>
         </el-dialog>
       </div>
@@ -106,6 +119,7 @@
 <script>
 import variables from '@/styles/variables.module.scss'
 import tree from 'vue-giant-tree-3'
+import NewProject from './components/NewProject'
 import EnvVariable from './components/EnvVariable'
 import NODE from '@/constans/node'
 import { updateProject } from '@/api/project'
@@ -114,13 +128,13 @@ import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/a
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { addSvgHover } from '@/utils/hover'
 import { formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from './mixins/handler'
-import { deepCopy } from '@/utils/dcopy'
 
 export default {
   name: 'ProjectTree',
   components: {
     tree,
-    EnvVariable
+    NewProject,
+    EnvVariable,
   },
   computed: {
     hideTree() {
@@ -161,10 +175,12 @@ export default {
       zTreeObj: null,
       zTreeNodes: [],
       showEnvDialog: false,
+      showNewDialog: false,
       showNodeMenu: false,
       nodeMenuPosition: {
-        top: '0',
-        left: '0'
+        'top': '0',
+        'left': '0',
+        'z-index': 999,
       },
       currentMenuNodeId: 0,
       menuMethods: [],
@@ -246,11 +262,11 @@ export default {
     zTreeOnClick(event, treeId, treeNode) {
       const selectNodeId = this.$store.state.tree.currentNodeId
       if (treeNode.id === selectNodeId) return
+      this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
       if (treeNode.desc === NODE.NodeDesc.CASE) {
         this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
         this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
           this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-          this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
         })
       } else {
         if (treeNode.desc === NODE.NodeDesc.SUITE) {
@@ -264,7 +280,6 @@ export default {
         }
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-        this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
       }
     },
     saveEnvVariables() {},
@@ -523,6 +538,13 @@ export default {
         return
       }
       this.showEnvDialog = true
+    },
+    closeNewDialog () {
+      this.showNewDialog = false
+    },
+    successNewProject(projectInfo) {
+      this.projectId = projectInfo['id']
+      this.changeProject(projectInfo['id'], projectInfo['name'])
     }
   }
 }
@@ -541,6 +563,7 @@ $toolHeight: 40px;
     .head {
       height: $selectorHeight;
       width: 100%;
+      padding-left: 5px;
       .project-selector {
         float: left;
         width: calc(100% - #{$foldWidth});
@@ -603,9 +626,10 @@ $toolHeight: 40px;
   }
   .dialog {
     .node-dialog {
-
     }
     .env-dialog {
+    }
+    .new-dialog {
     }
   }
   .fold-expand-icon {

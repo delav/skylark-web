@@ -18,14 +18,15 @@
       </div>
       <div class="content">
         <el-collapse v-model="groupNames">
-          <el-collapse-item v-for="(group, index) in keywordArray" :key="index" :title="group['group_name']">
+          <el-collapse-item v-for="(group, index) in keywordArray" :key="index" :title="group['name']">
             <draggable
+              :sort="false"
               :list="group['keywords']"
               :group="dragSetting"
               :clone="cloneKeyword"
-              ghost-class="ghost"
-              drag-class="drag"
-              chosen-class="chosen"
+              :forceFallback="true"
+              ghost-class="ghost-item"
+              drag-class="drag-item"
               item-key="id"
             >
               <template #item="{ element }">
@@ -116,7 +117,7 @@ export default {
     getGroupsUserKeywords (projectId) {
       getUserKeyword(projectId).then(response => {
         for (let i = 0; i < this.keywordArray.length; i++) {
-          if (this.keywordArray[i]['group_name'] === '用户类'){
+          if (this.keywordArray[i]['name'] === '用户类'){
             this.keywordArray[i]['keywords'] = response.data
             break
           }
@@ -184,38 +185,79 @@ $foldExpandIconSize: 32px;
   border-top: 1px solid #000;
   padding-bottom: 15px
 }
-.ghost {
-  width: 100px;
-  height: 100px;
-  display: inline-block;
-  .keyword-item {
+
+.ghost-item {
+  width: 100px !important;
+  height: 100px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: inline-block !important;
+  //background-color: #bdc6ce !important;
+  border-bottom: none !important;
+  .item-image {
+    padding: 5px 0 !important;
+    text-align: center !important;
+  }
+  .item-name {
+    height: 20px;
     width: 100%;
-    height: 100%;
-    .item-image {
-      padding: 5px 0;
-    }
-    .item-text {
-      width: 140px;
-      margin-right: 15px;
-      .text-name {
-        font-size: 14px;
-        margin: 0;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-    .item-tip {
-      display: none !important;
+    text-align: center !important;
+    .text-name {
+      font-size: 13px;
+      margin: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
+  .item-out {
+    height: 20px;
+    width: 100%;
+    margin-top: 5px;
+    text-align: center;
+    .text-out {
+      font-size: 13px;
+      margin: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+  .item-tip {
+    top: 0;
+    right: 0;
+    position: absolute;
+  }
 }
-.chosen {
-  background-color: #7a869a;
-}
-.drag {
+//.chosen-item {
+//  background-color: #7a869a;
+//}
+.drag-item {
   width: 100px;
   height: 100px;
-  background-color: #0052cc;
+  background-color: #bdc6ce !important;
+  display: inline-block !important;
+  border-bottom: none !important;
+  .item-image {
+    margin-left: 20px;
+    padding: 5px 0 !important;
+    text-align: center !important;
+  }
+  .item-name {
+    width: 60px !important;
+    margin-right: 15px !important;
+    text-align: center !important;
+    .text-name {
+      font-size: 14px !important;
+      margin: 0 !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+    }
+  }
+  .item-tip {
+    visibility: hidden !important;
+    display: none !important;
+  }
 }
 </style>

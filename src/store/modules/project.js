@@ -61,7 +61,7 @@ const actions = {
   },
   getProjects({ commit }) {
     return new Promise((resolve, reject) => {
-      fetchProjectList(1, 20).then(response => {
+      fetchProjectList().then(response => {
         commit('SET_PROJECT_LIST', response.data)
         resolve(response.data)
       }).catch(error => {

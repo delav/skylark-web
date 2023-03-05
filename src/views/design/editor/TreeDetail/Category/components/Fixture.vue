@@ -68,6 +68,8 @@ export default {
       handler(value) {
         if (JSON.stringify(value) !== '{}') {
           this.fixtureObject = value
+        } else {
+          this.fixtureObject = this.$options.data().fixtureObject
         }
       },
       deep: true,

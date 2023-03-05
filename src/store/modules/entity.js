@@ -4,12 +4,12 @@ import {guid} from '@/utils/other'
 
 const getEntityState = () => {
   return {
-    initEntities: [],
     caseEntities: [],
     currentEntity: {},
     entityChange: false,
     copiedEntities: [],
     selectedEntities: [],
+    syncEntityFlag: '',
   }
 }
 
@@ -28,9 +28,6 @@ const mutations = {
       state.copiedEntities = cpEntities
     }
   },
-  SET_INIT_ENTITIES: (state, entities) => {
-    state.initEntities = entities
-  },
   SET_CASE_ENTITIES: (state, entities) => {
     state.caseEntities = entities
   },
@@ -45,7 +42,10 @@ const mutations = {
   },
   SET_SELECTED_ENTITIES: (state, entities) => {
     state.selectedEntities = entities
-  }
+  },
+  SET_SYNC_ENTITY_FLAG: (state, flag) => {
+    state.syncEntityFlag = flag
+  },
 }
 
 const actions = {
@@ -58,7 +58,8 @@ const actions = {
         for (let i = 0; i < entityList.length; i++) {
           entityList[i]['uuid'] = guid()
         }
-        commit('SET_INIT_ENTITIES', entityList)
+        commit('SET_CASE_ENTITIES', entityList)
+        commit('SET_SYNC_ENTITY_FLAG', guid())
         resolve()
       }).catch(error => {
         reject(error)

@@ -19,6 +19,12 @@ export default {
     this.$store.dispatch('project/setenv')
     this.$store.dispatch('project/getProjects')
   },
+  unmounted() {
+    this.$store.commit('action/RESET_STATE')
+    this.$store.commit('tree/RESET_STATE')
+    this.$store.commit('entity/RESET_STATE')
+    this.$store.commit('project/RESET_STATE')
+  }
 }
 </script>
 

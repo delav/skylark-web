@@ -17,15 +17,7 @@
       @click.left="clickOutOfEntity"
     >
       <template #item="{ element, index }">
-        <div id="et-single" class="single-entity" :style="entityStyle(element)" @click="clickEntity(element, index)">
-          <dl>
-            <dt>
-              <img :src="getKeywordAttrByEntityId('image', element['keyword_id'])" alt="">
-            </dt>
-            <dd>{{getKeywordAttrByEntityId('ext_name', element['keyword_id'])}}</dd>
-            <dd>{{element['output_args']}}</dd>
-          </dl>
-        </div>
+        <entity-item :entity-data="element" @click="clickEntity(element, index)" />
       </template>
     </draggable>
   </div>
@@ -35,10 +27,13 @@
 import { guid } from '@/utils/other'
 import { deepCopy } from '@/utils/dcopy'
 import { setCursorStyle } from '@/utils/hover'
-import NODE from '@/constans/node'
+import EntityItem from './EntityItem'
 
 export default {
   name: 'CaseEntity',
+  components: {
+    EntityItem,
+  },
   data() {
     return {
       dragSetting: {
@@ -51,11 +46,9 @@ export default {
     }
   },
   watch: {
-    '$store.state.tree.currentNodeId': {
+    '$store.state.entity.syncEntityFlag': {
       handler() {
-        const detailType = this.$store.state.tree.detailType
-        if (detailType !== NODE.DetailType.CASE) return
-        this.caseEntities = this.$store.state.entity.initEntities
+        this.caseEntities = this.$store.state.entity.caseEntities
       }
     },
     caseEntities: {
@@ -70,11 +63,6 @@ export default {
   },
   unmounted() {
     this.removeKeyboardEvent()
-  },
-  computed: {
-    keywordDict() {
-      return this.$store.state.keyword.keywordsObject
-    },
   },
   methods: {
     addKeyboardEvent() {
@@ -164,22 +152,12 @@ export default {
       this.$store.commit('entity/SET_CURRENT_ENTITY', {})
       this.$store.commit('entity/SET_SELECTED_ENTITIES', [])
     },
-    getKeywordAttrByEntityId(attr, kid) {
-      return this.keywordDict[kid][attr]
-    },
-    entityStyle(entityItem) {
-      const selectedEntities = this.$store.state.entity.selectedEntities
-      if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) !== -1) {
-        return 'background: #dfe1e5'
-      }
-    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$gridWidth: 104px;
-$gridHeight: 104px;
+@import "src/styles/variables.module.scss";
 
 .case-entity {
   width: 100%;
@@ -193,12 +171,12 @@ $gridHeight: 104px;
     user-select: none;
     .small-grid {
       float: left;
-      width: $gridWidth;
-      height: $gridHeight;
+      width: $entityGridWidth;
+      height: $entityGridHeight;
       border: 1px dashed #D3D3D3;
       //border-bottom: 2px dashed #D3D3D3;
       text-align: center;
-      line-height: calc(#{$gridHeight} - 2px);
+      line-height: calc(#{$entityGridHeight} - 2px);
       position: relative;
       color: #A9A9A9;
       i{
@@ -223,32 +201,6 @@ $gridHeight: 104px;
     left: 0;
     z-index: 10;
     font-size: 0;
-    .single-entity {
-      width: calc(#{$gridWidth} - 4px);
-      height: calc(#{$gridHeight} - 4px);
-      margin: 2px;
-      overflow: hidden;
-      display: inline-block;
-      background-color: #fff;
-      cursor: pointer;
-      dl{
-        text-align: center;
-        dt{
-          width:100%;
-          height:30px;
-          img{
-            display: inline-block;
-            width:30px;
-            height:30px;
-          }
-        }
-        dd{
-          font-size: 12px;
-          margin-top: 2px;
-          margin-left: 0;
-        }
-      }
-    }
   }
 }
 </style>

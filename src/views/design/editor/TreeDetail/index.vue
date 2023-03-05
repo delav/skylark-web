@@ -1,5 +1,6 @@
 <template>
   <div class="tree-detail">
+    <empty v-show="isEmpty(detailType)"></empty>
     <case v-show="isCase(detailType)"></case>
     <category v-show="isCategory(detailType)"></category>
     <file v-show="isFile(detailType)"></file>
@@ -7,6 +8,7 @@
 </template>
 
 <script>
+import Empty from './Empty'
 import Case from './Case'
 import Category from './Category'
 import File from './File'
@@ -15,6 +17,7 @@ import NODE from '@/constans/node'
 export default {
   name: 'TreeDetail',
   components: {
+    Empty,
     Case,
     Category,
     File,
@@ -25,6 +28,9 @@ export default {
     }
   },
   methods: {
+    isEmpty(type) {
+      return type === NODE.DetailType.EMPTY
+    },
     isCase(type) {
       return type === NODE.DetailType.CASE
     },

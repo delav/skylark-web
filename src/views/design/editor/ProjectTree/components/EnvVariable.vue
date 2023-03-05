@@ -37,7 +37,6 @@ export default {
       selectCopyEnv: '',
     }
   },
-  props: ['projectId'],
   computed: {
     envList() {
       return this.$store.state.project.envList
@@ -56,8 +55,9 @@ export default {
       }
     },
     getEnvVariables() {
-      if (this.projectId === '') return
-      fetchVariables(this.projectId, 0).then(response => {
+      const projectId = this.$store.state.project.projectId
+      if (projectId === '') return
+      fetchVariables(projectId, 0).then(response => {
         const resList = response.data
         let variablesDict = {}
         for (let i = 0; i < resList.length; i++) {
