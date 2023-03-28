@@ -102,12 +102,8 @@ export default {
     }
   },
   props: {
-    variables: {
-      type: Array,
-    },
-    moduleFrom: {
-      type: String,
-    }
+    variables: Array,
+    moduleFrom: String
   },
   watch: {
     variables: {

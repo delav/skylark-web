@@ -37,7 +37,7 @@ const mutations = {
 
 const actions = {
   // get environment
-  setenv({ commit }) {
+  setEnv({ commit }) {
     return new Promise((resolve, reject) => {
       fetchEnvs().then(response => {
         const data = response.data

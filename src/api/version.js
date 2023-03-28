@@ -8,7 +8,7 @@ export function createVersion(data) {
   })
 }
 
-export function fetchVersion(projectId, filter) {
+export function fetchVersion(projectId, filter=false) {
   return request({
     url: '/project-version',
     method: 'get',

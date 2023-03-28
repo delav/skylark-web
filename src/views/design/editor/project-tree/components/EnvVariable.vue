@@ -2,13 +2,13 @@
   <div class="env-variable">
     <div class="env-head">
       <el-radio-group v-model="defaultEvn" @change="changeEnv">
-        <el-radio v-for="item in envList" :key="item.id" :label="item.id">{{ item['env_name'] }}</el-radio>
+        <el-radio v-for="item in envList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio>
       </el-radio-group>
       <div class="copy-env">
         Copy from
         <el-select style="width: 120px" v-model="selectCopyEnv" placeholder="Select" size="small">
           <template v-for="item in envList">
-            <el-option :key="item.id" v-if="item.id !==defaultEvn" :label="item['env_name']" :value="item.id"/>
+            <el-option :key="item.id" v-if="item.id !==defaultEvn" :label="item['name']" :value="item.id"/>
           </template>
         </el-select>
         <el-button style="margin-left: 5px" size="small" type="danger" @click="copyVariables">确定</el-button>

@@ -59,9 +59,7 @@ export default {
     }
   },
   props: {
-    fixtures: {
-      type: Object
-    }
+    fixtures: Object
   },
   watch: {
     fixtures: {
@@ -103,7 +101,6 @@ export default {
         postData['module_id'] = moduleInfo.id
         postData['module_type'] = moduleInfo.type
       }
-      console.log(postData)
       postSetupTeardown(postData).then(response => {
         this.fixtureObject = response.data
         this.updateZTreeNode('fixtures', this.fixtureObject)

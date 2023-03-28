@@ -1,22 +1,22 @@
 <template>
   <div class="app-container">
-    <action-bar />
-    <design-editor />
+    <action />
+    <editor />
   </div>
 </template>
 
 <script>
-import ActionBar from './actionbar'
-import DesignEditor from './editor'
+import Action from './action'
+import Editor from './editor'
 
 export default {
   name: 'Design',
   components: {
-    ActionBar,
-    DesignEditor
+    Action,
+    Editor
   },
   created() {
-    this.$store.dispatch('project/setenv')
+    this.$store.dispatch('project/setEnv')
     this.$store.dispatch('project/getProjects')
   },
   unmounted() {

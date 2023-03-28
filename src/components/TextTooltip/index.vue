@@ -49,12 +49,12 @@ export default {
   },
   methods: {
     onMouseOver(str) {
-      console.log('ref-name:' + str)
-      console.log(this.content)
+      // console.log('ref-name:' + str)
+      // console.log(this.content)
       let parentWidth = this.$refs[str].parentNode.offsetWidth
       let contentWidth = this.$refs[str].offsetWidth
-      console.log(this.$refs[str].parentNode)
-      console.log(this.$refs[str])
+      // console.log(this.$refs[str].parentNode)
+      // console.log(this.$refs[str])
       this.isShowTooltip = contentWidth <= parentWidth
     }
   }

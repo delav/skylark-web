@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import ProjectTree from './ProjectTree'
-import TreeDetail from './TreeDetail'
-import KeywordList from './KeywordList'
+import ProjectTree from './project-tree'
+import TreeDetail from './tree-detail'
+import KeywordList from './keyword-list'
 import SvgIcon from '@/components/SvgIcon'
 import { dragWController } from '@/utils/resize'
 

@@ -228,7 +228,7 @@ $labelWidth: 80px;
 .entity-args {
   width: 100%;
   height: 100%;
-  margin: 5px 0;
+  padding: 5px 0;
   .entity-desc {
     height: 60px;
     p {

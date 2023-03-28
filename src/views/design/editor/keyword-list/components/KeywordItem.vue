@@ -30,7 +30,7 @@ export default {
     TextTooltip
   },
   props: {
-    keywordData: {}
+    keywordData: Object
   },
 }
 </script>

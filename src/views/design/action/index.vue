@@ -1,5 +1,5 @@
 <template>
-  <div class="action-bar">
+  <div class="action">
     <div class="env-show">
       <span class="desc-text">当前环境：</span>
       <el-tag size="small" type="warning">{{ executeEnv }}</el-tag>
@@ -42,10 +42,10 @@ import { deepCopy } from '@/utils/dcopy'
 import { guid } from '@/utils/other'
 import { updateEntities } from '@/api/entity'
 import { setCursorStyle } from '@/utils/hover'
-import { createBuild, getBuildInfo, getBuildProgress } from '@/api/build'
+import { createBuildDebug, getBuildInfo, getBuildDebugProgress } from '@/api/build'
 
 export default {
-  name: 'ActionBar',
+  name: 'Action',
   components: {
     IconItem,
     PushInfo,
@@ -119,7 +119,7 @@ export default {
       const envList = this.$store.state.project.envList
       for (let i = 0; i < envList.length; i++) {
         if (envId === envList[i]['id']) {
-          this.executeEnv = envList[i]['env_name']
+          this.executeEnv = envList[i]['name']
           break
         }
       }
@@ -156,7 +156,7 @@ export default {
         }
         const treeId = that.$store.state.tree.treeId
         const treeObj = $.fn.zTree.getZTreeObj(treeId)
-        getBuildProgress(buildId).then(response => {
+        getBuildDebugProgress(buildId).then(response => {
           let buildResult = response.data
           const caseIdList = Object.keys(buildResult)
           for (let i = 0; i < caseIdList.length; i++) {
@@ -192,13 +192,13 @@ export default {
     startBuild() {
       this.recoverStat()
       const data = {
-        'debug': true,
+        'action_type': 'start',
         'env_id': this.$store.state.project.currentEnv,
         'project_id': this.$store.state.project.projectId,
         'project_name': this.$store.state.project.projectName,
         'run_data': this.$store.state.tree.checkedNodes,
       }
-      createBuild(data).then(response => {
+      createBuildDebug(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
         this.buildId = response.data['build_id']
         this.getProgress(response.data['build_id'], response.data['total_case'])
@@ -264,7 +264,7 @@ export default {
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
 
-.action-bar {
+.action {
   height: $toolbarHeight;
   background-color: $toolbarBg;
   .env-show {

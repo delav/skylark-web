@@ -56,7 +56,7 @@ export default {
     // TextTooltip
   },
   props: {
-    entityData: {}
+    entityData: Object
   },
   computed: {
     keywordDict() {

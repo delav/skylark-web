@@ -24,7 +24,8 @@
               :list="group['keywords']"
               :group="dragSetting"
               :clone="cloneKeyword"
-              :forceFallback="true"
+              :force-fallback="true"
+              :options="getOptions()"
               ghost-class="ghost-item"
               drag-class="drag-item"
               item-key="id"
@@ -145,6 +146,15 @@ export default {
         left.style.width = `calc(100% - ${variables.keywordWidth} - ${variables.rightResizeWidth})`
       }
     },
+    getOptions() {
+      return {
+        setdata: (dataTransfer) => {
+          let img = new Image()
+          img.src = 'https://www.google.no/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
+          dataTransfer.setDragImage(img, 0, 0)
+        }
+      }
+    }
   }
 }
 </script>
@@ -187,8 +197,8 @@ $foldExpandIconSize: 32px;
 }
 
 .ghost-item {
-  width: 100px !important;
-  height: 100px !important;
+  width: 40px !important;
+  height: 40px !important;
   position: relative !important;
   overflow: hidden !important;
   display: inline-block !important;
@@ -233,8 +243,8 @@ $foldExpandIconSize: 32px;
 //  background-color: #7a869a;
 //}
 .drag-item {
-  width: 100px;
-  height: 100px;
+  width: 40px;
+  height: 40px;
   background-color: #bdc6ce !important;
   display: inline-block !important;
   border-bottom: none !important;

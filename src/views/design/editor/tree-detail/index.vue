@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import Empty from './Empty'
-import Case from './Case'
-import Category from './Category'
-import File from './File'
+import Empty from './empty'
+import Case from './case'
+import Category from './category'
+import File from './file'
 import NODE from '@/constans/node'
 
 export default {
