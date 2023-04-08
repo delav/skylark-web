@@ -183,7 +183,7 @@ export default {
           'name': this.variableForm['name'],
           'value': this.variableForm['value'],
           'remark': this.variableForm['remark'],
-          'env': moduleInfo.env
+          'env_id': moduleInfo.env
         }
         createVariable(createData).then(response => {
           this.variableList.push(response.data)

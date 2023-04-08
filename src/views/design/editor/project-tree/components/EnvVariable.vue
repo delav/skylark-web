@@ -22,6 +22,7 @@
 
 <script>
 import Variable from '@/views/design/editor/components/Variable'
+import { deepCopy } from '@/utils/dcopy'
 import { fetchVariables, createVariable } from '@/api/variable'
 
 export default {
@@ -61,7 +62,7 @@ export default {
         const resList = response.data
         let variablesDict = {}
         for (let i = 0; i < resList.length; i++) {
-          const evnId = resList[i]['env']
+          const evnId = resList[i]['env_id']
           if (evnId !== null && variablesDict[evnId] !== undefined) {
             variablesDict[evnId].push(resList[i])
           } else {
@@ -80,15 +81,16 @@ export default {
       const fromEnv = this.selectCopyEnv
       const toEnv = this.defaultEvn
       const fromEnvList = this.allVariables[fromEnv]
+      const batchList = deepCopy(fromEnvList)
+      if (batchList === undefined) return
       this.envVariables = []
       this.allVariables[toEnv] = []
-      if (fromEnvList === undefined) return
       for (let i = 0; i < fromEnvList.length; i++) {
-        fromEnvList[i]['env'] = toEnv
-        createVariable(fromEnvList[i]).then(response => {
-          const item = response.data
-          this.envVariables.push(item)
-          this.allVariables[toEnv].push(item)
+        batchList[i]['env_id'] = toEnv
+        createVariable(batchList[i]).then(response => {
+          const variable = response.data
+          this.envVariables.push(variable)
+          this.allVariables[toEnv].push(variable)
         })
       }
     },

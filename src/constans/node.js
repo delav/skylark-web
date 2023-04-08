@@ -1,9 +1,10 @@
 const RootPId = 0
 
-const NodeType = {
+const NodeCategory = {
   TESTCASE: 0,
-  RESOURCE: 1,
-  HELPFILE: 2,
+  KEYWORD: 1,
+  RESOURCE: 2,
+  HELPFILE: 3,
 }
 
 const NodeDesc = {
@@ -35,7 +36,7 @@ const ModuleType = {
 
 export default {
   RootPId,
-  NodeType,
+  NodeCategory,
   NodeDesc,
   ActionType,
   DetailType,

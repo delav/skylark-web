@@ -42,7 +42,7 @@ import { deepCopy } from '@/utils/dcopy'
 import { guid } from '@/utils/other'
 import { updateEntities } from '@/api/entity'
 import { setCursorStyle } from '@/utils/hover'
-import { createBuildDebug, getBuildInfo, getBuildDebugProgress } from '@/api/build'
+import { createBuildDebug, getBuildDebugProgress } from '@/api/build'
 
 export default {
   name: 'Action',
@@ -55,8 +55,8 @@ export default {
       executeEnv: '',
       hadRunCases: {},
       runFinish: false,
-      buildId: null,
       showPushDialog:false,
+      reportPath: ''
     }
   },
   computed: {
@@ -170,7 +170,7 @@ export default {
             clearInterval(interval)
             that.$store.commit('action/SET_RUNNING', false)
             that.$store.commit('action/SET_RUN_FINISH', true)
-            that.$message.success({duration: 2000, message: 'Test Complete!'})
+            that.$message.success({duration: 1000, message: 'Test Complete!'})
           }
         }).catch(() => {
           clearInterval(interval)
@@ -200,7 +200,7 @@ export default {
       }
       createBuildDebug(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
-        this.buildId = response.data['build_id']
+        this.reportPath = response.data['report_path']
         this.getProgress(response.data['build_id'], response.data['total_case'])
       })
     },
@@ -208,12 +208,9 @@ export default {
       this.$store.commit('action/SET_RUNNING', false)
     },
     showLog() {
-      if (!this.buildId) return
-      getBuildInfo(this.buildId).then(response => {
-        const reportPath = response.data['report_path']
-        const url = reportPath + '/log.html'
-        window.open(url, '_blank')
-      })
+      if (this.reportPath === '') return
+      const url = this.reportPath + '/log.html'
+      window.open(url, '_blank')
     },
     saveEntity() {
       const postData = {

@@ -1,6 +1,27 @@
 <template>
   <div class="case-tree">
-    <div class="check-header">快捷选择</div>
+    <div class="check-header">
+      <div class="priority-checkbox">
+        <span>用例级别</span>
+        <el-checkbox-group
+          @change="handleCheck"
+        >
+          <el-checkbox v-for="(item, index) in shortcutOptions['priorityList']" :key="index" :label="item.name">
+            {{ item.name }}
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
+      <div class="tag-checkbox">
+        <span>用例标签</span>
+        <el-checkbox-group
+          @change="handleCheck"
+        >
+          <el-checkbox v-for="(item, index) in shortcutOptions['tagList']" :key="index" :label="item.name">
+            {{ item.name }}
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
+    </div>
     <div class="checker">
       <tree
         ref="zTree"
@@ -11,7 +32,7 @@
     </div>
     <div class="check-footer">
       <el-button>取消</el-button>
-      <el-button>确认</el-button>
+      <el-button @click="confirmCheck">确认</el-button>
     </div>
   </div>
 </template>
@@ -19,6 +40,9 @@
 <script>
 import tree from 'vue-giant-tree-3'
 import NODE from '@/constans/node'
+import axios from 'axios'
+import { fetchTagsByProject } from '@/api/tag'
+import { fetchPriorities } from '@/api/priority'
 
 export default {
   name: 'CaseTree',
@@ -26,7 +50,8 @@ export default {
     tree,
   },
   props: {
-    treeArray: Array
+    projectId: Number,
+    treeArray: Array,
   },
   data() {
     return {
@@ -46,22 +71,45 @@ export default {
         view: {
           showIcon: false,
         },
-        callback: {
-          onCheck: this.zTreeOnCheck
-        },
       },
       zTreeObj: null,
-      checkedNodes: []
+      shortcutOptions: {}
     }
+  },
+  created() {
+    this.getShortcutOptions()
   },
   methods: {
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
     },
-    zTreeOnCheck() {
-      this.checkedNodes = this.zTreeObj.getCheckedNodes(true)
+    getShortcutOptions() {
+      axios.all([fetchTagsByProject(this.projectId), fetchPriorities()]).then(
+        axios.spread((r1, r2) => {
+          this.shortcutOptions = {
+            'tagList': r1.data,
+            'priorityList': r2.data
+          }
+        })
+      )
     },
-    confirmCheck() {}
+    handleCheck(value) {
+      console.log(value)
+    },
+    confirmCheck() {
+      const params = {}
+      const checkedCases = this.zTreeObj.getNodesByFilter(function (node) {
+        return node.checked === true && node.desc === NODE.NodeDesc.CASE
+      }, false)
+      let caseIdStrings = ''
+      for (let i = 0; i < checkedCases.length; i++) {
+        caseIdStrings += checkedCases[i] + ','
+      }
+      params['count'] = checkedCases.length
+      params['cases'] = caseIdStrings.substring(0, caseIdStrings.length-1)
+      params['options'] = this.shortcutOptions
+      this.$emit('confirmAction', params)
+    }
   }
 }
 </script>

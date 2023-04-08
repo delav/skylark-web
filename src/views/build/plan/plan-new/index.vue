@@ -18,13 +18,13 @@
           <el-select
             style="width: 100%"
             v-model="formData.project"
+            @change="changeProject"
             placeholder="选择项目">
             <el-option
               v-for="(item, index) in projectList"
               :key="index"
               :label="item.name"
               :value="item.id"
-              @click.native="getProjectVersion(item.id)"
             />
           </el-select>
         </el-form-item>
@@ -37,17 +37,16 @@
               v-for="(item, index) in versionList"
               :key="index"
               :label="item.branch"
-              :value="item.id"
-              @click.native="setBranchIndex(index)"
+              :value="item.branch"
+              @click.native="setBranch(index)"
             />
           </el-select>
         </el-form-item>
         <el-form-item label="执行环境" prop="envs">
           <el-select
             style="width: 100%"
-            v-model="selectEnvs"
+            v-model="formData.envs"
             multiple
-            collapse-tags
             placeholder="选择环境">
             <el-option
               v-for="item in envList"
@@ -57,7 +56,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用例个数" prop="total_case">
+        <el-form-item label="执行用例" prop="total_case">
           <el-input
             style="float: left;width: 120px"
             v-model="formData.total_case"
@@ -77,10 +76,7 @@
           <el-input v-model="formData.desc" type="textarea" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">
-            Create
-          </el-button>
-          <el-button>Reset</el-button>
+          <el-button type="primary" @click="createBuildPlan">创建</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -92,7 +88,11 @@
         :destroy-on-close="true"
       >
         <div class="case-content">
-          <case-tree :tree-array="getBranchData()" />
+          <case-tree
+            :project-id="formData.project"
+            :tree-array="getBranchContent()"
+            @confirmAction="saveCheckedCase"
+          />
         </div>
       </el-dialog>
     </div>
@@ -103,8 +103,8 @@
 import CaseTree from '../components/CaseTree'
 import { fetchEnvs } from '@/api/env'
 import { fetchProjectList } from '@/api/project'
-import { getPlansByProject } from '@/api/build'
-import {fetchVersion} from "@/api/version";
+import { createPlan } from '@/api/plan'
+import { fetchVersion } from '@/api/version'
 
 export default {
   name: 'PlanNew',
@@ -116,7 +116,6 @@ export default {
       envList: [],
       projectList: [],
       versionList: [],
-      branchIndex: 0,
       planList: [],
       formData: {},
       formRules: {
@@ -157,6 +156,7 @@ export default {
       },
       selectEnvs: [],
       showCaseTree: false,
+      branchIndex: 0
     }
   },
   created() {
@@ -177,23 +177,29 @@ export default {
         this.projectList = response.data
       })
     },
-    getProjectVersion(projectId) {
-      this.branchIndex = 0
+    changeProject(projectId) {
       fetchVersion(projectId).then(response => {
         this.versionList = response.data
       })
     },
-    setBranchIndex (index) {
+    setBranch(index) {
       this.branchIndex = index
     },
-    getProjectPlan(projectId) {
-      getPlansByProject(projectId).then(response => {
-        this.planList = response.data
-      })
+    getBranchContent () {
+      const index = this.branchIndex
+      return JSON.parse(this.versionList[index]['content'])
     },
-    getBranchData() {
-      const treeNodesText = this.versionList[this.branchIndex]['content']
-      return JSON.parse(treeNodesText)
+    saveCheckedCase (caseInfo) {
+      this.showCaseTree = false
+      this.formData['total_case'] = caseInfo['count']
+      this.formData['build_cases'] = caseInfo['cases']
+      this.formData['extra_data'] = JSON.stringify(caseInfo['options'])
+    },
+    createBuildPlan () {
+      this.formData['envs'] = this.formData['envs'].join(',')
+      createPlan(this.formData).then(response => {
+        console.log(response.data)
+      })
     }
   }
 }

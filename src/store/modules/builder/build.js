@@ -1,6 +1,6 @@
 const getBuildState = () => {
   return {
-    rightPage: 3,
+    rightPage: 1,
   }
 }
 

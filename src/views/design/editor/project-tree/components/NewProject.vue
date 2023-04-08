@@ -8,19 +8,19 @@
         <span class="switch-text">是否复制已有项目</span>
         <span class="switch-item">
           <el-switch
-            v-model="openCopyProject"
+            v-model="copySwitch"
             inline-prompt
             style="--el-switch-on-color: #13ce66; --el-switch-off-color: #bdc6ce"
             active-text="是"
             inactive-text="否"
           />
         </span>
-        <span class="project-list" v-show="openCopyProject">
-          <el-select style="width: 280px" v-model="selectProjectId" placeholder="Select">
+        <span class="project-list" v-show="copySwitch">
+          <el-select style="width: 280px" v-model="copyProject" placeholder="Select">
             <el-option
               v-for="(item, index) in projectList"
               :key="index"
-              :value="item.id"
+              :value="item.name"
               :label="item.name"
             />
           </el-select>
@@ -40,8 +40,8 @@ export default {
   data() {
     return {
       newProjectName: '',
-      openCopyProject: false,
-      selectProjectId: null,
+      copySwitch: false,
+      copyProject: null,
     }
   },
   computed: {
@@ -55,8 +55,8 @@ export default {
     createNewProject() {
       let createData = {}
       createData['name'] = this.newProjectName
-      if (this.openCopyProject && this.selectProjectId !== null) {
-        createData['copy_pid'] = this.selectProjectId
+      if (this.copySwitch && this.copyProject !== null) {
+        createData['cname'] = this.copyProject
       }
       this.$emit('closeDialog')
       const loading = ElLoading.service({

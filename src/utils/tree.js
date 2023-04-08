@@ -1,8 +1,7 @@
 import NODE from '@/constans/node'
-import {deepCopy} from '@/utils/dcopy'
-import {guid} from '@/utils/other'
+import { deepCopy } from '@/utils/dcopy'
+import { guid } from '@/utils/other'
 
-const caseType = 0
 const baseNode = {
   id: 1, pid: 0, name: 'DEFAULT', desc: null, type: 0,
   open: false, nocheck: false, checked: false, isParent: true, meta: {}
@@ -11,7 +10,7 @@ const baseNode = {
 function fillNode(data) {
   const node = deepCopy(baseNode)
   Object.assign(node, data)
-  if (node.type !== caseType) {
+  if (node.type !== NODE.NodeCategory.TESTCASE) {
     node.nocheck = true
   }
   if (node.desc === NODE.NodeDesc.CASE) {
@@ -89,18 +88,18 @@ export function handlerNode(obj, parentId, nodeDesc, checked=false) {
   )
 }
 
-export function transformData(data, nodeId, entities) {
+export function transformData(data, nodeId=null, entities=[]) {
   const retainField = ['mid', 'id', 'pid', 'name', 'desc', 'type', 'meta']
-  let containCase = false
-  let result = []
+  let cases = []
+  let nodes = []
   let itemMap = {}
   for (let i = 0; i < data.length; i++) {
     let item = getTargetObject(data[i], retainField)
-    // selected node if contain case
+    // selected node case number
     if (item.desc === NODE.NodeDesc.CASE) {
-      containCase = true
+      cases.push(item.mid)
       // add current selected case to run data
-      if (item.id === nodeId) {
+      if (nodeId && item.id === nodeId) {
         item.meta['extra_data']['entity'] = entities
       }
     }
@@ -117,7 +116,7 @@ export function transformData(data, nodeId, entities) {
     }
     let treeItem = itemMap[id]
     if (pid === NODE.RootPId) {
-      result.push(treeItem)
+      nodes.push(treeItem)
     } else {
       if (!itemMap[pid]) {
         itemMap[pid] = {
@@ -127,7 +126,7 @@ export function transformData(data, nodeId, entities) {
       itemMap[pid]['children'].push(treeItem)
     }
   }
-  return {flag: containCase, data: result}
+  return {cases: cases, nodes: nodes}
 }
 
 function sortBy (field) {
@@ -146,3 +145,4 @@ function getTargetObject(targetObject, propsArray) {
   })
   return result
 }
+

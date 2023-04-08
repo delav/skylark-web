@@ -127,7 +127,7 @@ import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { addSvgHover } from '@/utils/hover'
-import { formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from './mixins/handler'
+import { formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from '@/utils/tree'
 
 export default {
   name: 'ProjectTree',
@@ -222,11 +222,11 @@ export default {
       const selectedNode = this.$store.state.tree.selectedNode
       const caseEntity = this.$store.state.entity.caseEntities
       const transformResult = transformData(checkedSimpleNodes, selectedNode.id, caseEntity)
-      if (!transformResult.flag) {
+      if (transformResult.cases.length === 0) {
         this.$store.commit('tree/SET_CHECKED_NODES', [])
         return
       }
-      this.$store.commit('tree/SET_CHECKED_NODES', transformResult.data)
+      this.$store.commit('tree/SET_CHECKED_NODES', transformResult.nodes)
     },
     // expand node, get children nodes
     zTreeOnExpand(event, treeId, treeNode) {
@@ -270,13 +270,25 @@ export default {
         })
       } else {
         if (treeNode.desc === NODE.NodeDesc.SUITE) {
+          if (treeNode.type === NODE.NodeCategory.TESTCASE) {
             this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.SUITE)
+          } else {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+          }
         } else if (treeNode.desc === NODE.NodeDesc.DIR) {
+          if (treeNode.type === NODE.NodeCategory.TESTCASE) {
             this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.DIR)
+          } else {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+          }
         } else if (treeNode.desc === NODE.NodeDesc.ROOT) {
+          if (treeNode.type === NODE.NodeCategory.TESTCASE) {
             this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.ROOT)
+          } else {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+          }
         } else if (treeNode.desc === NODE.NodeDesc.FILE) {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.FILE)
+          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.FILE)
         }
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/SET_SELECT_NODE', treeNode)

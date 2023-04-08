@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { fetchPlans } from '@/api/build'
+import { fetchPlans } from '@/api/plan'
 
 export default {
   name: 'PlanList',

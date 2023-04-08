@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { fetchHistories } from '@/api/build'
+import { fetchHistories } from '@/api/history'
 
 export default {
   name: 'BuildList',
