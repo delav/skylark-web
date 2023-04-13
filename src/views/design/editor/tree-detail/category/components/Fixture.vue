@@ -53,7 +53,7 @@ export default {
       },
       fieldRules: {
         name: [
-          {required: true, validator: validateName, trigger: 'blur' },
+          { required: true, validator: validateName, trigger: 'blur' },
         ],
       }
     }

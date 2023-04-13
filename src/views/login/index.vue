@@ -63,8 +63,12 @@ export default {
         password: '+LbLATJm7w2F21Dqdp33tA=='
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur' }],
-        password: [{ required: true, trigger: 'blur' }]
+        username: [
+          { required: true, trigger: 'blur' }
+        ],
+        password: [
+          { required: true, trigger: 'blur' }
+        ]
       },
       loading: false,
       passwordType: 'password',

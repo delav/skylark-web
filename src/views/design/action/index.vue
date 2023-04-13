@@ -1,8 +1,40 @@
 <template>
   <div class="action">
-    <div class="env-show">
-      <span class="desc-text">当前环境：</span>
-      <el-tag size="small" type="warning">{{ executeEnv }}</el-tag>
+    <div class="env-setting">
+      <div class="env-list">
+        <span class="env-text">环境:</span>
+        <el-select
+          style="width: 70px"
+          v-model="executeEnv"
+          @change="changeEnv"
+          size="small"
+          placeholder=" "
+        >
+          <el-option
+            v-for="item in envList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </div>
+      <div class="region-list" v-show="showRegion">
+        <span class="region-text">地区:</span>
+        <el-select
+          style="width: 70px"
+          v-model="executeRegion"
+          @change="changeRegion"
+          size="small"
+          placeholder=" "
+        >
+          <el-option
+            v-for="item in regionList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </div>
     </div>
     <div class="action-content">
       <div class="icon-list">
@@ -53,6 +85,7 @@ export default {
   data() {
     return {
       executeEnv: '',
+      executeRegion: '',
       hadRunCases: {},
       runFinish: false,
       showPushDialog:false,
@@ -60,9 +93,6 @@ export default {
     }
   },
   computed: {
-    projectId() {
-      return this.$store.state.project.projectId
-    },
     canRun() {
       const running = this.$store.state.action.isRunning
       const checkedNodes = this.$store.state.tree.checkedNodes
@@ -81,19 +111,34 @@ export default {
       return this.$store.state.entity.selectedEntities.length !== 0
     },
     canPush() {
-      const pid = this.$store.state.project.projectId
+      const pid = this.$store.state.tree.projectId
       return pid !== 0 && pid !== ''
+    },
+    showRegion() {
+      return this.$store.state.project.regionList.length !== 0
+    },
+    envList() {
+      return this.$store.state.project.envList
+    },
+    regionList() {
+      return this.$store.state.project.regionList
     }
   },
   watch: {
-    '$store.state.project.currentEnv': {
-      handler(value) {
-        this.getCurrentEnv(value)
+    '$store.state.project.envList': {
+      handler() {
+        this.setDefaultEnv()
       },
-      immediate: true
-    }
+      deep: true
+    },
+    '$store.state.project.regionList': {
+      handler() {
+        this.setDefaultRegion()
+      },
+      deep: true
+    },
   },
-  created() {
+  mounted() {
     this.addMouseEvent()
   },
   unmounted() {
@@ -115,14 +160,25 @@ export default {
       document.oncontextmenu = function(){ return true }
       document.onmousedown = function () { return true }
     },
-    getCurrentEnv(envId) {
-      const envList = this.$store.state.project.envList
-      for (let i = 0; i < envList.length; i++) {
-        if (envId === envList[i]['id']) {
-          this.executeEnv = envList[i]['name']
-          break
-        }
+    setDefaultEnv() {
+      const envs = this.$store.state.project.envList
+      if (envs.length !== 0) {
+        this.executeEnv = envs[0].id
       }
+      this.changeEnv(this.executeEnv)
+    },
+    setDefaultRegion() {
+      const regions = this.$store.state.project.regionList
+      if (regions.length !== 0) {
+        this.executeRegion = regions[0].id
+      }
+      this.changeRegion(this.executeRegion)
+    },
+    changeEnv(val) {
+      this.$store.commit('action/SET_CURRENT_ENV', val)
+    },
+    changeRegion(val) {
+      this.$store.commit('action/SET_CURRENT_REGION', val)
     },
     changeNodeColor(treeObj, mid, color) {
       let node = treeObj.getNodesByFilter(function (node) {
@@ -193,10 +249,13 @@ export default {
       this.recoverStat()
       const data = {
         'action_type': 'start',
-        'env_id': this.$store.state.project.currentEnv,
-        'project_id': this.$store.state.project.projectId,
-        'project_name': this.$store.state.project.projectName,
+        'env_id': this.$store.state.action.currentEnv,
+        'project_id': this.$store.state.tree.projectId,
+        'project_name': this.$store.state.tree.projectName,
         'run_data': this.$store.state.tree.checkedNodes,
+      }
+      if (this.$store.state.action.currentRegion !== '') {
+        data['region_id'] = this.$store.state.action.currentRegion
       }
       createBuildDebug(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
@@ -260,25 +319,38 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
+@import "src/styles/element/selector.scss";
 
 .action {
   height: $toolbarHeight;
   background-color: $toolbarBg;
-  .env-show {
-    float: left;
-    width: 150px;
+  display: flex;
+  .env-setting {
+    display: flex;
+    width: 300px;
     height: 100%;
     padding-left: 5px;
+    padding-top: -1px;
     line-height: $toolbarHeight;
-    .desc-text {
-      font-size: 14px;
-      color: #6b778c;
-      padding-right: 5px;
+    .env-list {
+      .env-text {
+        font-size: 14px;
+        color: #6b778c;
+        padding-right: 10px;
+      }
+    }
+    .region-list {
+      margin-left: 10px;
+      .region-text {
+        font-size: 14px;
+        color: #6b778c;
+        padding-right: 10px;
+      }
     }
   }
   .action-content {
     float: left;
-    width: calc(100% - 150px);
+    width: calc(100% - 300px);
     height: 100%;
     text-align: center;
     .icon-list {

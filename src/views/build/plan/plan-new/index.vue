@@ -14,10 +14,10 @@
         <el-form-item label="计划标题" prop="title">
           <el-input v-model="formData.title"></el-input>
         </el-form-item>
-        <el-form-item label="项目名称" prop="project">
+        <el-form-item label="项目名称" prop="project_id">
           <el-select
             style="width: 100%"
-            v-model="formData.project"
+            v-model="formData.project_id"
             @change="changeProject"
             placeholder="选择项目">
             <el-option
@@ -65,15 +65,18 @@
           </el-input>
           <el-button style="float: left;margin-left: 20px" type="primary" @click="showCaseTree=true">选择用例</el-button>
         </el-form-item>
-        <el-form-item label="定时开关" prop="timer_switch">
+        <el-form-item label="定时开关" prop="periodic_switch">
           <el-switch
-            v-model="formData.timer_switch"
+            v-model="formData.periodic_switch"
             active-text="开启"
             inactive-text="关闭"
           />
         </el-form-item>
-        <el-form-item label="定时配置" prop="timer">
-          <el-input v-model="formData.desc" type="textarea" />
+        <el-form-item label="定时配置" prop="periodic_expr">
+          <el-input v-model="formData.periodic_expr" type="textarea" />
+        </el-form-item>
+        <el-form-item label="期望通过率" prop="expect_pass">
+          <el-progress :percentage="formData.expect_pass" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="createBuildPlan">创建</el-button>
@@ -101,6 +104,7 @@
 
 <script>
 import CaseTree from '../components/CaseTree'
+import { deepCopy } from '@/utils/dcopy'
 import { fetchEnvs } from '@/api/env'
 import { fetchProjectList } from '@/api/project'
 import { createPlan } from '@/api/plan'
@@ -117,41 +121,24 @@ export default {
       projectList: [],
       versionList: [],
       planList: [],
-      formData: {},
+      formData: {
+        'expect_pass': 90
+      },
       formRules: {
         title: [
-          {
-            required: true,
-            message: 'Please input plan title',
-            trigger: 'blur',
-          },
+          { required: true, message: 'Please input plan title', trigger: 'blur' },
         ],
-        project: [
-          {
-            required: true,
-            message: 'Please select project',
-            trigger: 'change',
-          },
+        project_id: [
+          { required: true, message: 'Please select project', trigger: 'change' },
         ],
         branch: [
-          {
-            required: true,
-            message: 'Please select branch',
-            trigger: 'change',
-          },
+          { required: true, message: 'Please select branch', trigger: 'change' },
         ],
         envs: [
-          {
-            required: true,
-            message: 'Please select env',
-            trigger: 'change',
-            type: 'array',
-          },
+          { required: true, message: 'Please select env', trigger: 'blur', type: 'array' },
         ],
         total_case: [
-          {
-            required: true,
-          },
+          { required: true },
         ]
       },
       selectEnvs: [],
@@ -196,9 +183,25 @@ export default {
       this.formData['extra_data'] = JSON.stringify(caseInfo['options'])
     },
     createBuildPlan () {
-      this.formData['envs'] = this.formData['envs'].join(',')
-      createPlan(this.formData).then(response => {
-        console.log(response.data)
+      this.formData['periodic_expr'] = this.formData['periodic_expr'].replace(/(^\s*)|(\s*$)/g, '')
+      if (this.formData['periodic_switch']) {
+        if (this.formData['periodic_expr'] === '') {
+          this.$message.warning('定时配置不能为空')
+          return
+        }
+        try {
+          const cronParse = require('cron-parser')
+          cronParse.parseExpression(this.formData['periodic_expr'])
+        } catch (err) {
+          this.$message.warning('定时表达式错误')
+          return
+        }
+      }
+      const postData = deepCopy(this.formData)
+      postData['envs'] = postData['envs'].join(',')
+      createPlan(postData).then(() => {
+        this.$store.commit('build/SET_RIGHT_PAGE', 1)
+        this.$message.success('Create plan success!')
       })
     }
   }

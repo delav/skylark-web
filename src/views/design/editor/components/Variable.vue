@@ -96,7 +96,7 @@ export default {
       },
       fieldRules: {
         name: [
-          {required: true, validator: validateName, trigger: 'blur' },
+          { required: true, validator: validateName, trigger: 'blur' },
         ],
       }
     }
@@ -144,7 +144,7 @@ export default {
     },
     getModuleInfoFromProject() {
       return {
-        id: this.$store.state.project.projectId,
+        id: this.$store.state.tree.projectId,
         type: NODE.ModuleType.PROJECT,
         env: this.$store.state.project.currentEnv
       }

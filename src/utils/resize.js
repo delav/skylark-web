@@ -16,7 +16,7 @@ export function dragWController(leftId, rightId, boxId, resizeId) {
   // 鼠标按下事件
   resizeW.onmousedown = function (e) {
     // 如果隐藏项目树，则禁止拖动宽度
-    const hideTree = store.getters['treeHidden']
+    const hideTree = store.state.tree.hideTree
     if (hideTree) return
     const boxWidth = box.offsetWidth
     // 拖动条的宽度

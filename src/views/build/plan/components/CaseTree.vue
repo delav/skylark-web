@@ -103,10 +103,15 @@ export default {
       }, false)
       let caseIdStrings = ''
       for (let i = 0; i < checkedCases.length; i++) {
-        caseIdStrings += checkedCases[i] + ','
+        const caseId = checkedCases[i].mid
+        if (i !== checkedCases.length - 1) {
+          caseIdStrings += caseId + ','
+          continue
+        }
+        caseIdStrings += caseId
       }
       params['count'] = checkedCases.length
-      params['cases'] = caseIdStrings.substring(0, caseIdStrings.length-1)
+      params['cases'] = caseIdStrings
       params['options'] = this.shortcutOptions
       this.$emit('confirmAction', params)
     }

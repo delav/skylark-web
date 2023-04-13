@@ -41,7 +41,7 @@
       </div>
       <div class="tool">
       <span class="setting-button">
-        <el-button type="info" size="small" @click="envSetting"><el-icon><Setting /></el-icon>环境配置</el-button>
+        <el-button type="info" size="small" @click="envSetting"><el-icon><Setting /></el-icon>变量配置</el-button>
       </span>
       <span class="setting-button">
         <el-button type="info" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
@@ -49,13 +49,33 @@
       </div>
     </div>
     <div v-else class="project-hide">
-      <el-tooltip
-        effect="dark"
-        content="展开"
-        placement="bottom"
-      >
-        <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(false)"><Expand /></el-icon>
-      </el-tooltip>
+      <div class="top-tool">
+        <el-tooltip
+          effect="dark"
+          content="展开"
+          placement="right"
+        >
+          <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(false)"><Expand /></el-icon>
+        </el-tooltip>
+      </div>
+      <div class="bottom-tool">
+        <div class="bottom-flex">
+          <el-tooltip
+            effect="dark"
+            content="变量配置"
+            placement="right"
+          >
+            <el-icon class="tool-icon" @click="envSetting"><Setting /></el-icon>
+          </el-tooltip>
+          <el-tooltip
+            effect="dark"
+            content="新建项目"
+            placement="right"
+          >
+            <el-icon class="tool-icon" @click="showNewDialog=true"><Plus /></el-icon>
+          </el-tooltip>
+        </div>
+      </div>
     </div>
     <div class="dialog">
       <div class="node-dialog">
@@ -196,9 +216,9 @@ export default {
     changeProject(pId, name) {
       fetchBaseDir(pId).then(response => {
         this.zTreeNodes = formatBaseNodes(response.data)
-        this.$store.commit('project/SET_PROJECT_ID', pId)
-        this.$store.commit('project/SET_PROJECT_NAME', name)
         this.$store.commit('tree/RESET_STATE')
+        this.$store.commit('tree/SET_PROJECT_ID', pId)
+        this.$store.commit('tree/SET_PROJECT_NAME', name)
       })
     },
     zTreeOnCreated(zTreeObj) {
@@ -635,6 +655,25 @@ $toolHeight: 40px;
     }
   }
   .project-hide {
+    .top-tool {
+    }
+    .bottom-tool {
+      position: fixed;
+      bottom: 0;
+      .bottom-flex {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        padding-left: 4px;
+        .tool-icon {
+          margin-bottom: 15px;
+          font-size: 25px;
+          color: $foldIconColor;
+          cursor: pointer;
+        }
+      }
+    }
   }
   .dialog {
     .node-dialog {

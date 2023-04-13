@@ -1,5 +1,7 @@
 const getExecuteState = () => {
   return {
+    currentEnv: '',
+    currentRegion: '',
     isRunning: false,
     runFinish: false
   }
@@ -10,6 +12,12 @@ const state = getExecuteState()
 const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getExecuteState())
+  },
+  SET_CURRENT_ENV: (state, envId) => {
+    state.currentEnv = envId
+  },
+  SET_CURRENT_REGION: (state, regionId) => {
+    state.currentRegion = regionId
   },
   SET_RUNNING: (state, runFlag) => {
     state.isRunning = runFlag

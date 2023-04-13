@@ -71,11 +71,11 @@ export default {
   },
   created() {
     this.getVersionList()
-    this.versionForm.project = this.$store.state.project.projectName
+    this.versionForm.project = this.$store.state.tree.projectName
   },
   methods: {
     getVersionList() {
-      const projectId = this.$store.state.project.projectId
+      const projectId = this.$store.state.tree.projectId
       fetchVersion(projectId, 1).then(response => {
         this.versionList = response.data
       })
@@ -86,7 +86,7 @@ export default {
           return
         }
         const versionInfo = {
-          'project_id': this.$store.state.project.projectId,
+          'project_id': this.$store.state.tree.projectId,
           'branch': this.versionForm.branch,
           'remark': this.versionForm.remark,
         }

@@ -32,6 +32,8 @@ export default {
   },
   created() {
     this.$store.dispatch('project/getProjects')
+    this.$store.dispatch('project/getEnvironments')
+    this.$store.dispatch('project/getRegions')
   },
   methods: {}
 }

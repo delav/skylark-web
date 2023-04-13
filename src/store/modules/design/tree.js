@@ -2,6 +2,8 @@
 
 const getTreeState = () => {
   return {
+    projectId: '',
+    projectName: '',
     hideTree: false,
     treeId: '',
     detailType: 0,
@@ -16,6 +18,12 @@ const state = getTreeState()
 const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getTreeState())
+  },
+  SET_PROJECT_ID: (state, projectId) => {
+    state.projectId = projectId
+  },
+  SET_PROJECT_NAME: (state, projectName) => {
+    state.projectName = projectName
   },
   SET_HIDE_TREE: (state, isHide) => {
     state.hideTree = isHide
