@@ -1,39 +1,30 @@
 <template>
   <div class="build">
-    <div class="build-list">
-      <build-list />
+    <div class="record">
+      <build-record />
     </div>
     <div class="plan">
-      <build-detail v-show="rightPage===2" />
-      <plan-list v-show="rightPage===1" />
-      <plan-new v-show="rightPage===3" />
+      <build-plan />
     </div>
   </div>
 </template>
 
 <script>
-import BuildList from './list'
-import BuildDetail from './detail'
-import PlanList from './plan/plan-list'
-import PlanNew from './plan/plan-new'
+import BuildRecord from './record'
+import BuildPlan from './plan'
+
 
 export default {
   name: 'Build',
   components: {
-    BuildList,
-    BuildDetail,
-    PlanList,
-    PlanNew,
-  },
-  computed: {
-    rightPage() {
-      return this.$store.state.build.rightPage
-    }
+    BuildRecord,
+    BuildPlan,
   },
   created() {
-    this.$store.dispatch('project/getProjects')
-    this.$store.dispatch('project/getEnvironments')
-    this.$store.dispatch('project/getRegions')
+    this.$store.dispatch('base/getBaseInfo')
+  },
+  unmounted() {
+    this.$store.commit('base/RESET_STATE')
   },
   methods: {}
 }
@@ -44,7 +35,7 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
-  .build-list {
+  .record {
     height: 100%;
     width: 298px;
     border-right: 2px solid #000;

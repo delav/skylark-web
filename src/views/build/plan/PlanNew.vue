@@ -56,6 +56,20 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="执行地区" prop="regions" v-show="showRegion">
+          <el-select
+            style="width: 100%"
+            v-model="formData.regions"
+            multiple
+            placeholder="选择地区">
+            <el-option
+              v-for="item in regionList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="执行用例" prop="total_case">
           <el-input
             style="float: left;width: 120px"
@@ -72,14 +86,24 @@
             inactive-text="关闭"
           />
         </el-form-item>
-        <el-form-item label="定时配置" prop="periodic_expr">
-          <el-input v-model="formData.periodic_expr" type="textarea" />
+        <el-form-item label="定时配置" prop="periodic_expr" v-show="formData.periodic_switch">
+          <el-input v-model="formData.periodic_expr" />
         </el-form-item>
         <el-form-item label="期望通过率" prop="expect_pass">
-          <el-progress :percentage="formData.expect_pass" />
+          <drag-progress
+            ref="cusChild"
+            :width="500"
+            :percent="formData.expect_pass"
+            bgColor="#ddd"
+            progressColor="#409EFF"
+            :showPerText="true"
+            :max="100"
+            @percentChange="onPercentChange"
+          />
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="createBuildPlan">创建</el-button>
+        <el-form-item class="operate-button">
+          <el-button type="primary" @click="createBuildPlan">创建并构建</el-button>
+          <el-button class="create-button" type="primary" @click="createBuildPlan">创建</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -103,22 +127,31 @@
 </template>
 
 <script>
+import PAGE from '@/constans/build'
 import CaseTree from '../components/CaseTree'
+import DragProgress from '@/components/DragProgress'
 import { deepCopy } from '@/utils/dcopy'
-import { fetchEnvs } from '@/api/env'
-import { fetchProjectList } from '@/api/project'
 import { createPlan } from '@/api/plan'
 import { fetchVersion } from '@/api/version'
 
 export default {
   name: 'PlanNew',
   components: {
-    CaseTree
+    CaseTree,
+    DragProgress,
   },
   data() {
+    const validateRegion = (rule, value, callback) => {
+      if (!this.showRegion) {
+        callback()
+      }
+      else if (value.length === 0) {
+        callback(new Error('Please select region'))
+      } else {
+        callback()
+      }
+    }
     return {
-      envList: [],
-      projectList: [],
       versionList: [],
       planList: [],
       formData: {
@@ -137,32 +170,36 @@ export default {
         envs: [
           { required: true, message: 'Please select env', trigger: 'blur', type: 'array' },
         ],
+        regions: [
+          { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
+        ],
         total_case: [
-          { required: true },
+          { required: true, message: 'Please select test cases', type: 'number' },
         ]
       },
-      selectEnvs: [],
       showCaseTree: false,
       branchIndex: 0
     }
   },
+  computed: {
+    projectList() {
+      return this.$store.state.base.projectList
+    },
+    envList() {
+      return this.$store.state.base.envList
+    },
+    regionList() {
+      return this.$store.state.base.regionList
+    },
+    showRegion() {
+      return this.$store.state.base.showRegion
+    }
+  },
   created() {
-    this.getProjectList()
-    this.getEnvList()
   },
   methods: {
     backToPlanList () {
-      this.$store.commit('build/SET_RIGHT_PAGE', 1)
-    },
-    getEnvList() {
-      fetchEnvs().then(response => {
-        this.envList = response.data
-      })
-    },
-    getProjectList() {
-      fetchProjectList().then(response => {
-        this.projectList = response.data
-      })
+      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
     },
     changeProject(projectId) {
       fetchVersion(projectId).then(response => {
@@ -182,26 +219,41 @@ export default {
       this.formData['build_cases'] = caseInfo['cases']
       this.formData['extra_data'] = JSON.stringify(caseInfo['options'])
     },
+    onPercentChange (num) {
+      this.formData.expect_pass = num
+    },
     createBuildPlan () {
-      this.formData['periodic_expr'] = this.formData['periodic_expr'].replace(/(^\s*)|(\s*$)/g, '')
-      if (this.formData['periodic_switch']) {
-        if (this.formData['periodic_expr'] === '') {
-          this.$message.warning('定时配置不能为空')
+      this.$refs['ruleFormRef'].validate((valid) => {
+        if (!valid) {
           return
         }
-        try {
-          const cronParse = require('cron-parser')
-          cronParse.parseExpression(this.formData['periodic_expr'])
-        } catch (err) {
-          this.$message.warning('定时表达式错误')
-          return
+        if (this.formData['periodic_switch']) {
+          if (!this.formData['periodic_expr']) {
+            this.$message.warning('定时配置不能为空')
+            return
+          }
+          this.formData['periodic_expr'] = this.formData['periodic_expr'].replace(/(^\s*)|(\s*$)/g, '')
+          if (this.formData['periodic_expr'] === '') {
+            this.$message.warning('定时配置不能为空')
+            return
+          }
+          try {
+            const cronParse = require('cron-parser')
+            cronParse.parseExpression(this.formData['periodic_expr'])
+          } catch (err) {
+            this.$message.warning('定时表达式错误')
+            return
+          }
         }
-      }
-      const postData = deepCopy(this.formData)
-      postData['envs'] = postData['envs'].join(',')
-      createPlan(postData).then(() => {
-        this.$store.commit('build/SET_RIGHT_PAGE', 1)
-        this.$message.success('Create plan success!')
+        const postData = deepCopy(this.formData)
+        postData['envs'] = postData['envs'].join(',')
+        if (this.showRegion) {
+          postData['regions'] = postData['regions'].join(',')
+        }
+        createPlan(postData).then(() => {
+          this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
+          this.$message.success('Create plan success!')
+        })
       })
     }
   }
@@ -224,6 +276,13 @@ export default {
   }
   .create-body {
     width: 100%;
+    .operate-button {
+      float: right;
+      margin-top: 20px;
+      .create-button {
+        margin-left: 25px;
+      }
+    }
   }
 }
 </style>

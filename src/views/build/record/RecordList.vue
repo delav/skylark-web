@@ -1,5 +1,5 @@
 <template>
-  <div class="build-list">
+  <div class="record-list">
     <div class="instantly-item">
       <span>即将构建</span>
       <div></div>
@@ -12,21 +12,21 @@
 </template>
 
 <script>
-import { fetchHistories } from '@/api/history'
+import { fetchRecords } from '@/api/record'
 
 export default {
-  name: 'BuildList',
+  name: 'RecordList',
   data() {
     return {
-      historyList: [],
+      recordList: [],
     }
   },
   created() {
-    // this.getHistoryList()
+    // this.getRecordList()
   },
   methods: {
-    getHistoryList() {
-      fetchHistories(10, 1).then(response => {
+    getRecordList() {
+      fetchRecords(10, 1).then(response => {
         this.historyList = response.data
       })
     }
@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.build-list {
+.record-list {
   width: 100%;
   height: 100%;
   .instantly-item {

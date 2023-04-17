@@ -55,10 +55,10 @@ export default {
   },
   computed: {
     envList() {
-      return this.$store.state.project.envList
+      return this.$store.state.base.envList
     },
     regionList() {
-      return this.$store.state.project.regionList
+      return this.$store.state.base.regionList
     }
   },
   created() {

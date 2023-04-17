@@ -161,7 +161,7 @@ export default {
       return this.$store.state.tree.hideTree
     },
     projectList() {
-      return this.$store.state.project.projectList
+      return this.$store.state.base.projectList
     }
   },
   data() {

@@ -1,24 +1,47 @@
 //button color
-$buttonBg: #f4f5f7;
-$buttonText: #344563e5;
-$buttonHoverBg: #dfe1e5;
-$buttonHoverText: #0065ff;
+$infoButtonBg: #f4f5f7;
+$infoButtonText: #344563e5;
+$infoButtonHoverBg: #dfe1e5;
+$infoButtonHoverText: $mainColor;
+
+$primaryButtonBg: $mainColor;
+$primaryButtonText: #ffffff;
+$primaryButtonHoverBg: #ffffff;
+$primaryButtonHoverText: $mainColor;
 
 // custom button style
 .el-button--info {
-  color: $buttonText;
-  background-color: $buttonBg;
-  border-color: $buttonBg;
+  color: $infoButtonText;
+  background-color: $infoButtonBg;
+  border-color: $infoButtonBg;
 }
 .el-button--info.is-active,
 .el-button--info:active {
-  color: $buttonText;
-  background: $buttonHoverBg;
-  border-color: $buttonHoverBg;
+  color: $infoButtonText;
+  background: $infoButtonHoverBg;
+  border-color: $infoButtonHoverBg;
 }
 .el-button--info:focus,
 .el-button--info:hover {
-  color: $buttonHoverText;
-  background: $buttonHoverBg;
-  border-color: $buttonBg;
+  color: $infoButtonHoverText;
+  background: $infoButtonHoverBg;
+  border-color: $infoButtonBg;
+}
+
+.el-button--primary {
+  color: $primaryButtonText;
+  background-color: $primaryButtonBg;
+  border-color: $primaryButtonBg;
+}
+.el-button--primary.is-active,
+.el-button--primary:active {
+  color: $primaryButtonText;
+  background: $primaryButtonHoverBg;
+  border-color: $primaryButtonHoverBg;
+}
+.el-button--primary:focus,
+.el-button--primary:hover {
+  color: $primaryButtonHoverText;
+  background: $primaryButtonHoverBg;
+  border-color: $primaryButtonBg;
 }

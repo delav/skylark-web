@@ -16,14 +16,13 @@ export default {
     Editor
   },
   created() {
-    this.$store.dispatch('project/getProjects')
-    this.$store.dispatch('project/getEnvironments')
-    this.$store.dispatch('project/getRegions')
+    this.$store.dispatch('base/getBaseInfo')
   },
   unmounted() {
     this.$store.commit('action/RESET_STATE')
     this.$store.commit('tree/RESET_STATE')
     this.$store.commit('entity/RESET_STATE')
+    this.$store.commit('base/RESET_STATE')
   }
 }
 </script>

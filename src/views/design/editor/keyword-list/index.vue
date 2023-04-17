@@ -82,7 +82,7 @@ export default {
     }
   },
   watch: {
-    '$store.state.project.projectId': {
+    '$store.state.tree.projectId': {
       handler(value) {
         if (value === '') return
         this.getGroupsUserKeywords(value)

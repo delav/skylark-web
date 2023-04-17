@@ -146,7 +146,7 @@ export default {
       return {
         id: this.$store.state.tree.projectId,
         type: NODE.ModuleType.PROJECT,
-        env: this.$store.state.project.currentEnv
+        env: this.$store.state.tree.currentEnv
       }
     },
     variableNameExist (name) {

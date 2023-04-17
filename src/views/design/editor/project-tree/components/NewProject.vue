@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     projectList() {
-      return this.$store.state.project.projectList
+      return this.$store.state.base.projectList
     },
   },
   created() {

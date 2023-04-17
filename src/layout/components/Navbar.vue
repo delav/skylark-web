@@ -17,8 +17,13 @@
           <el-icon class="lang-icon"><ArrowDown /></el-icon>
         </span>
         <template #dropdown>
-          <el-dropdown-menu v-for="(value, key, index) in lang" :key="index">
-            <el-dropdown-item>{{ value }}</el-dropdown-item>
+          <el-dropdown-menu>
+            <el-dropdown-item @click.native="changeLanguage('CN')">
+              <span>中文</span>
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="changeLanguage('US')">
+              <span>English</span>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -77,7 +82,10 @@ export default {
   },
   methods: {
     changeLanguage(val) {
+      console.log('切换语言')
+      if (this.$i18n.locale === val) return
       this.$i18n.locale = val
+      this.$root.$i18n.locale = val
     },
     hasOneShowingChild(children = []) {
       const showingChildren = children.filter(item => {

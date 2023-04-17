@@ -18,7 +18,7 @@
           />
         </el-select>
       </div>
-      <div class="region-list" v-show="showRegion">
+      <div class="region-list" v-if="showRegion">
         <span class="region-text">地区:</span>
         <el-select
           style="width: 70px"
@@ -115,27 +115,22 @@ export default {
       return pid !== 0 && pid !== ''
     },
     showRegion() {
-      return this.$store.state.project.regionList.length !== 0
+      return this.$store.state.base.showRegion
     },
     envList() {
-      return this.$store.state.project.envList
+      return this.$store.state.base.envList
     },
     regionList() {
-      return this.$store.state.project.regionList
+      return this.$store.state.base.regionList
     }
   },
   watch: {
-    '$store.state.project.envList': {
-      handler() {
+    '$store.state.base.baseLoaded': {
+      handler(value) {
+        if (!value) return
         this.setDefaultEnv()
-      },
-      deep: true
-    },
-    '$store.state.project.regionList': {
-      handler() {
         this.setDefaultRegion()
       },
-      deep: true
     },
   },
   mounted() {
@@ -161,14 +156,14 @@ export default {
       document.onmousedown = function () { return true }
     },
     setDefaultEnv() {
-      const envs = this.$store.state.project.envList
+      const envs = this.$store.state.base.envList
       if (envs.length !== 0) {
         this.executeEnv = envs[0].id
       }
       this.changeEnv(this.executeEnv)
     },
     setDefaultRegion() {
-      const regions = this.$store.state.project.regionList
+      const regions = this.$store.state.base.regionList
       if (regions.length !== 0) {
         this.executeRegion = regions[0].id
       }
@@ -319,7 +314,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
-@import "src/styles/element/selector.scss";
 
 .action {
   height: $toolbarHeight;
@@ -357,5 +351,8 @@ export default {
       display: inline-block;
     }
   }
+}
+.action .env-setting {
+  @import "src/styles/element/selector.scss";
 }
 </style>
