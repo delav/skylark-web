@@ -31,24 +31,32 @@
     <div class="item-body">
       <el-table :data="planList" border style="width: 100%">
         <el-table-column fixed prop="title" label="计划名称" min-width="15%" show-overflow-tooltip />
-        <el-table-column prop="project_id" label="项目" min-width="10%" show-overflow-tooltip >
-          <template #default="scope">
-            <span>{{projectMap[scope.row.project_id]}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="branch" label="分支" min-width="10%" show-overflow-tooltip >
-          <template #default="scope">
-            <span>{{scope.row.branch}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column prop="project_name" label="项目" min-width="10%" show-overflow-tooltip />
+        <el-table-column prop="branch" label="分支" min-width="10%" show-overflow-tooltip  />
         <el-table-column prop="env_id" label="环境" min-width="10%" show-overflow-tooltip >
           <template #default="scope">
-            <span>{{transferEnv(scope.row.env_list)}}</span>
+            <el-tag
+              v-for="(id, index) in scope.row.env_list"
+              :key="index"
+              style="margin-left: 2px"
+              effect="dark"
+              size="small"
+            >
+              {{ envMap[id] }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="region_id" label="地区" min-width="10%" show-overflow-tooltip v-if="showRegion">
           <template #default="scope">
-            <span>{{transferRegion(scope.row.region_list)}}</span>
+            <el-tag
+              v-for="(id, index) in scope.row.region_list"
+              :key="index"
+              style="margin-left: 2px"
+              effect="dark"
+              size="small"
+            >
+              {{ regionMap[id] }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="total_case" label="用例总数" min-width="10%" show-overflow-tooltip >
@@ -66,13 +74,14 @@
             <span>{{scope.row.periodic_expr}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="180">
+        <el-table-column fixed="right" label="操作" width="230">
           <template #default="scope">
             <el-button type="warning" size="small" @click="preBuild(scope.row)" circle >
               <el-icon :size="20"><CaretRight /></el-icon>
             </el-button>
             <el-button type="warning" size="small" >编辑</el-button>
             <el-button type="primary" size="small" @click="gotoPlanDetail">详情</el-button>
+            <el-button type="danger" size="small" @click="gotoPlanDetail">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -130,9 +139,6 @@ export default {
     showRegion() {
       return this.$store.state.base.showRegion
     },
-    projectMap() {
-      return this.$store.state.base.projectMap
-    },
     envMap() {
       return this.$store.state.base.envMap
     },
@@ -148,26 +154,6 @@ export default {
       fetchPlans(1, 10).then(response => {
         this.planList = response.data
       })
-    },
-    transferEnv(idList) {
-      const nameMap = this.envMap
-      return this.getNameById(idList, nameMap)
-    },
-    transferRegion(idList) {
-      const nameMap = this.regionMap
-      return this.getNameById(idList, nameMap)
-    },
-    getNameById(idList, map) {
-      let nameString = ''
-      for (let i = 0; i < idList.length; i++) {
-        const name = map[idList[i]]
-        if (i === idList.length - 1) {
-          nameString += name
-        } else {
-          nameString += name + ','
-        }
-      }
-      return nameString
     },
     // transferIdString(idString, type) {
     //   let map = {}

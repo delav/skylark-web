@@ -4,7 +4,7 @@ const NodeCategory = {
   TESTCASE: 0,
   KEYWORD: 1,
   RESOURCE: 2,
-  HELPFILE: 3,
+  PROJECTFILE: 3,
 }
 
 const NodeDesc = {
@@ -15,8 +15,13 @@ const NodeDesc = {
 }
 
 const ActionType = {
-  POST: 1,
+  CREATE: 1,
   UPDATE: 2,
+  DELETE: 3,
+  UPLOAD: 4,
+  DOWNLOAD: 5,
+  COPY: 6,
+  PASTE: 7,
 }
 
 const DetailType = {
@@ -34,6 +39,13 @@ const ModuleType = {
   SUITE: 2,
 }
 
+const ExtraDataKey = {
+  VARIABLE: 'variables',
+  FIXTURE: 'fixtures',
+  TAG: 'tags',
+  ENTITY: 'entities'
+}
+
 export default {
   RootPId,
   NodeCategory,
@@ -41,4 +53,5 @@ export default {
   ActionType,
   DetailType,
   ModuleType,
+  ExtraDataKey
 }

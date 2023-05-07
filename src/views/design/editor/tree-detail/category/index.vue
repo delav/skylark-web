@@ -34,8 +34,8 @@ export default {
         const categories = [NODE.DetailType.ROOT, NODE.DetailType.DIR, NODE.DetailType.SUITE]
         if (categories.indexOf(detailType) !== -1) {
           this.cateInfo = this.$store.state.tree.selectedNode.meta
-          this.variableArray = this.cateInfo['extra_data']['variables']
-          this.fixtureArray = this.cateInfo['extra_data']['fixtures']
+          this.variableArray = this.cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
+          this.fixtureArray = this.cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
         }
       }
     },

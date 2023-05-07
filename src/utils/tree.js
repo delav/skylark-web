@@ -100,7 +100,7 @@ export function transformData(data, nodeId=null, entities=[]) {
       cases.push(item.mid)
       // add current selected case to run data
       if (nodeId && item.id === nodeId) {
-        item.meta['extra_data']['entity'] = entities
+        item.meta['extra_data'][NODE.ExtraDataKey.ENTITY] = entities
       }
     }
     let id = item.id

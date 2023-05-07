@@ -18,13 +18,13 @@
           <el-select
             style="width: 100%"
             v-model="formData.project_id"
-            @change="changeProject"
             placeholder="选择项目">
             <el-option
               v-for="(item, index) in projectList"
               :key="index"
               :label="item.name"
               :value="item.id"
+              @click.native="changeProject(item)"
             />
           </el-select>
         </el-form-item>
@@ -42,10 +42,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="执行环境" prop="envs">
+        <el-form-item label="执行环境" prop="env_list">
           <el-select
             style="width: 100%"
-            v-model="formData.envs"
+            v-model="formData.env_list"
             multiple
             placeholder="选择环境">
             <el-option
@@ -56,10 +56,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="执行地区" prop="regions" v-show="showRegion">
+        <el-form-item label="执行地区" prop="region_list">
           <el-select
             style="width: 100%"
-            v-model="formData.regions"
+            v-model="formData.region_list"
             multiple
             placeholder="选择地区">
             <el-option
@@ -130,7 +130,6 @@
 import PAGE from '@/constans/build'
 import CaseTree from '../components/CaseTree'
 import DragProgress from '@/components/DragProgress'
-import { deepCopy } from '@/utils/dcopy'
 import { createPlan } from '@/api/plan'
 import { fetchVersion } from '@/api/version'
 
@@ -167,10 +166,10 @@ export default {
         branch: [
           { required: true, message: 'Please select branch', trigger: 'change' },
         ],
-        envs: [
+        env_list: [
           { required: true, message: 'Please select env', trigger: 'blur', type: 'array' },
         ],
-        regions: [
+        region_list: [
           { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
         ],
         total_case: [
@@ -201,17 +200,20 @@ export default {
     backToPlanList () {
       this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
     },
-    changeProject(projectId) {
+    changeProject(project) {
+      this.versionList = []
+      const projectId = project.id
       fetchVersion(projectId).then(response => {
         this.versionList = response.data
       })
+      this.formData['project_name'] = project.name
     },
     setBranch(index) {
       this.branchIndex = index
     },
     getBranchContent () {
       const index = this.branchIndex
-      return JSON.parse(this.versionList[index]['content'])
+      return JSON.parse(this.versionList[index]['nodes'])
     },
     saveCheckedCase (caseInfo) {
       this.showCaseTree = false
@@ -245,12 +247,7 @@ export default {
             return
           }
         }
-        const postData = deepCopy(this.formData)
-        postData['envs'] = postData['envs'].join(',')
-        if (this.showRegion) {
-          postData['regions'] = postData['regions'].join(',')
-        }
-        createPlan(postData).then(() => {
+        createPlan(this.formData).then(() => {
           this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
           this.$message.success('Create plan success!')
         })

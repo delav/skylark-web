@@ -22,13 +22,13 @@
               <el-select
                 style="width: 100%"
                 v-model="formData.project_id"
-                @change="changeProject"
                 placeholder="选择项目">
                 <el-option
                   v-for="(item, index) in projectList"
                   :key="index"
                   :label="item.name"
                   :value="item.id"
+                  @click.native="changeProject(item)"
                 />
               </el-select>
             </el-form-item>
@@ -60,7 +60,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="执行地区" prop="regions" v-show="showRegion">
+            <el-form-item label="执行地区" prop="regions">
               <el-select
                 style="width: 100%"
                 v-model="formData.regions"
@@ -84,9 +84,25 @@
               <el-button style="float: left;margin-left: 20px" type="primary" @click="showCaseTree=true">选择用例</el-button>
             </el-form-item>
             <el-form-item class="operate-button">
-              <el-button type="primary" @click="createBuildPlan">构建</el-button>
+              <el-button type="primary" @click="createQuickBuild">构建</el-button>
             </el-form-item>
           </el-form>
+        </div>
+      </el-dialog>
+    </div>
+    <div class="case-dialog">
+      <el-dialog
+        v-model="showCaseTree"
+        title="选择执行用例"
+        :close-on-click-modal="false"
+        :destroy-on-close="true"
+      >
+        <div class="case-content">
+          <case-tree
+            :project-id="formData.project"
+            :tree-array="getBranchContent()"
+            @confirmAction="saveCheckedCase"
+          />
         </div>
       </el-dialog>
     </div>
@@ -94,8 +110,29 @@
 </template>
 
 <script>
+import CaseTree from '../../components/CaseTree'
+import { buildQuickTest } from '@/api/builder'
+import { fetchVersion } from '@/api/version'
+
 export default {
   name: 'QuickBuild',
+  components: {
+    CaseTree
+  },
+  computed: {
+    projectList() {
+      return this.$store.state.base.projectList
+    },
+    envList() {
+      return this.$store.state.base.envList
+    },
+    regionList() {
+      return this.$store.state.base.regionList
+    },
+    showRegion() {
+      return this.$store.state.base.showRegion
+    }
+  },
   data() {
     const validateRegion = (rule, value, callback) => {
       if (!this.showRegion) {
@@ -137,6 +174,39 @@ export default {
       showCaseTree: false,
       branchIndex: 0
     }
+  },
+  methods: {
+    changeProject(project) {
+      this.versionList = []
+      const projectId = project.id
+      fetchVersion(projectId).then(response => {
+        this.versionList = response.data
+      })
+      this.formData['project_name'] = project.name
+    },
+    setBranch(index) {
+      this.branchIndex = index
+    },
+    getBranchContent () {
+      const index = this.branchIndex
+      return JSON.parse(this.versionList[index]['nodes'])
+    },
+    saveCheckedCase (caseInfo) {
+      this.showCaseTree = false
+      this.formData['total_case'] = caseInfo['count']
+      this.formData['build_cases'] = caseInfo['cases']
+      this.formData['extra_data'] = JSON.stringify(caseInfo['options'])
+    },
+    createQuickBuild() {
+      this.$refs['ruleFormRef'].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        buildQuickTest(this.formData).then(response => {
+          console.log(response.data)
+        })
+      })
+    },
   }
 }
 </script>

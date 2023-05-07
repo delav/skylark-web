@@ -1,10 +1,20 @@
 import request from '@/utils/request'
 
-export function fetchVariables(moduleId, moduleType) {
+export function fetchVariables(moduleId, moduleType, envId=null, regionId=null) {
+  let params = {
+    mid: moduleId,
+    mtp: moduleType
+  }
+  if (envId !== null) {
+    params.env = envId
+  }
+  if (regionId !== null) {
+    params.region = regionId
+  }
   return request({
     url: '/variable',
     method: 'get',
-    params: { mid: moduleId, mtp: moduleType }
+    params: params
   })
 }
 
@@ -28,5 +38,13 @@ export function deleteVariable(vId) {
   return request({
     url: `/variable/${vId}`,
     method: 'delete',
+  })
+}
+
+export function batchCreateVariable(data) {
+  return request({
+    url: '/batch-variable',
+    method: 'post',
+    data
   })
 }

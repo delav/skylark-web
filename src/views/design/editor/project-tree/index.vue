@@ -33,7 +33,7 @@
         </tree>
         <div v-show="showNodeMenu" class="node-menu" v-bind:style="nodeMenuPosition" id="operateMenu">
           <ul>
-            <li v-for="(item, index) in menuMethods" @click="executeMethod(item.method, item.id)" :key="index">
+            <li v-for="(item, index) in menuMethods" @click="executeMethod(item)" :key="index">
               <span>{{ item.title }}</span>
             </li>
           </ul>
@@ -80,7 +80,7 @@
     <div class="dialog">
       <div class="node-dialog">
         <el-dialog
-          width="35%"
+          width="40%"
           v-model="showNodeDialog"
           :title="nodeDialogTitle"
           :close-on-click-modal="false"
@@ -89,7 +89,7 @@
         >
           <el-form
             :model="nodeDialogForm"
-            label-width="80px"
+            label-width="100px"
           >
             <el-form-item
               size="default"
@@ -147,7 +147,7 @@ import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
 import { addSvgHover } from '@/utils/hover'
-import { formatBaseNodes, formatDirNodes, formatSuiteNodes, handlerNode, transformData } from '@/utils/tree'
+import { transformData } from '@/utils/tree'
 
 export default {
   name: 'ProjectTree',
@@ -180,6 +180,7 @@ export default {
           keep: { parent: true }
         },
         view: {
+          showTitle: false,
           showIcon: false,
           addHoverDom: this.addHoverDom,
           removeHoverDom: this.removeHoverDom,
@@ -208,14 +209,23 @@ export default {
       showNodeDialog: false,
       nodeDialogTitle: '',
       nodeDialogInput: '',
-      nodeDialogForm: {}
+      nodeDialogForm: {},
+      svgHoverType: [
+        'type_01_',
+        'type_02_',
+        'type_03_',
+        'type_04_',
+        'type_05_',
+        'type_06_',
+      ]
     }
   },
 
   methods: {
     changeProject(pId, name) {
       fetchBaseDir(pId).then(response => {
-        this.zTreeNodes = formatBaseNodes(response.data)
+        // this.zTreeNodes = formatBaseNodes(response.data)
+        this.zTreeNodes = response.data
         this.$store.commit('tree/RESET_STATE')
         this.$store.commit('tree/SET_PROJECT_ID', pId)
         this.$store.commit('tree/SET_PROJECT_NAME', name)
@@ -253,18 +263,18 @@ export default {
       let desc = treeNode.desc
       if (desc === NODE.NodeDesc.DIR) {
         fetchDirAndSuiteNode(treeNode.mid).then(response => {
-          const addNodes = formatDirNodes(response.data, treeNode.id, treeNode.checked)
+          // const addNodes = formatDirNodes(response.data, treeNode.id, treeNode.checked)
           this.zTreeObj.removeChildNodes(treeNode)
-          this.zTreeObj.addNodes(treeNode, addNodes)
+          this.zTreeObj.addNodes(treeNode, response.data)
           if (treeNode.checked) {
             this.zTreeOnCheck()
           }
         })
       } else if (desc === NODE.NodeDesc.SUITE) {
         fetchCaseNode(treeNode.mid).then(response => {
-          const addNodes = formatSuiteNodes(response.data, treeNode.id, treeNode.checked)
+          // const addNodes = formatSuiteNodes(response.data, treeNode.id, treeNode.checked)
           this.zTreeObj.removeChildNodes(treeNode)
-          this.zTreeObj.addNodes(treeNode, addNodes)
+          this.zTreeObj.addNodes(treeNode, response.data)
           if (treeNode.checked) {
             this.zTreeOnCheck()
           }
@@ -331,8 +341,20 @@ export default {
         this.hideTreeMenu()
       }
     },
-    executeMethod(method, treeId) {
-      this[`${method}`](treeId)
+    executeMethod(item) {
+      console.log(item)
+      let methodName = 'nullAction'
+      if (item.type === NODE.ActionType.UPDATE) {
+        methodName = 'renameNode'
+      } else if (item.type === NODE.ActionType.COPY) {
+        methodName = 'copyNode'
+      } else if (item.type === NODE.ActionType.PASTE) {
+        methodName = 'pasteNode'
+      } else if (item.type === NODE.ActionType.DELETE) {
+        methodName = 'deleteNode'
+      }
+      console.log(methodName)
+      this[`${methodName}`](item.id, item.action)
     },
     showMenuCallback(id) {
       const iconBtn = document.getElementById(id)
@@ -340,9 +362,19 @@ export default {
       this.currentMenuNodeId = id
       this.showTreeMenu('root', rect.left, rect.top)
     },
+    initNodeDialog(nodeInfo, dialogInfo) {
+      let nameText  = ''
+      if ('name' in dialogInfo) {
+        nameText = dialogInfo.name
+      }
+      this.nodeParams = nodeInfo
+      this.nodeDialogTitle = dialogInfo.title
+      this.nodeDialogForm = {label: dialogInfo.label, name: nameText}
+      this.showNodeDialog = true
+    },
     closeNodeDialog() {
-      this.nodeParams = {}
       this.showNodeDialog = false
+      this.nodeParams = {}
       this.nodeDialogTitle = ''
       this.nodeDialogForm = {}
     },
@@ -350,7 +382,7 @@ export default {
     commitNodeDialog() {
       const that = this
       const node = this.nodeParams.meta_data
-      if (this.nodeParams.post_type === NODE.NodeDesc.ROOT) {
+      if (this.nodeParams.desc === NODE.NodeDesc.ROOT) {
         if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // rename project
           const params = {'name': this.nodeDialogForm.name}
@@ -361,14 +393,14 @@ export default {
           })
         }
       }
-      if (this.nodeParams.post_type === NODE.NodeDesc.DIR) {
-        if (this.nodeParams.action_type === NODE.ActionType.POST) {
+      if (this.nodeParams.desc === NODE.NodeDesc.DIR) {
+        if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create dir
           const params = {'name': this.nodeDialogForm.name, 'parent_dir_id': node.mid, 'project_id': this.projectId, 'category': node.type}
           createDir(params).then(response => {
             if (node.open) {
-              const dirNode = handlerNode(response.data, node.id, NODE.NodeDesc.DIR)
-              that.zTreeObj.addNodes(node, -1, dirNode)
+              // const dirNode = handlerNode(response.data, node.id, NODE.NodeDesc.DIR)
+              that.zTreeObj.addNodes(node, -1, response.data)
             } else {
               that.zTreeOnExpand('expand', node.treeId, node)
             }
@@ -383,14 +415,14 @@ export default {
             that.closeNodeDialog()
           })
         }
-      } else if (this.nodeParams.post_type === NODE.NodeDesc.SUITE) {
+      } else if (this.nodeParams.desc === NODE.NodeDesc.SUITE) {
         // create suite
-        if (this.nodeParams.action_type === NODE.ActionType.POST) {
+        if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           const params = {'name': this.nodeDialogForm.name, 'suite_dir_id': node.mid, 'category': node.type}
           createSuite(params).then(response => {
             if (node.open) {
-              const suiteNode = handlerNode(response.data, node.id, NODE.NodeDesc.SUITE)
-              that.zTreeObj.addNodes(node, -1, suiteNode)
+              // const suiteNode = handlerNode(response.data, node.id, NODE.NodeDesc.SUITE)
+              that.zTreeObj.addNodes(node, -1, response.data)
             } else {
               that.zTreeOnExpand('expand', node.treeId, node)
             }
@@ -405,14 +437,14 @@ export default {
             that.closeNodeDialog()
           })
         }
-      } else if (this.nodeParams.post_type === NODE.NodeDesc.CASE) {
-        if (this.nodeParams.action_type === NODE.ActionType.POST) {
+      } else if (this.nodeParams.desc === NODE.NodeDesc.CASE) {
+        if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create case
           const params = {'name': this.nodeDialogForm.name, 'test_suite_id': node.mid, 'category': node.type}
           createCase(params).then(response => {
             if (node.open) {
-              const caseNode = handlerNode(response.data, node.id, NODE.NodeDesc.CASE)
-              that.zTreeObj.addNodes(node, -1, caseNode)
+              // const caseNode = handlerNode(response.data, node.id, NODE.NodeDesc.CASE)
+              that.zTreeObj.addNodes(node, -1, response.data)
             } else {
               that.zTreeOnExpand('expand', node.treeId, node)
             }
@@ -429,29 +461,31 @@ export default {
         }
       }
     },
-    addDirNode() {},
-    renameNode(nodeTId) {
+    nullAction() {},
+    copyNode(nodeTId, actionInfo) {
       const node = this.zTreeObj.getNodeByTId(nodeTId)
-      this.nodeParams = {
-        'action_type': NODE.ActionType.UPDATE, 'post_type': node.desc,
+      if (JSON.stringify(actionInfo) === '{}') return
+      console.log(node)
+    },
+    pasteNode(nodeTId, actionInfo) {
+      console.log(nodeTId + actionInfo)
+    },
+    renameNode(nodeTId, actionInfo) {
+      const node = this.zTreeObj.getNodeByTId(nodeTId)
+      const params = {
+        'action_type': NODE.ActionType.UPDATE, 'desc': node.desc,
         'meta_data': node
       }
-      this.initDialogInfo('update', node.name)
+      actionInfo.name = node.name
+      this.initNodeDialog(params, actionInfo)
     },
-    deleteNode(nodeTId) {
+    deleteNode(nodeTId, actionInfo) {
       const that = this
       const node = that.zTreeObj.getNodeByTId(nodeTId)
-      let warnInfo = `将删除该节点及所有子节点`
-      if (node.desc === NODE.NodeDesc.DIR) {
-        warnInfo = `将删除【${node.name}】及该目录下所有内容，是否继续？`
-      } else if (node.desc === NODE.NodeDesc.SUITE) {
-        warnInfo = `将删除【${node.name}】及该套件下所有用例，是否继续？`
-      } else if (node.desc === NODE.NodeDesc.CASE) {
-        warnInfo = `将删除用例【${node.name}】，是否继续？`
-      }
+      let warnInfo = `将删除【${node.name}】${actionInfo.text}，是否继续？`
       this.$messageBox.confirm(
         warnInfo,
-        '警告',
+        actionInfo.title,
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -470,99 +504,39 @@ export default {
         }
       }).catch(() => {})
     },
-    copyNode(nodeTId) {
-      const node = this.zTreeObj.getNodeByTId(nodeTId)
-      console.log(node)
-    },
-    initDialogInfo(action, name) {
-      const createType = this.nodeParams.post_type
-      if (action === 'create') {
-        const prefix = '新建'
-        if (createType === NODE.NodeDesc.DIR) {
-          this.nodeDialogTitle = prefix + '目录'
-          this.nodeDialogForm = {label: '目录名称', name: name}
-        } else if (createType === NODE.NodeDesc.SUITE) {
-          this.nodeDialogTitle = prefix + '套件'
-          this.nodeDialogForm = {label: '套件名称', name: name}
-        } else if (createType === NODE.NodeDesc.CASE) {
-          this.nodeDialogTitle = prefix + '用例'
-          this.nodeDialogForm = {label: '用例名称', name: name}
-        }
-      } else if (action === 'update') {
-        this.nodeDialogTitle = '重命名'
-        if (createType === NODE.NodeDesc.ROOT) {
-          this.nodeDialogForm = {label: '项目名称', name: name}
-        } else if (createType === NODE.NodeDesc.DIR) {
-          this.nodeDialogForm = {label: '目录名称', name: name}
-        } else if (createType === NODE.NodeDesc.SUITE) {
-          this.nodeDialogForm = {label: '套件名称', name: name}
-        } else if (createType === NODE.NodeDesc.CASE) {
-          this.nodeDialogForm = {label: '用例名称', name: name}
-        }
-      }
-      this.showNodeDialog = true
-    },
     addHoverDom(treeId, treeNode) {
       const that = this
-      this.menuMethods = [
-        {id: treeNode.tId, method: 'copyNode', title: '复制'},
-        {id: treeNode.tId, method: 'pasteNode', title: '粘贴'},
-        {id: treeNode.tId, method: 'renameNode', title: '重命名'},
-        {id: treeNode.tId, method: 'deleteNode', title: '删除'},
-      ]
-      // project root node not use
-      if (treeNode.desc === NODE.NodeDesc.ROOT) {
-        addSvgHover('edit_', treeNode.tId, 'iconfont icon-edit', 'rename',function () {
-          that.nodeParams = {
-            'action_type': NODE.ActionType.UPDATE, 'post_type': NODE.NodeDesc.ROOT,
+      const hoverDomList = treeNode.action
+      for (let i = 0; i < hoverDomList.length; i++) {
+        const idPrefix = that.svgHoverType[i]
+        addSvgHover(idPrefix, treeNode.tId, hoverDomList[i].icon, '',function () {
+          const params = {
+            'action_type': hoverDomList[i].type,
+            'desc': hoverDomList[i].desc,
             'meta_data': treeNode
           }
-          that.initDialogInfo('update', '')
+          that.initNodeDialog(params, hoverDomList[i])
         })
       }
-      if (treeNode.desc === NODE.NodeDesc.DIR) {
-        addSvgHover('folder_add_', treeNode.tId, 'iconfont icon-a-folderadd-line', 'create dir',function () {
-          that.nodeParams = {
-            'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.DIR,
-            'meta_data': treeNode
-          }
-          that.initDialogInfo('create', '')
+      const menuList = treeNode.menu
+      if (menuList.length !== 0) {
+        const idPrefix = this.svgHoverType[this.svgHoverType.length-1]
+        addSvgHover(idPrefix, treeNode.tId, 'iconfont icon-a-morevertical-line', '',function () {
+          that.showMenuCallback(idPrefix+treeNode.tId)
         })
-        addSvgHover('suite_add_', treeNode.tId, 'iconfont icon-a-additionfile-line', 'create suite',function () {
-          that.nodeParams = {
-            'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.SUITE,
-            'meta_data': treeNode
-          }
-          that.initDialogInfo('create', '')
-        })
-        if (treeNode.pid !== NODE.RootPId) {
-          addSvgHover('more_menu_', treeNode.tId, 'iconfont icon-a-morevertical-line', 'more',function () {
-            that.showMenuCallback('more_menu_'+treeNode.tId)
-          })
+        for (let i = 0; i < menuList.length; i++) {
+          menuList[i]['id'] = treeNode.tId
         }
-      } else if (treeNode.desc === NODE.NodeDesc.SUITE) {
-        addSvgHover('case_add_', treeNode.tId, 'iconfont icon-a-addline-line', 'create case',function () {
-          that.nodeParams = {
-            'action_type': NODE.ActionType.POST, 'post_type': NODE.NodeDesc.CASE,
-            'meta_data': treeNode
-          }
-          that.initDialogInfo('create', '')
-        })
-        addSvgHover('more_menu_', treeNode.tId, 'iconfont icon-a-morevertical-line', 'more',function () {
-          that.showMenuCallback('more_menu_'+treeNode.tId)
-        })
-      } else if (treeNode.desc === NODE.NodeDesc.CASE) {
-        addSvgHover('more_menu_', treeNode.tId, 'iconfont icon-a-morevertical-line', 'more',function () {
-          that.showMenuCallback('more_menu_'+treeNode.tId)
-        })
+        that.menuMethods = menuList
       }
     },
     removeHoverDom(treeId, treeNode) {
-      $("#edit_" + treeNode.tId).unbind().remove()
-      $("#folder_add_" + treeNode.tId).unbind().remove()
-      $("#suite_add_" + treeNode.tId).unbind().remove()
-      $("#case_add_" + treeNode.tId).unbind().remove()
-      $("#more_menu_" + treeNode.tId).unbind().remove()
+      $("#type_01_" + treeNode.tId).unbind().remove()
+      $("#type_02_" + treeNode.tId).unbind().remove()
+      $("#type_03_" + treeNode.tId).unbind().remove()
+      $("#type_04_" + treeNode.tId).unbind().remove()
+      $("#type_05_" + treeNode.tId).unbind().remove()
+      $("#type_06_" + treeNode.tId).unbind().remove()
     },
     envSetting () {
       if (this.projectId === '') {

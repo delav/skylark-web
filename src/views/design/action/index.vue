@@ -18,7 +18,7 @@
           />
         </el-select>
       </div>
-      <div class="region-list" v-if="showRegion">
+      <div class="region-list" v-show="showRegion">
         <span class="region-text">地区:</span>
         <el-select
           style="width: 70px"
@@ -74,7 +74,7 @@ import { deepCopy } from '@/utils/dcopy'
 import { guid } from '@/utils/other'
 import { updateEntities } from '@/api/entity'
 import { setCursorStyle } from '@/utils/hover'
-import { createBuildDebug, getBuildDebugProgress } from '@/api/build'
+import { buildDebug, getBuildDebugProgress } from '@/api/builder'
 
 export default {
   name: 'Action',
@@ -252,7 +252,7 @@ export default {
       if (this.$store.state.action.currentRegion !== '') {
         data['region_id'] = this.$store.state.action.currentRegion
       }
-      createBuildDebug(data).then(response => {
+      buildDebug(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
         this.reportPath = response.data['report_path']
         this.getProgress(response.data['build_id'], response.data['total_case'])

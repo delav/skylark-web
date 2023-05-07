@@ -1,26 +1,33 @@
 <template>
   <div class="variable">
     <div class="variable-body">
-      <el-table :data="variableList" border style="width: 100%">
+      <el-table
+        :data="variableList"
+        border
+        style="width: 100%"
+        :row-style="{height: '0'}"
+        :cell-style="{padding: '3px'}"
+        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px' }"
+      >
         <el-table-column fixed prop="name" label="变量名" width="180" sortable>
           <template #default="scope">
-            <input type="text" v-model="scope.row.name" v-show="scope.row.edit" />
+            <el-input size="small" v-model="scope.row.name" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="value" label="变量值" min-width="45%" show-overflow-tooltip>
           <template #default="scope">
-            <input type="text" v-model="scope.row.value" v-show="scope.row.edit" />
+            <el-input size="small" v-model="scope.row.value" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.value}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" min-width="25%" show-overflow-tooltip>
           <template #default="scope">
-            <input type="text" v-model="scope.row.remark" v-show="scope.row.edit" />
+            <el-input size="small" v-model="scope.row.remark" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.remark}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="180">
+        <el-table-column fixed="right" label="操作" width="175" align="center">
           <template #header>
             <el-button size="small" type="primary" @click="showVarDialog">新建变量</el-button>
           </template>
@@ -42,7 +49,32 @@
         title="新建变量"
         :close-on-click-modal="false"
       >
-        <div class="create-content">
+        <div class="env-region" v-show="isProjectVariable">
+          <span class="env-label">环境</span>
+          <div class="env-body">
+            <div class="env-select">
+              <el-select v-model="variableModuleInfo.env" style="width: 100%" placeholder="env">
+                <el-option
+                  v-for="(item, index) in envList"
+                  :key="index"
+                  :label="item['name']"
+                  :value="item.id"
+                />
+              </el-select>
+            </div>
+            <div class="region-select" v-show="showRegion">
+              <el-select v-model="variableModuleInfo.region" style="width: 100%" placeholder="region">
+                <el-option
+                  v-for="(item, index) in containNullRegionList"
+                  :key="index"
+                  :label="item['name']"
+                  :value="item.id"
+                />
+              </el-select>
+            </div>
+          </div>
+        </div>
+        <div class="form-content">
           <el-form
             ref="ruleForm"
             :model="variableForm"
@@ -98,24 +130,60 @@ export default {
         name: [
           { required: true, validator: validateName, trigger: 'blur' },
         ],
+      },
+      isProjectVariable: false,
+      containNullRegionList: [
+        {id: 0, name: 'None', ext_name: 'None'}
+      ],
+      variableModuleInfo: {
+        env: '',
+        region: ''
       }
     }
   },
   props: {
-    variables: Array,
-    moduleFrom: String
+    variables: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
+    moduleInfo: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
   },
   watch: {
     variables: {
       handler(value) {
-        this.variableList = value
+        this.initVariableInfo(value)
       },
       deep: true,
     }
   },
+  computed: {
+    envList() {
+      return this.$store.state.base.envList
+    },
+    showRegion() {
+      return this.$store.state.base.showRegion
+    }
+  },
   created() {
+    const regions = this.$store.state.base.regionList
+    this.containNullRegionList.push(...regions)
   },
   methods: {
+    initVariableInfo(variableArray) {
+      this.variableList = variableArray
+      if (Object.keys(this.moduleInfo).length === 0) return
+      this.variableModuleInfo = this.moduleInfo
+      if (this.moduleInfo.type === NODE.ModuleType.PROJECT) {
+        this.isProjectVariable = true
+      }
+    },
     showVarDialog() {
       this.showNewVarDialog = true
     },
@@ -123,36 +191,12 @@ export default {
       this.showNewVarDialog = false
       this.variableForm = {}
     },
-    isFromNode () {
-      return this.moduleFrom === 'node'
-    },
-    getModuleInfo() {
-      if (this.isFromNode()) {
-        return this.getModuleInfoFromNode()
-      }
-      return this.getModuleInfoFromProject()
-    },
-    getModuleInfoFromNode() {
-      const selectedNode = this.$store.state.tree.selectedNode
-      let moduleType = NODE.ModuleType.PROJECT
-      if (selectedNode.desc === NODE.NodeDesc.SUITE) {
-        moduleType = NODE.ModuleType.SUITE
-      } else if (selectedNode.desc === NODE.NodeDesc.DIR) {
-        moduleType = NODE.ModuleType.DIR
-      }
-      return {id: selectedNode.mid, type: moduleType, env: null}
-    },
-    getModuleInfoFromProject() {
-      return {
-        id: this.$store.state.tree.projectId,
-        type: NODE.ModuleType.PROJECT,
-        env: this.$store.state.tree.currentEnv
-      }
-    },
     variableNameExist (name) {
       let isExist = false
       for (let i = 0; i < this.variableList.length; i++) {
-        if (this.variableList[i]['name'] === name) {
+        if (this.variableList[i]['name'] === name
+          && this.variableList[i]['env_id'] === this.variableModuleInfo.env
+          && this.variableList[i]['region_id'] === this.variableModuleInfo.region) {
           isExist = true
           break
         }
@@ -176,21 +220,21 @@ export default {
           this.$message.warning('该变量名已存在')
           return
         }
-        const moduleInfo = this.getModuleInfo()
         const createData = {
-          'module_id': moduleInfo.id,
-          'module_type': moduleInfo.type,
           'name': this.variableForm['name'],
           'value': this.variableForm['value'],
           'remark': this.variableForm['remark'],
-          'env_id': moduleInfo.env
+          'module_id':  this.moduleInfo.mid,
+          'module_type':  this.moduleInfo.type,
+          'env_id':  this.moduleInfo.env,
+          'region_id': this.moduleInfo.region
         }
         createVariable(createData).then(response => {
           this.variableList.push(response.data)
           this.variableForm = {}
           this.showNewVarDialog = false
-          if (this.isFromNode()) {
-            this.updateZTreeNode('variables', this.variableList)
+          if (!this.isProjectVariable) {
+            this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
           }
         })
       })
@@ -213,8 +257,8 @@ export default {
       }
       updateVariable(row.id, row).then(() => {
         row.edit = false
-        if (this.isFromNode()) {
-          this.updateZTreeNode('variables', this.variableList)
+        if (!this.isProjectVariable) {
+          this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
         }
       })
     },
@@ -225,8 +269,8 @@ export default {
       }).then( () => {
         deleteVariable(row.id).then(() => {
           this.variableList.splice(index, 1)
-          if (this.isFromNode()) {
-            this.updateZTreeNode('variables', this.variableList)
+          if (!this.isProjectVariable) {
+            this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
           }
         })
       })
@@ -239,8 +283,32 @@ export default {
 .variable {
   width: 100%;
   height: 100%;
-  .variable-head {
-
+  .variable-body {
+  }
+  .create-dialog {
+    .env-region {
+      display: flex;
+      margin-bottom: 15px;
+      .env-label {
+        width: 120px;
+        text-align: right;
+        padding: 0 12px 0 0;
+        line-height: 32px;
+        font-weight: 700;
+      }
+      .env-body {
+        width: calc(100% - 120px);
+        .env-select {
+          width: 50%;
+          float: left;
+        }
+        .region-select {
+          width: 50%;
+          float: left;
+        }
+      }
+    }
+    .form-content {}
   }
 }
 

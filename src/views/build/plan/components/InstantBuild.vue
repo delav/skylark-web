@@ -8,8 +8,8 @@
         label-width="130px"
         status-icon
       >
-        <el-form-item label="项目名称" prop="project_id">
-          <el-input v-model="projectMap[formData.project_id]" disabled></el-input>
+        <el-form-item label="项目名称" prop="project_name">
+          <el-input v-model="formData.project_name" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目分支" prop="branch">
           <el-input v-model="formData.branch" disabled></el-input>
@@ -28,7 +28,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="执行地区" prop="regions" v-show="showRegion">
+        <el-form-item label="执行地区" prop="regions">
           <el-select
             style="width: 100%"
             v-model="formData.region_list"
@@ -54,7 +54,7 @@
           <el-input v-model="formData.expect_pass" disabled></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="float: right" type="primary" @click="createBuild">构建</el-button>
+          <el-button style="float: right" type="primary" @click="createInstantBuild">构建</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -63,7 +63,7 @@
 
 <script>
 import { deepCopy } from '@/utils/dcopy'
-import { createPlan } from '@/api/plan'
+import { buildInstantTest } from '@/api/builder'
 
 export default {
   name: 'InstantBuild',
@@ -81,10 +81,10 @@ export default {
     return {
       formData: {},
       formRules: {
-        envs: [
+        env_list: [
           { required: true, message: 'Please select env', trigger: 'blur', type: 'array' },
         ],
-        regions: [
+        region_list: [
           { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
         ],
       },
@@ -99,9 +99,6 @@ export default {
     },
   },
   computed: {
-    projectMap() {
-      return this.$store.state.base.projectMap
-    },
     envList() {
       return this.$store.state.base.envList
     },
@@ -115,18 +112,13 @@ export default {
   created() {
   },
   methods: {
-    createBuild () {
+    createInstantBuild () {
       this.$refs['ruleFormRef'].validate((valid) => {
         if (!valid) {
           return
         }
-        const postData = deepCopy(this.formData)
-        postData['envs'] = postData['envs'].join(',')
-        if (this.showRegion) {
-          postData['regions'] = postData['regions'].join(',')
-        }
-        createPlan(postData).then(() => {
-          this.$emit('successBuild')
+        buildInstantTest(this.formData).then(response => {
+          console.log(response.data)
         })
       })
     }
