@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import tree from 'vue-giant-tree-3'
+import tree from '@/components/GiantTree'
 import NODE from '@/constans/node'
 import axios from 'axios'
 import { fetchTagsByProject } from '@/api/tag'

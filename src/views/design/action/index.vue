@@ -4,7 +4,7 @@
       <div class="env-list">
         <span class="env-text">环境:</span>
         <el-select
-          style="width: 70px"
+          style="width: 80px"
           v-model="executeEnv"
           @change="changeEnv"
           size="small"
@@ -21,7 +21,7 @@
       <div class="region-list" v-show="showRegion">
         <span class="region-text">地区:</span>
         <el-select
-          style="width: 70px"
+          style="width: 80px"
           v-model="executeRegion"
           @change="changeRegion"
           size="small"
@@ -54,7 +54,6 @@
           v-model="showPushDialog"
           title="推送项目"
           :close-on-click-modal="false"
-          :destroy-on-close="true"
         >
           <div class="env-content">
             <push-info @closeDialog="closePushDialog" />
@@ -74,7 +73,7 @@ import { deepCopy } from '@/utils/dcopy'
 import { guid } from '@/utils/other'
 import { updateEntities } from '@/api/entity'
 import { setCursorStyle } from '@/utils/hover'
-import { buildDebug, getBuildDebugProgress } from '@/api/builder'
+import { buildDebug, getBuildProgress } from '@/api/builder'
 
 export default {
   name: 'Action',
@@ -207,7 +206,7 @@ export default {
         }
         const treeId = that.$store.state.tree.treeId
         const treeObj = $.fn.zTree.getZTreeObj(treeId)
-        getBuildDebugProgress(buildId).then(response => {
+        getBuildProgress(buildId).then(response => {
           let buildResult = response.data
           const caseIdList = Object.keys(buildResult)
           for (let i = 0; i < caseIdList.length; i++) {

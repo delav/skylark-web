@@ -95,7 +95,6 @@
         v-model="showCaseTree"
         title="选择执行用例"
         :close-on-click-modal="false"
-        :destroy-on-close="true"
       >
         <div class="case-content">
           <case-tree

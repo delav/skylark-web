@@ -93,7 +93,6 @@
         v-model="showBuild"
         title="执行构建"
         :close-on-click-modal="false"
-        :destroy-on-close="true"
         @close="closeBuild"
       >
         <div class="content">
@@ -206,7 +205,7 @@ export default {
     executeBuild() {
       this.showBuild = false
       this.closeBuild()
-      this.$message.success('build request created!')
+      this.$message.success('构建请求已发送')
     }
   }
 }

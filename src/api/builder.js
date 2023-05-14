@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function buildQuickTest(data) {
   return request({
-    url: '/builder/test/quick',
+    url: '/builder/quick',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function buildQuickTest(data) {
 
 export function buildInstantTest(data) {
   return request({
-    url: '/builder/test/instant',
+    url: '/builder/instant',
     method: 'post',
     data
   })
@@ -24,16 +24,9 @@ export function buildDebug(data) {
   })
 }
 
-export function getBuildTestProgress(buildId) {
+export function getBuildProgress(buildId) {
   return request({
     url: `/builder/test/${buildId}`,
-    method: 'get',
-  })
-}
-
-export function getBuildDebugProgress(buildId) {
-  return request({
-    url: `/builder/debug/${buildId}`,
     method: 'get',
   })
 }

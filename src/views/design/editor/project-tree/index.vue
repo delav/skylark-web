@@ -84,26 +84,20 @@
           v-model="showNodeDialog"
           :title="nodeDialogTitle"
           :close-on-click-modal="false"
-          :destroy-on-close="true"
           @close="closeNodeDialog"
         >
-          <el-form
-            :model="nodeDialogForm"
-            label-width="100px"
-          >
-            <el-form-item
-              size="default"
-              :label="nodeDialogForm.label"
-              prop="name"
-              :rules="[{ required: true, message: 'name is required' }]"
-            >
-              <el-input v-model="nodeDialogForm.name" />
-            </el-form-item>
-          </el-form>
-          <template #footer>
-            <el-button @click="closeNodeDialog">取消</el-button>
-            <el-button type="primary" @click="commitNodeDialog">确定</el-button>
-          </template>
+          <div class="dialog-content">
+            <node-action
+              v-if="showDialogType===0"
+              :dialog-form="{label: nodeDialogForm.label, name: nodeDialogForm.name}"
+              @closeDialogAction="closeNodeDialog"
+              @commitDialogAction="commitNodeDialog"
+            />
+            <upload-file
+              v-else-if="showDialogType===1"
+              @uploadFileAction="uploadProjectFile"
+            />
+          </div>
         </el-dialog>
       </div>
       <div class="env-dialog">
@@ -112,7 +106,6 @@
           v-model="showEnvDialog"
           title="环境变量配置"
           :close-on-click-modal="false"
-          :destroy-on-close="true"
         >
           <div class="env-content">
             <env-variable />
@@ -125,10 +118,12 @@
           v-model="showNewDialog"
           title="新建项目"
           :close-on-click-modal="false"
-          :destroy-on-close="true"
         >
-          <div class="env-content">
-            <new-project @closeDialog="closeNewDialog" @successAction="successNewProject" />
+          <div class="new-content">
+            <new-project
+              @closeDialog="closeNewDialog"
+              @successAction="successNewProject"
+            />
           </div>
         </el-dialog>
       </div>
@@ -137,15 +132,19 @@
 </template>
 
 <script>
+import jquery from 'jquery'
 import variables from '@/styles/variables.module.scss'
-import tree from 'vue-giant-tree-3'
+import tree from '@/components/GiantTree'
 import NewProject from './components/NewProject'
 import EnvVariable from './components/EnvVariable'
+import NodeAction from './components/NodeAction'
+import UploadFile from './components/UploadFile'
 import NODE from '@/constans/node'
 import { updateProject } from '@/api/project'
 import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
 import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
+import { uploadFile, downloadFile } from '@/api/virfile'
 import { addSvgHover } from '@/utils/hover'
 import { transformData } from '@/utils/tree'
 
@@ -155,6 +154,8 @@ export default {
     tree,
     NewProject,
     EnvVariable,
+    NodeAction,
+    UploadFile
   },
   computed: {
     hideTree() {
@@ -207,6 +208,7 @@ export default {
       menuMethods: [],
       nodeParams: {},
       showNodeDialog: false,
+      showDialogType: 0,
       nodeDialogTitle: '',
       nodeDialogInput: '',
       nodeDialogForm: {},
@@ -293,32 +295,55 @@ export default {
       const selectNodeId = this.$store.state.tree.currentNodeId
       if (treeNode.id === selectNodeId) return
       this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
-      if (treeNode.desc === NODE.NodeDesc.CASE) {
-        this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
-        this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
-          this.$store.commit('tree/SET_SELECT_NODE', treeNode)
-        })
-      } else {
-        if (treeNode.desc === NODE.NodeDesc.SUITE) {
-          if (treeNode.type === NODE.NodeCategory.TESTCASE) {
+      if (treeNode.type === NODE.NodeCategory.TESTCASE) {
+        if (treeNode.desc === NODE.NodeDesc.CASE) {
+          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
+          this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
+            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+          })
+        } else {
+          if (treeNode.desc === NODE.NodeDesc.SUITE) {
             this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.SUITE)
-          } else {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
-          }
-        } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          if (treeNode.type === NODE.NodeCategory.TESTCASE) {
+          } else if (treeNode.desc === NODE.NodeDesc.DIR) {
             this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.DIR)
-          } else {
+          }
+          this.$store.commit('entity/RELOAD_STATE')
+          this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+        }
+      } else if (treeNode.type === NODE.NodeCategory.KEYWORD) {
+        if (treeNode.desc === NODE.NodeDesc.CASE) {
+          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
+          this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
+            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+          })
+        } else {
+          if (treeNode.desc === NODE.NodeDesc.SUITE) {
+            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+          } else if (treeNode.desc === NODE.NodeDesc.DIR) {
             this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
           }
-        } else if (treeNode.desc === NODE.NodeDesc.ROOT) {
-          if (treeNode.type === NODE.NodeCategory.TESTCASE) {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.ROOT)
-          } else {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
-          }
-        } else if (treeNode.desc === NODE.NodeDesc.FILE) {
+          this.$store.commit('entity/RELOAD_STATE')
+          this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+        }
+      } else if (treeNode.type === NODE.NodeCategory.RESOURCE) {
+        if (treeNode.desc === NODE.NodeDesc.SUITE) {
+          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CONST)
+          this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
+            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+          })
+        } else if (treeNode.desc === NODE.NodeDesc.DIR) {
+          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+        }
+        this.$store.commit('entity/RELOAD_STATE')
+        this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+      } else if (treeNode.type === NODE.NodeCategory.PROJECTFILE) {
+        if (treeNode.desc === NODE.NodeDesc.SUITE) {
           this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.FILE)
+          this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
+            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+          })
+        } else if (treeNode.desc === NODE.NodeDesc.DIR) {
+          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
         }
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/SET_SELECT_NODE', treeNode)
@@ -342,7 +367,6 @@ export default {
       }
     },
     executeMethod(item) {
-      console.log(item)
       let methodName = 'nullAction'
       if (item.type === NODE.ActionType.UPDATE) {
         methodName = 'renameNode'
@@ -352,8 +376,9 @@ export default {
         methodName = 'pasteNode'
       } else if (item.type === NODE.ActionType.DELETE) {
         methodName = 'deleteNode'
+      } else if (item.type === NODE.ActionType.DOWNLOAD) {
+        methodName = 'downloadFile'
       }
-      console.log(methodName)
       this[`${methodName}`](item.id, item.action)
     },
     showMenuCallback(id) {
@@ -367,6 +392,9 @@ export default {
       if ('name' in dialogInfo) {
         nameText = dialogInfo.name
       }
+      if (nodeInfo.action_type === NODE.ActionType.UPLOAD) {
+        this.showDialogType = 1
+      }
       this.nodeParams = nodeInfo
       this.nodeDialogTitle = dialogInfo.title
       this.nodeDialogForm = {label: dialogInfo.label, name: nameText}
@@ -374,18 +402,19 @@ export default {
     },
     closeNodeDialog() {
       this.showNodeDialog = false
+      this.showDialogType = 0
       this.nodeParams = {}
       this.nodeDialogTitle = ''
       this.nodeDialogForm = {}
     },
     // rename project, create or update dir/suite/case
-    commitNodeDialog() {
+    commitNodeDialog(newNodeName) {
       const that = this
       const node = this.nodeParams.meta_data
       if (this.nodeParams.desc === NODE.NodeDesc.ROOT) {
         if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // rename project
-          const params = {'name': this.nodeDialogForm.name}
+          const params = {'name': newNodeName}
           updateProject(node.mid, params).then(response => {
             node.name = response.data.name
             that.zTreeObj.updateNode(node)
@@ -396,7 +425,7 @@ export default {
       if (this.nodeParams.desc === NODE.NodeDesc.DIR) {
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create dir
-          const params = {'name': this.nodeDialogForm.name, 'parent_dir_id': node.mid, 'project_id': this.projectId, 'category': node.type}
+          const params = {'name': newNodeName, 'parent_dir_id': node.mid, 'project_id': this.projectId, 'category': node.type}
           createDir(params).then(response => {
             if (node.open) {
               // const dirNode = handlerNode(response.data, node.id, NODE.NodeDesc.DIR)
@@ -408,7 +437,7 @@ export default {
           })
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // update dir
-          const params = {'name': this.nodeDialogForm.name}
+          const params = {'name': newNodeName}
           updateDir(node.mid, params).then(response => {
             node.name = response.data.name
             that.zTreeObj.updateNode(node)
@@ -418,7 +447,7 @@ export default {
       } else if (this.nodeParams.desc === NODE.NodeDesc.SUITE) {
         // create suite
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
-          const params = {'name': this.nodeDialogForm.name, 'suite_dir_id': node.mid, 'category': node.type}
+          const params = {'name': newNodeName, 'suite_dir_id': node.mid, 'category': node.type}
           createSuite(params).then(response => {
             if (node.open) {
               // const suiteNode = handlerNode(response.data, node.id, NODE.NodeDesc.SUITE)
@@ -430,7 +459,7 @@ export default {
           })
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // update suite
-          const params = {'name': this.nodeDialogForm.name}
+          const params = {'name': newNodeName}
           updateSuite(node.mid, params).then(response => {
             node.name = response.data.name
             that.zTreeObj.updateNode(node)
@@ -440,7 +469,7 @@ export default {
       } else if (this.nodeParams.desc === NODE.NodeDesc.CASE) {
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create case
-          const params = {'name': this.nodeDialogForm.name, 'test_suite_id': node.mid, 'category': node.type}
+          const params = {'name': newNodeName, 'test_suite_id': node.mid, 'category': node.type}
           createCase(params).then(response => {
             if (node.open) {
               // const caseNode = handlerNode(response.data, node.id, NODE.NodeDesc.CASE)
@@ -452,7 +481,7 @@ export default {
           })
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // update case
-          const params = {'name': this.nodeDialogForm.name}
+          const params = {'name': newNodeName}
           updateCase(node.mid, params).then(response => {
             node.name = response.data.name
             that.zTreeObj.updateNode(node)
@@ -460,6 +489,31 @@ export default {
           })
         }
       }
+    },
+    uploadProjectFile(files) {
+      console.log(files)
+      let formData = new FormData()
+      let node = this.nodeParams.meta_data
+      const dirId = node.mid
+      let nodeList = []
+      nodeList.push(node.name)
+      node = node.getParentNode()
+      while (node !== null) {
+        nodeList.push(node.name)
+        node = node.getParentNode()
+      }
+      let fullPath = ''
+      for (let i = nodeList.length; i >= 0; i--) {
+        fullPath = fullPath + '/' + nodeList[i]
+      }
+      formData.append('file', files)
+      formData.append('dir_id', dirId)
+      formData.append('path', fullPath)
+      console.log('form data')
+      console.log(formData)
+      uploadFile(formData).then(() => {
+        this.$message.success('上传成功')
+      })
     },
     nullAction() {},
     copyNode(nodeTId, actionInfo) {
@@ -504,6 +558,11 @@ export default {
         }
       }).catch(() => {})
     },
+    downloadFile(nodeTId, actionInfo) {
+      console.log(actionInfo)
+      const node = this.zTreeObj.getNodeByTId(nodeTId)
+      downloadFile(node.id).then(() => {})
+    },
     addHoverDom(treeId, treeNode) {
       const that = this
       const hoverDomList = treeNode.action
@@ -531,12 +590,12 @@ export default {
       }
     },
     removeHoverDom(treeId, treeNode) {
-      $("#type_01_" + treeNode.tId).unbind().remove()
-      $("#type_02_" + treeNode.tId).unbind().remove()
-      $("#type_03_" + treeNode.tId).unbind().remove()
-      $("#type_04_" + treeNode.tId).unbind().remove()
-      $("#type_05_" + treeNode.tId).unbind().remove()
-      $("#type_06_" + treeNode.tId).unbind().remove()
+      jquery("#type_01_" + treeNode.tId).unbind().remove()
+      jquery("#type_02_" + treeNode.tId).unbind().remove()
+      jquery("#type_03_" + treeNode.tId).unbind().remove()
+      jquery("#type_04_" + treeNode.tId).unbind().remove()
+      jquery("#type_05_" + treeNode.tId).unbind().remove()
+      jquery("#type_06_" + treeNode.tId).unbind().remove()
     },
     envSetting () {
       if (this.projectId === '') {

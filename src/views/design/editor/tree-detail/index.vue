@@ -3,6 +3,7 @@
     <empty v-if="isEmpty(detailType)"></empty>
     <case v-else-if="isCase(detailType)"></case>
     <category v-else-if="isCategory(detailType)"></category>
+    <const v-else-if="isConst(detailType)"></const>
     <file v-else-if="isFile(detailType)"></file>
   </div>
 </template>
@@ -11,6 +12,7 @@
 import Empty from './empty'
 import Case from './case'
 import Category from './category'
+import Const from './const'
 import File from './file'
 import NODE from '@/constans/node'
 
@@ -20,6 +22,7 @@ export default {
     Empty,
     Case,
     Category,
+    Const,
     File,
   },
   computed: {
@@ -41,6 +44,9 @@ export default {
         NODE.DetailType.SUITE
       ]
       return category.indexOf(type) !== -1
+    },
+    isConst(type) {
+      return type === NODE.DetailType.CONST
     },
     isFile(type) {
       return type === NODE.DetailType.FILE

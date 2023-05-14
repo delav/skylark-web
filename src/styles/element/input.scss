@@ -1,1 +1,8 @@
-
+.el-input {
+  .el-input__wrapper:focus {
+    box-shadow: 0 0 0 1px $mainColor;
+  }
+  .is-disabled .el-input__inner {
+    cursor: auto;
+  }
+}

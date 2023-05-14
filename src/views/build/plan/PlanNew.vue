@@ -112,7 +112,6 @@
         v-model="showCaseTree"
         title="选择执行用例"
         :close-on-click-modal="false"
-        :destroy-on-close="true"
       >
         <div class="case-content">
           <case-tree
@@ -249,7 +248,7 @@ export default {
         }
         createPlan(this.formData).then(() => {
           this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
-          this.$message.success('Create plan success!')
+          this.$message.success('创建计划成功')
         })
       })
     }

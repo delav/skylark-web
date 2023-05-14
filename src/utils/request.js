@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
 import store from '@/store'
 import router from '@/router'
-import { getToken } from '@/utils/auth'
+import { ElMessage } from 'element-plus'
+import { getToken, notAuth } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -13,18 +13,15 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    // do something before request is sent
-    if (store.getters.token && config.url !== '/user/login') {
-      // let each request carry token
-      // ['Authorization'] is a custom headers key
-      // please modify it according to the actual situation
+    if (store.getters.token && notAuth(config.url)) {
       config.headers['Authorization'] = getToken()
+    }
+    if (!(config.headers['Content-Type'])) {
+      config.headers['Content-Type'] = 'application/json'
     }
     return config
   },
   error => {
-    // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -72,7 +69,7 @@ service.interceptors.response.use(
     ElMessage({
       message: error.message,
       type: 'error',
-      duration: 3 * 1000
+      duration: 2 * 1000
     })
     return Promise.reject(error)
   }

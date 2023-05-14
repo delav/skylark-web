@@ -1,8 +1,8 @@
 <template>
   <div class="category">
-    <div class="variable-list">
-      <variable :variables="variableArray" module-from="node"></variable>
-    </div>
+<!--    <div class="variable-list">-->
+<!--      <variable :variables="variableArray" module-from="node"></variable>-->
+<!--    </div>-->
     <div class="fixture-list">
       <fixture :fixtures="fixtureArray"></fixture>
     </div>
@@ -10,20 +10,20 @@
 </template>
 
 <script>
-import Variable from '@/views/design/editor/components/Variable'
+// import Variable from '@/views/design/editor/components/Variable'
 import Fixture from './components/Fixture'
 import NODE from '@/constans/node'
 
 export default {
   name: 'Category',
   components: {
-    Variable,
+    // Variable,
     Fixture,
   },
   data() {
     return {
-      cateInfo: {},
-      variableArray: [],
+      // cateInfo: {},
+      // variableArray: [],
       fixtureArray: [],
     }
   },
@@ -33,9 +33,9 @@ export default {
         const detailType = this.$store.state.tree.detailType
         const categories = [NODE.DetailType.ROOT, NODE.DetailType.DIR, NODE.DetailType.SUITE]
         if (categories.indexOf(detailType) !== -1) {
-          this.cateInfo = this.$store.state.tree.selectedNode.meta
-          this.variableArray = this.cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
-          this.fixtureArray = this.cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
+          const cateInfo = this.$store.state.tree.selectedNode.meta
+          // this.variableArray = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
+          this.fixtureArray = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
         }
       }
     },

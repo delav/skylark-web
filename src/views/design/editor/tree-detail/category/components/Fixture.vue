@@ -3,18 +3,20 @@
     <div class="fixture-body">
       <el-form ref="form" :model="fixtureObject" label-width="80px">
         <el-form-item label="套件前置:">
-          <el-input v-model="fixtureObject['suite_setup']"></el-input>
+          <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_setup']"></el-input>
         </el-form-item>
         <el-form-item label="套件后置:">
-          <el-input v-model="fixtureObject['suite_teardown']"></el-input>
+          <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_teardown']"></el-input>
         </el-form-item>
         <el-form-item label="用例前置:">
-          <el-input v-model="fixtureObject['test_setup']"></el-input>
+          <el-input :disabled="inputDisabled" v-model="fixtureObject['test_setup']"></el-input>
         </el-form-item>
         <el-form-item label="用例后置:">
-          <el-input v-model="fixtureObject['test_teardown']"></el-input>
+          <el-input :disabled="inputDisabled" v-model="fixtureObject['test_teardown']"></el-input>
         </el-form-item>
         <el-form-item>
+          <el-button v-if="inputDisabled" type="primary" @click="editSetupTeardown">编辑</el-button>
+          <el-button v-else type="primary" @click="cancelSetupTeardown">取消</el-button>
           <el-button type="primary" @click="saveSetupTeardown">保存</el-button>
         </el-form-item>
         <el-alert type="info" :closable="false" show-icon>
@@ -55,7 +57,9 @@ export default {
         name: [
           { required: true, validator: validateName, trigger: 'blur' },
         ],
-      }
+      },
+      inputDisabled: true,
+      rawFixtureObject: ''
     }
   },
   props: {
@@ -94,6 +98,14 @@ export default {
       }
       return {id: selectedNode.mid, type: moduleType}
     },
+    editSetupTeardown() {
+      this.inputDisabled = false
+      this.rawFixtureObject = JSON.stringify(this.fixtureObject)
+    },
+    cancelSetupTeardown() {
+      this.inputDisabled = true
+      this.fixtureObject = JSON.parse(this.rawFixtureObject)
+    },
     saveSetupTeardown() {
       const postData = this.fixtureObject
       if (!Object.prototype.hasOwnProperty.call(postData, 'module_id')) {
@@ -102,6 +114,7 @@ export default {
         postData['module_type'] = moduleInfo.type
       }
       postSetupTeardown(postData).then(response => {
+        this.inputDisabled = true
         this.fixtureObject = response.data
         this.updateZTreeNode('fixtures', this.fixtureObject)
       })
@@ -110,6 +123,15 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.fixture {
+  .fixture-body {
+  }
+}
+:deep(.el-input.is-disabled) {
+  cursor: auto;
+  .el-input__inner {
+    cursor: auto;
+  }
+}
 </style>

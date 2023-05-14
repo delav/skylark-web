@@ -30,7 +30,8 @@ const DetailType = {
   SUITE: 2,
   DIR: 3,
   ROOT: 4,
-  FILE: 5,
+  CONST: 5,
+  FILE: 6,
 }
 
 const ModuleType = {
