@@ -22,7 +22,7 @@ export function createVariable(data) {
   return request({
     url: '/variable',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -30,7 +30,7 @@ export function updateVariable(vId, data) {
   return request({
     url: `/variable/${vId}`,
     method: 'patch',
-    data
+    data: data
   })
 }
 

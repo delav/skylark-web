@@ -12,7 +12,7 @@ export function createDir(data) {
   return request({
     url: '/suite-dir',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -20,7 +20,7 @@ export function updateDir(dirId, data) {
   return request({
     url: `/suite-dir/${dirId}`,
     method: 'patch',
-    data
+    data: data
   })
 }
 

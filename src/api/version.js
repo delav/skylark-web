@@ -4,7 +4,7 @@ export function createVersion(data) {
   return request({
     url: '/project-version',
     method: 'post',
-    data
+    data: data
   })
 }
 

@@ -85,11 +85,12 @@
           :title="nodeDialogTitle"
           :close-on-click-modal="false"
           @close="closeNodeDialog"
+          destroy-on-close
         >
           <div class="dialog-content">
             <node-action
               v-if="showDialogType===0"
-              :dialog-form="{label: nodeDialogForm.label, name: nodeDialogForm.name}"
+              :dialog-form="nodeDialogForm"
               @closeDialogAction="closeNodeDialog"
               @commitDialogAction="commitNodeDialog"
             />
@@ -106,6 +107,7 @@
           v-model="showEnvDialog"
           title="环境变量配置"
           :close-on-click-modal="false"
+          destroy-on-close
         >
           <div class="env-content">
             <env-variable />
@@ -118,6 +120,7 @@
           v-model="showNewDialog"
           title="新建项目"
           :close-on-click-modal="false"
+          destroy-on-close
         >
           <div class="new-content">
             <new-project
@@ -377,7 +380,7 @@ export default {
       } else if (item.type === NODE.ActionType.DELETE) {
         methodName = 'deleteNode'
       } else if (item.type === NODE.ActionType.DOWNLOAD) {
-        methodName = 'downloadFile'
+        methodName = 'downloadProjectFile'
       }
       this[`${methodName}`](item.id, item.action)
     },
@@ -491,7 +494,6 @@ export default {
       }
     },
     uploadProjectFile(files) {
-      console.log(files)
       let formData = new FormData()
       let node = this.nodeParams.meta_data
       const dirId = node.mid
@@ -502,18 +504,25 @@ export default {
         nodeList.push(node.name)
         node = node.getParentNode()
       }
+      nodeList.push(this.$store.state.tree.projectName)
       let fullPath = ''
-      for (let i = nodeList.length; i >= 0; i--) {
+      for (let i = nodeList.length-1; i >= 0; i--) {
         fullPath = fullPath + '/' + nodeList[i]
       }
-      formData.append('file', files)
       formData.append('dir_id', dirId)
       formData.append('path', fullPath)
-      console.log('form data')
-      console.log(formData)
-      uploadFile(formData).then(() => {
-        this.$message.success('上传成功')
+      files.forEach(file => {
+        formData.append('file', file)
       })
+      uploadFile(formData).then((response) => {
+        const count = response.data
+        this.$message.success(`上传${count}个文件成功`)
+      })
+    },
+    downloadProjectFile(nodeTId, actionInfo) {
+      console.log(actionInfo)
+      const node = this.zTreeObj.getNodeByTId(nodeTId)
+      downloadFile(node.id).then(() => {})
     },
     nullAction() {},
     copyNode(nodeTId, actionInfo) {
@@ -557,11 +566,6 @@ export default {
           that.zTreeObj.removeNode(node)
         }
       }).catch(() => {})
-    },
-    downloadFile(nodeTId, actionInfo) {
-      console.log(actionInfo)
-      const node = this.zTreeObj.getNodeByTId(nodeTId)
-      downloadFile(node.id).then(() => {})
     },
     addHoverDom(treeId, treeNode) {
       const that = this

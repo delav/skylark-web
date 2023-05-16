@@ -4,7 +4,7 @@ export function createPlan(data) {
   return request({
     url: '/build/plan',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -12,7 +12,7 @@ export function updatePlan(planId, data) {
   return request({
     url: `/build/plan/${planId}`,
     method: 'post',
-    data
+    data: data
   })
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="node-action">
-    <el-form :model="changeFrom" label-width="100px">
+    <el-form :model="changeFrom" label-width="110px">
       <el-form-item
         prop="name"
         :label="changeFrom.label"

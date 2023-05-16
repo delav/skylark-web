@@ -4,7 +4,7 @@ export function buildQuickTest(data) {
   return request({
     url: '/builder/quick',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -12,7 +12,7 @@ export function buildInstantTest(data) {
   return request({
     url: '/builder/instant',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -20,7 +20,7 @@ export function buildDebug(data) {
   return request({
     url: '/builder/debug',
     method: 'post',
-    data
+    data: data
   })
 }
 

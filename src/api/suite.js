@@ -12,7 +12,7 @@ export function createSuite(data) {
   return request({
     url: '/test-suite',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -20,7 +20,7 @@ export function updateSuite(suiteId, data) {
   return request({
     url: `/test-suite/${suiteId}`,
     method: 'patch',
-    data
+    data: data
   })
 }
 

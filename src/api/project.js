@@ -11,7 +11,7 @@ export function updateProject(pId, data) {
   return request({
     url: `/project/${pId}`,
     method: 'patch',
-    data
+    data: data
   })
 }
 
@@ -19,6 +19,6 @@ export function createProject(data) {
   return request({
     url: '/project',
     method: 'post',
-    data
+    data: data
   })
 }

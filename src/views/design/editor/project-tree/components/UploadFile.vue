@@ -44,7 +44,7 @@ export default {
       }
       let rawFiles = []
       for (let i = 0; i < this.uploadFiles.length; i++) {
-        rawFiles.push(this.uploadFiles[i])
+        rawFiles.push(this.uploadFiles[i].raw)
       }
       this.$emit('uploadFileAction', rawFiles)
     }

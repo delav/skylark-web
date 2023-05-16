@@ -12,7 +12,7 @@ export function updateEntities(data) {
   return request({
     url: '/case-entity',
     method: 'post',
-    data
+    data: data
   })
 }
 

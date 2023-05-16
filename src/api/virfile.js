@@ -13,7 +13,7 @@ export function uploadFile(formData) {
     url: '/project-file/upload',
     method: 'post',
     headers: {'Content-Type': 'multipart/form-data'},
-    formData
+    data: formData
   })
 }
 
@@ -21,6 +21,6 @@ export function downloadFile(suiteId) {
   return request({
     url: '/project-file/download',
     method: 'get',
-    params: {suite: suiteId}
+    params: { suite: suiteId }
   })
 }

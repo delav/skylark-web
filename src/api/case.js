@@ -12,7 +12,7 @@ export function createCase(data) {
   return request({
     url: '/test-case',
     method: 'post',
-    data
+    data: data
   })
 }
 
@@ -20,7 +20,7 @@ export function updateCase(caseId, data) {
   return request({
     url: `/test-case/${caseId}`,
     method: 'patch',
-    data
+    data: data
   })
 }
 

@@ -20,7 +20,7 @@ const mutations = {
 const actions = {
 
   getFileContent({ commit }, suiteId) {
-    commit('RELOAD_STATE')
+    commit('RESET_STATE')
     return new Promise((resolve, reject) => {
       fetchFileContent(suiteId).then(response => {
         commit('SET_FILE_CONTENT', response.data)
