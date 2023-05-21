@@ -515,14 +515,28 @@ export default {
         formData.append('file', file)
       })
       uploadFile(formData).then((response) => {
-        const count = response.data
-        this.$message.success(`上传${count}个文件成功`)
+        const newNodes = response.data
+        this.zTreeObj.addNodes(node, -1, newNodes)
+        this.$message.success(`上传${newNodes.length}个文件成功`)
       })
     },
-    downloadProjectFile(nodeTId, actionInfo) {
-      console.log(actionInfo)
+    downloadProjectFile(nodeTId) {
       const node = this.zTreeObj.getNodeByTId(nodeTId)
-      downloadFile(node.id).then(() => {})
+      let formData = new FormData()
+      formData.append('suite', node.mid)
+      downloadFile(formData).then((response) => {
+        let blob = new Blob([response.data])
+        let fileName = response.headers['content-disposition'].split(';')[1].split('=')[1]
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        const url = window.URL || window.webkitURL
+        link.href = url.createObjectURL(blob)
+        link.setAttribute('download', decodeURI(fileName))
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        url.revokeObjectURL(link.href)
+      })
     },
     nullAction() {},
     copyNode(nodeTId, actionInfo) {
@@ -572,6 +586,12 @@ export default {
       const hoverDomList = treeNode.action
       for (let i = 0; i < hoverDomList.length; i++) {
         const idPrefix = that.svgHoverType[i]
+        if (hoverDomList[i].type === NODE.ActionType.DOWNLOAD) {
+          addSvgHover(idPrefix, treeNode.tId, hoverDomList[i].icon, '',function () {
+            that.downloadProjectFile(treeNode.tId)
+          })
+          continue
+        }
         addSvgHover(idPrefix, treeNode.tId, hoverDomList[i].icon, '',function () {
           const params = {
             'action_type': hoverDomList[i].type,

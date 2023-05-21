@@ -39,9 +39,14 @@ service.interceptors.response.use(
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
+
   response => {
     const res = response.data
-
+    // if not json response
+    const contentType = response.headers['content-type']
+    if (contentType !== 'application/json') {
+      return response
+    }
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000 && status) {
       ElMessage({
@@ -65,7 +70,6 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
     ElMessage({
       message: error.message,
       type: 'error',

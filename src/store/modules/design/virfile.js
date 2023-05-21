@@ -1,8 +1,10 @@
 import { fetchFileContent } from '@/api/virfile'
+import { guid } from '@/utils/other'
 
 const getFileState = () => {
   return {
-    fileContent: {}
+    fileContent: {},
+    syncFileFlag: false
   }
 }
 
@@ -14,6 +16,9 @@ const mutations = {
   },
   SET_FILE_CONTENT: (state, content) => {
     state.fileContent = content
+  },
+  SET_FILE_SYNC_FLAG: (state, flag) => {
+    state.syncFileFlag = flag
   }
 }
 
@@ -24,12 +29,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       fetchFileContent(suiteId).then(response => {
         commit('SET_FILE_CONTENT', response.data)
+        commit('SET_FILE_SYNC_FLAG', guid())
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
-  }
+  },
 }
 
 export default {

@@ -1,10 +1,10 @@
-import request from '@/utils/request'
+import request from '@/http/request'
 
 
-export function fetchRecords(size, status) {
+export function fetchRecords(size) {
   return request({
     url: '/build/record',
     method: 'get',
-    params: { size: size, result: status }
+    params: { limit: size }
   })
 }

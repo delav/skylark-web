@@ -43,6 +43,7 @@ export default {
   .plan {
     height: 100%;
     width: calc(100% - 300px);
+    min-width: 500px;
   }
 }
 </style>

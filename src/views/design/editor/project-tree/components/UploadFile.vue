@@ -2,12 +2,11 @@
   <div class="upload-file">
     <el-upload
       ref="upload"
-      class="upload-demo"
-      action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+      action=""
       multiple
-      :limit="1"
       :on-exceed="handleExceed"
       :on-change="handleChange"
+      :on-remove="handleRemove"
       :auto-upload="false"
       :file-list="uploadFiles"
     >
@@ -35,6 +34,9 @@ export default {
   methods: {
     handleExceed() {},
     handleChange(file, fileList) {
+      this.uploadFiles = fileList
+    },
+    handleRemove(file, fileList) {
       this.uploadFiles = fileList
     },
     submitUpload() {

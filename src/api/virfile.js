@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/http/request'
 
 export function fetchFileContent(suiteId) {
   return request({
@@ -17,10 +17,11 @@ export function uploadFile(formData) {
   })
 }
 
-export function downloadFile(suiteId) {
+export function downloadFile(formData) {
   return request({
     url: '/project-file/download',
-    method: 'get',
-    params: { suite: suiteId }
+    method: 'post',
+    headers: {'Content-Type': 'multipart/form-data'},
+    data: formData
   })
 }

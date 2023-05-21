@@ -1,7 +1,7 @@
 <template>
   <div class="quick-build">
     <div class="quick-button">
-      <el-button type="primary" @click="showQuickBuild=true">快速构建</el-button>
+      <el-button type="primary" size="small" @click="showQuickBuild=true">快速构建</el-button>
     </div>
     <div class="dialog">
       <el-dialog
@@ -212,11 +212,9 @@ export default {
 
 <style lang="scss" scoped>
 .quick-build {
-  height: 60px;
   width: 100%;
   .quick-button {
     float: right;
-    padding: 5px 5px 0 0;
   }
 }
 </style>

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/http/request'
 
 export function createPlan(data) {
   return request({
@@ -36,5 +36,14 @@ export function getPlanDetail(planId) {
   return request({
     url: `/build/plan/${planId}`,
     method: 'get',
+  })
+}
+
+
+export function fetchInstantlyPlans(size) {
+  return request({
+    url: `/build/plan/instantly`,
+    method: 'get',
+    params: { limit: size }
   })
 }

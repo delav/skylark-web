@@ -1,10 +1,10 @@
-import request from '@/utils/request'
+import request from '@/http/request'
 
 
-export function fetchHistories(size, status) {
+export function fetchHistories(recordId) {
   return request({
     url: '/build/history',
     method: 'get',
-    params: { size: size, result: status }
+    params: { record: recordId }
   })
 }

@@ -76,12 +76,14 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="230">
           <template #default="scope">
-            <el-button type="warning" size="small" @click="preBuild(scope.row)" circle >
+            <el-button style="margin-right: 15px" type="primary" size="small" @click="preBuild(scope.row)" circle >
               <el-icon :size="20"><CaretRight /></el-icon>
             </el-button>
-            <el-button type="warning" size="small" >编辑</el-button>
-            <el-button type="primary" size="small" @click="gotoPlanDetail">详情</el-button>
-            <el-button type="danger" size="small" @click="gotoPlanDetail">删除</el-button>
+            <el-button-group>
+              <el-button type="warning" size="small" >编辑</el-button>
+              <el-button type="primary" size="small" @click="gotoPlanDetail">详情</el-button>
+              <el-button type="danger" size="small" @click="gotoPlanDetail">删除</el-button>
+            </el-button-group>
           </template>
         </el-table-column>
       </el-table>
