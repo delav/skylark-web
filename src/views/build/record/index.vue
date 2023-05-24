@@ -19,14 +19,14 @@
 </template>
 
 <script>
-import QuickBuild from './components/QuickBuild'
-import InstantlyItem from './components/InstantlyItem'
-import RecentlyItem from './components/RecentlyItem'
-import { fetchRecords } from '@/api/record'
-import { fetchInstantlyPlans } from '@/api/plan'
+import QuickBuild from "@/views/build/record/components/QuickBuild";
+import InstantlyItem from "@/views/build/record/components/InstantlyItem";
+import RecentlyItem from "@/views/build/record/components/RecentlyItem";
+import { fetchRecords } from "@/api/record";
+import { fetchInstantlyPlans } from "@/api/plan";
 
 export default {
-  name: 'RecordList',
+  name: 'BuildRecord',
   components: {
     QuickBuild,
     InstantlyItem,

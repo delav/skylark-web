@@ -51,12 +51,12 @@
 </template>
 
 <script>
-import variables from '@/styles/variables.module.scss'
-import axios from 'axios'
-import KeywordItem from './components/KeywordItem'
-import { getLibKeyword, getUserKeyword } from '@/api/keyword'
-import { getKeywordGroup } from '@/api/kgroup'
-import { guid } from '@/utils/other'
+import variables from "@/styles/variables.module.scss";
+import axios from "axios";
+import KeywordItem from "@/views/design/editor/keyword-list/components/KeywordItem";
+import { getLibKeyword, getUserKeyword } from "@/api/keyword";
+import { getKeywordGroup } from "@/api/kgroup";
+import { guid } from "@/utils/other";
 
 export default {
   name: 'KeywordList',

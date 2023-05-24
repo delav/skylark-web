@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { fetchVersion, createVersion } from '@/api/version'
+import { fetchVersion, createVersion } from "@/api/version";
 
 export default {
   name: 'PushInfo',

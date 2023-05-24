@@ -38,11 +38,11 @@
 </template>
 
 <script>
-import tree from '@/components/GiantTree'
-import NODE from '@/constans/node'
-import axios from 'axios'
-import { fetchTagsByProject } from '@/api/tag'
-import { fetchPriorities } from '@/api/priority'
+import tree from "@/components/GiantTree";
+import NODE from "@/constans/node";
+import axios from "axios";
+import { fetchTagsByProject } from "@/api/tag";
+import { fetchPriorities } from "@/api/priority";
 
 export default {
   name: 'CaseTree',

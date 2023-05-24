@@ -86,8 +86,8 @@
 
 <script>
 // import SvgIcon from "@/components/SvgIcon";
-import { deepCopy } from '@/utils/dcopy'
-import KEYWORD from '@/constans/keyword'
+import { deepCopy } from "@/utils/dcopy";
+import KEYWORD from "@/constans/keyword";
 
 export default {
   name: 'EntityArgs',

@@ -1,5 +1,5 @@
-import { fetchFileContent } from '@/api/virfile'
-import { guid } from '@/utils/other'
+import { fetchFileContent } from "@/api/virfile";
+import { guid } from "@/utils/other";
 
 const getFileState = () => {
   return {

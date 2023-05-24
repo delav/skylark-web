@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { postSetupTeardown } from '@/api/fixture'
+import { postSetupTeardown } from "@/api/fixture";
 import NODE from "@/constans/node";
 
 export default {

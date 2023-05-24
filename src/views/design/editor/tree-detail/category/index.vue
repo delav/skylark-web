@@ -11,8 +11,8 @@
 
 <script>
 // import Variable from '@/views/design/editor/components/Variable'
-import Fixture from './components/Fixture'
-import NODE from '@/constans/node'
+import Fixture from "@/views/design/editor/tree-detail/category/components/Fixture";
+import NODE from "@/constans/node";
 
 export default {
   name: 'Category',

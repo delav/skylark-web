@@ -1,14 +1,14 @@
-import { createStore } from 'vuex'
-import getters from './getters'
-import user from './modules/user'
-import base from './modules/base'
-import tree from './modules/design/tree'
-import entity from './modules/design/entity'
-import file from './modules/design/virfile'
-import keyword from './modules/design/keyword'
-import action from './modules/design/action'
-import plan from './modules/build/plan'
-import record from './modules/build/record'
+import { createStore } from "vuex"
+import getters from "@/store/getters";
+import user from "@/store/modules/user";
+import base from "@/store/modules/base";
+import tree from "@/store/modules/design/tree";
+import entity from "@/store/modules/design/entity";
+import file from "@/store/modules/design/virfile";
+import keyword from "@/store/modules/design/keyword";
+import action from "@/store/modules/design/action";
+import plan from "@/store/modules/build/plan";
+import record from "@/store/modules/build/record";
 
 const store = createStore({
     modules: {

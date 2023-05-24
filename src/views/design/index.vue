@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import Action from './action'
-import Editor from './editor'
+import Action from "@/views/design/action";
+import Editor from "@/views/design/editor";
 
 export default {
   name: 'Design',

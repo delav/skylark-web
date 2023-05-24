@@ -126,11 +126,11 @@
 </template>
 
 <script>
-import PAGE from '@/constans/build'
-import CaseTree from '../components/CaseTree'
-import DragProgress from '@/components/DragProgress'
-import { createPlan } from '@/api/plan'
-import { fetchVersion } from '@/api/version'
+import PAGE from "@/constans/build";
+import CaseTree from "@/views/build/components/CaseTree";
+import DragProgress from "@/components/DragProgress";
+import { createPlan } from "@/api/plan";
+import { fetchVersion } from "@/api/version";
 
 export default {
   name: 'PlanNew',

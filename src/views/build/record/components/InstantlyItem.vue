@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import TextTooltip from '@/components/TextTooltip'
+import TextTooltip from "@/components/TextTooltip";
 
 export default {
   name: 'InstantItem',
@@ -54,6 +54,7 @@ $itemHeight: 45px;
     .time-tip {
       margin: 2px 0 0 0;
       font-size: 12px;
+      color: #a3a7af;
     }
   }
   .item-tip {

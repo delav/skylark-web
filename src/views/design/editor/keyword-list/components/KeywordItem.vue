@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import TextTooltip from '@/components/TextTooltip'
+import TextTooltip from "@/components/TextTooltip";
 
 export default {
   name: 'KeywordItem',

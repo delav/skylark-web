@@ -4,8 +4,9 @@
       <text-tooltip
         class="title"
         ref-name="itemText"
-        :content="itemData['id'].toString()"
+        :content="itemData['plan_title'].toString()"
       />
+      <p class="time-tip">构建时间：{{itemData['create_at']}}</p>
     </div>
     <div class="item-tip">
       <el-button type="success" link>详情</el-button>
@@ -14,7 +15,7 @@
 </template>
 
 <script>
-import TextTooltip from '@/components/TextTooltip'
+import TextTooltip from "@/components/TextTooltip";
 
 export default {
   name: 'RecentlyItem',
@@ -42,6 +43,7 @@ $itemHeight: 45px;
     .time-tip {
       margin: 2px 0 0 0;
       font-size: 12px;
+      color: #a3a7af;
     }
   }
   .item-tip {

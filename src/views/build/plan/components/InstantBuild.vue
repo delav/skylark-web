@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import { deepCopy } from '@/utils/dcopy'
-import { buildInstantTest } from '@/api/builder'
+import { deepCopy } from "@/utils/dcopy";
+import { buildInstantTest } from "@/api/builder";
 
 export default {
   name: 'InstantBuild',

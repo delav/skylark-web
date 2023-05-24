@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import ProjectTree from './project-tree'
-import TreeDetail from './tree-detail'
-import KeywordList from './keyword-list'
-import SvgIcon from '@/components/SvgIcon'
-import { dragWController } from '@/utils/resize'
+import ProjectTree from "@/views/design/editor/project-tree";
+import TreeDetail from "@/views/design/editor/tree-detail";
+import KeywordList from "@/views/design/editor/keyword-list";
+import SvgIcon from "@/components/SvgIcon";
+import { dragWController } from "@/utils/resize";
 
 export default {
   name: 'Editor',

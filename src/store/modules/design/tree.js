@@ -1,5 +1,3 @@
-
-
 const getTreeState = () => {
   return {
     projectId: '',

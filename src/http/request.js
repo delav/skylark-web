@@ -1,8 +1,8 @@
-import axios from 'axios'
-import store from '@/store'
-import router from '@/router'
-import { ElMessage } from 'element-plus'
-import { getToken, notAuth } from '@/utils/auth'
+import axios from "axios";
+import store from "@/store";
+import router from "@/router";
+import { ElMessage } from "element-plus";
+import { getToken, notAuth } from "@/utils/auth";
 
 // create an axios instance
 const service = axios.create({

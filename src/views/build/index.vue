@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import BuildRecord from './record'
-import BuildPlan from './plan'
+import BuildRecord from "@/views/build/record";
+import BuildPlan from "@/views/build/plan";
 
 
 export default {

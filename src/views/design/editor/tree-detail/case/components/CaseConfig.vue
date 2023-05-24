@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import NODE from '@/constans/node'
+import NODE from "@/constans/node";
 
 export default {
   name: 'CaseConfig',

@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import Empty from './empty'
-import Case from './case'
-import Category from './category'
-import Const from './const'
-import File from './file'
-import NODE from '@/constans/node'
+import Empty from "@/views/design/editor/tree-detail/empty";
+import Case from "@/views/design/editor/tree-detail/case";
+import Category from "@/views/design/editor/tree-detail/category";
+import Const from "@/views/design/editor/tree-detail/const";
+import File from "@/views/design/editor/tree-detail/file";
+import NODE from "@/constans/node";
 
 export default {
   name: 'TreeDetail',

@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import { ElLoading } from 'element-plus'
-import { createProject } from '@/api/project'
+import { ElLoading } from "element-plus";
+import { createProject } from "@/api/project";
 
 export default {
   name: 'NewProject',

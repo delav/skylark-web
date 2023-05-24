@@ -65,15 +65,15 @@
 </template>
 
 <script>
-import IconItem from './components/IconItem'
-import PushInfo from './components/PushInfo'
-import NODE from '@/constans/node'
-import CASE from '@/constans/testcase'
-import { deepCopy } from '@/utils/dcopy'
-import { guid } from '@/utils/other'
-import { updateEntities } from '@/api/entity'
-import { setCursorStyle } from '@/utils/hover'
-import { buildDebug, getBuildProgress } from '@/api/builder'
+import IconItem from "@/views/design/action/components/IconItem";
+import PushInfo from "@/views/design/action/components/PushInfo";
+import NODE from "@/constans/node";
+import CASE from "@/constans/testcase";
+import { deepCopy } from "@/utils/dcopy";
+import { guid } from "@/utils/other";
+import { updateEntities } from "@/api/entity";
+import { setCursorStyle } from "@/utils/hover";
+import { buildDebug, getBuildProgress } from "@/api/builder";
 
 export default {
   name: 'Action',

@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import PAGE from '@/constans/build'
-import PlanList from './PlanList'
-import PlanNew from './PlanNew'
-import PlanDetail from './PlanDetail'
-import PlanEdit from './PlanEdit'
+import PAGE from "@/constans/build";
+import PlanList from "@/views/build/plan/PlanList";
+import PlanNew from "@/views/build/plan/PlanNew";
+import PlanDetail from "@/views/build/plan/PlanDetail";
+import PlanEdit from "@/views/build/plan/PlanEdit";
 
 export default {
   name: 'BuildPlan',

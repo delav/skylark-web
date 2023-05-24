@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import { guid } from '@/utils/other'
-import { deepCopy } from '@/utils/dcopy'
-import { setCursorStyle } from '@/utils/hover'
-import EntityItem from './EntityItem'
+import { guid } from "@/utils/other";
+import { deepCopy } from "@/utils/dcopy";
+import { setCursorStyle } from "@/utils/hover";
+import EntityItem from "@/views/design/editor/tree-detail/case/components/EntityItem";
 
 export default {
   name: 'CaseEntity',

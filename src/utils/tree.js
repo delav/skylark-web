@@ -1,6 +1,6 @@
-import NODE from '@/constans/node'
-import { deepCopy } from '@/utils/dcopy'
-import { guid } from '@/utils/other'
+import NODE from "@/constans/node";
+import { deepCopy } from "@/utils/dcopy";
+import { guid } from "@/utils/other";
 
 const baseNode = {
   id: 1, pid: 0, name: 'DEFAULT', desc: null, type: 0,

@@ -14,11 +14,11 @@
 </template>
 
 <script>
-import { dragHController } from '@/utils/resize'
-import SvgIcon from '@/components/SvgIcon'
-import CaseEntity from './components/CaseEntity'
-import EntityArgs from './components/EntityArgs'
-import CaseConfig from './components/CaseConfig'
+import { dragHController } from "@/utils/resize";
+import SvgIcon from "@/components/SvgIcon";
+import CaseEntity from "@/views/design/editor/tree-detail/case/components/CaseEntity";
+import EntityArgs from "@/views/design/editor/tree-detail/case/components/EntityArgs";
+import CaseConfig from "@/views/design/editor/tree-detail/case/components/CaseConfig";
 
 export default {
   name: 'Case',

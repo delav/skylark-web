@@ -1,7 +1,11 @@
 <template>
   <div class="plan-list">
     <div class="operate-header">
-      <el-select v-model="searchForm.project_id" placeholder="Select">
+      <el-select
+        v-model="searchForm.project_id"
+        placeholder="Select"
+        @change="getPlansByProject"
+      >
         <el-option
           v-for="item in projectList"
           :key="item.id"
@@ -9,24 +13,7 @@
           :value="item.id"
         />
       </el-select>
-      <el-select v-model="searchForm.env_id" placeholder="Select">
-        <el-option
-          v-for="item in envList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-select v-model="searchForm.region_id" placeholder="Select">
-        <el-option
-          v-for="item in regionList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-button type="primary" @click="searchPlans">查询</el-button>
-      <el-button type="primary" @click="gotoCreatePlan">新建计划</el-button>
+      <el-button type="primary" @click="newPlan">新建计划</el-button>
     </div>
     <div class="item-body">
       <el-table :data="planList" border style="width: 100%">
@@ -66,7 +53,8 @@
         </el-table-column>
         <el-table-column prop="periodic_switch" label="定时开关" min-width="10%" show-overflow-tooltip>
           <template #default="scope">
-            <span>{{transferSwitch(scope.row.periodic_switch)}}</span>
+            <span v-if="scope.row.periodic_switch">开启</span>
+            <span v-else>关闭</span>
           </template>
         </el-table-column>
         <el-table-column prop="periodic_expr" label="定时配置" min-width="10%" show-overflow-tooltip>
@@ -80,14 +68,19 @@
               <el-icon :size="20"><CaretRight /></el-icon>
             </el-button>
             <el-button-group>
-              <el-button type="warning" size="small" >编辑</el-button>
-              <el-button type="primary" size="small" @click="gotoPlanDetail">详情</el-button>
-              <el-button type="danger" size="small" @click="gotoPlanDetail">删除</el-button>
+              <el-button type="warning" size="small" @click="editPlan(scope.row)" link>编辑</el-button>
+              <el-button type="primary" size="small" @click="getPlanDetail(scope.row)" link>详情</el-button>
+              <el-button type="danger" size="small" @click="deletePlan(scope.row)" link>删除</el-button>
             </el-button-group>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="prev, pager, next" :total="1000" />
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        @current-change="changePage"
+      />
     </div>
     <div class="builder">
       <el-dialog
@@ -106,10 +99,10 @@
 </template>
 
 <script>
-import PAGE from '@/constans/build'
-import InstantBuild from './components/InstantBuild'
-import { guid } from '@/utils/other'
-import { fetchPlans } from '@/api/plan'
+import PAGE from "@/constans/build";
+import InstantBuild from "@/views/build/plan/components/InstantBuild";
+import { guid } from "@/utils/other";
+import { fetchPlans, deletePlan } from "@/api/plan";
 
 export default {
   name: 'PlanList',
@@ -119,23 +112,20 @@ export default {
   data() {
     return {
       planList: [],
+      total: 0,
+      pageSize: 10,
       searchForm: {
-        project_id: '',
-        env_id: '',
-        region_id: ''
+        project_id: null,
       },
       showBuild: false,
     }
   },
   computed: {
     projectList() {
-      return this.$store.state.base.projectList
-    },
-    envList() {
-      return this.$store.state.base.envList
-    },
-    regionList() {
-      return this.$store.state.base.regionList
+      const rawList = this.$store.state.base.projectList
+      const allOption = {id: 0, name: '所有'}
+      rawList.unshift(allOption)
+      return rawList
     },
     showRegion() {
       return this.$store.state.base.showRegion
@@ -148,53 +138,44 @@ export default {
     }
   },
   created() {
-    this.getPlanList()
+    this.getPlanList(1)
   },
   methods: {
-    getPlanList() {
-      fetchPlans(1, 10).then(response => {
-        this.planList = response.data
+    getPlanList(page, projectId=null) {
+      fetchPlans(page, this.pageSize, projectId).then(response => {
+        const result = response.data
+        this.planList = result.data
+        this.total = result.total
       })
     },
-    // transferIdString(idString, type) {
-    //   let map = {}
-    //   if (type === 'env') {
-    //     map = this.envMap
-    //   } else {
-    //     map = this.regionMap
-    //   }
-    //   let nameString = ''
-    //   const sep = ','
-    //   idString = idString + sep
-    //   let index = 0
-    //   for (let i = 0; i < idString.length; i++) {
-    //     if (idString[i] !== sep) {
-    //       continue
-    //     }
-    //     const valStr = idString.substring(index, i)
-    //     const id = parseInt(valStr)
-    //     const name = map[id]
-    //     if (i === idString.length - 1) {
-    //       nameString += name
-    //     } else {
-    //       nameString += name + sep
-    //     }
-    //     index = i + 1
-    //   }
-    //   return nameString
-    // },
-    transferSwitch(bool) {
-      if (bool) {
-        return '开启'
-      }
-      return '关闭'
-    },
-    searchPlans() {},
-    gotoCreatePlan() {
+    newPlan() {
       this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.CREATE)
     },
-    gotoPlanDetail() {
+    editPlan(planData) {
+      this.$store.commit('plan/SET_PLAN_DATA', planData)
+      this.$store.commit('plan/SET_CHANGE_FLAG', guid())
+      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.UPDATE)
+    },
+    getPlanDetail(planData) {
+      this.$store.commit('plan/SET_PLAN_DATA', planData)
+      this.$store.commit('plan/SET_CHANGE_FLAG', guid())
       this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.DETAIL)
+    },
+    deletePlan(planData) {
+      let warnInfo = `将删除计划【${planData.title}】，是否继续？`
+      this.$messageBox.confirm(
+        warnInfo,
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      ).then(() => {
+        deletePlan(planData.id).then(() => {
+          this.getPlanList(1)
+        })
+      }).catch(() => {})
     },
     preBuild(planData) {
       this.$store.commit('plan/SET_PLAN_DATA', planData)
@@ -208,6 +189,16 @@ export default {
       this.showBuild = false
       this.closeBuild()
       this.$message.success('构建请求已发送')
+    },
+    changePage(pageVal) {
+      this.getPlanList(pageVal)
+    },
+    getPlansByProject(projectId) {
+      if (projectId === 0) {
+        this.getPlanList(1)
+      } else {
+        this.getPlanList(1, projectId)
+      }
     }
   }
 }

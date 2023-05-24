@@ -1,16 +1,23 @@
 <template>
   <div class="plan-edit">
-    <div class="back-header">
-      <el-icon class="back-icon" @click="backToPlanList"><Back /></el-icon>
+    <div class="head">
+      <back-header />
+    </div>
+    <div class="body">
+      edit
     </div>
   </div>
 </template>
 
 <script>
-import PAGE from '@/constans/build'
+import PAGE from "@/constans/build";
+import BackHeader from "@/views/build/plan/components/BackHeader";
 
 export default {
   name: 'PlanEdit',
+  components: {
+    BackHeader
+  },
   data() {
     return {
 

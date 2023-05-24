@@ -28,6 +28,7 @@
         </template>
       </el-dropdown>
     </div>
+    <el-divider direction="vertical" />
     <div class="profile">
       <el-dropdown trigger="click">
         <div class="avatar-wrapper">
@@ -50,8 +51,8 @@
 </template>
 
 <script>
-import path from 'path'
-import { isExternal } from '@/utils/validate'
+import path from "path";
+import { isExternal } from "@/utils/validate";
 
 export default {
   name: 'Navbar',

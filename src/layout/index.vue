@@ -10,7 +10,8 @@
 </template>
 
 <script>
-import { Navbar, AppMain } from './components'
+import { Navbar, AppMain } from "@/layout/components";
+
 export default {
   name: 'Layout',
   components: {

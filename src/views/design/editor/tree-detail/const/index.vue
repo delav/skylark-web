@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import CodeViewer from './components/CodeViewer'
+import CodeViewer from "@/views/design/editor/tree-detail/const/components/CodeViewer";
 
 export default {
   name: 'Const',

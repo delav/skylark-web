@@ -1,4 +1,4 @@
-import request from '@/http/request'
+import request from "@/http/request";
 
 export function fetchEntities(caseId) {
   return request({

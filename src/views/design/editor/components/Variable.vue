@@ -103,8 +103,8 @@
 </template>
 
 <script>
-import NODE from '@/constans/node'
-import { createVariable, updateVariable, deleteVariable } from '@/api/variable'
+import NODE from "@/constans/node";
+import { createVariable, updateVariable, deleteVariable } from "@/api/variable";
 
 export default {
   name: 'Variable',

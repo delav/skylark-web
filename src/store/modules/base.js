@@ -1,7 +1,7 @@
-import axios from 'axios'
-import { fetchProjectList } from '@/api/project'
-import { fetchEnvs } from '@/api/env'
-import { fetchRegions } from '@/api/region'
+import axios from "axios";
+import { fetchProjectList } from "@/api/project";
+import { fetchEnvs } from "@/api/env";
+import { fetchRegions } from "@/api/region";
 
 
 const getProjectState = () => {

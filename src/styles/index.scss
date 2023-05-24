@@ -1,10 +1,11 @@
-@import 'variables.module.scss';
-@import './navbar.scss';
-@import './mian.scss';
-@import './scrollbar.scss';
-@import 'element/button.scss';
-@import 'element/input.scss';
-@import 'element/form.scss';
+@import "variables.module";
+@import "navbar.scss";
+@import "mian.scss";
+@import "scrollbar.scss";
+@import "element/button.scss";
+@import "element/input.scss";
+@import "element/form.scss";
+@import "element/pagination.scss";
 
 body {
   height: 100%;

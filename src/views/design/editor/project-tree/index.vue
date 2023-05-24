@@ -135,21 +135,21 @@
 </template>
 
 <script>
-import jquery from 'jquery'
-import variables from '@/styles/variables.module.scss'
-import tree from '@/components/GiantTree'
-import NewProject from './components/NewProject'
-import EnvVariable from './components/EnvVariable'
-import NodeAction from './components/NodeAction'
-import UploadFile from './components/UploadFile'
-import NODE from '@/constans/node'
-import { updateProject } from '@/api/project'
-import { fetchBaseDir, createDir, updateDir, deleteDir } from '@/api/dir'
-import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from '@/api/suite'
-import { fetchCaseNode, createCase, updateCase, deleteCase } from '@/api/case'
-import { uploadFile, downloadFile } from '@/api/virfile'
-import { addSvgHover } from '@/utils/hover'
-import { transformData } from '@/utils/tree'
+import jquery from "jquery";
+import variables from "@/styles/variables.module.scss";
+import tree from "@/components/GiantTree";
+import NewProject from "@/views/design/editor/project-tree/components/NewProject";
+import EnvVariable from "@/views/design/editor/project-tree/components/EnvVariable";
+import NodeAction from "@/views/design/editor/project-tree/components/NodeAction";
+import UploadFile from "@/views/design/editor/project-tree/components/UploadFile";
+import NODE from "@/constans/node";
+import { updateProject } from "@/api/project";
+import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
+import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from "@/api/suite";
+import { fetchCaseNode, createCase, updateCase, deleteCase } from "@/api/case";
+import { uploadFile, downloadFile } from "@/api/virfile";
+import { addSvgHover } from "@/utils/hover";
+import { transformData } from "@/utils/tree";
 
 export default {
   name: 'ProjectTree',

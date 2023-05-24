@@ -109,9 +109,9 @@
 </template>
 
 <script>
-import CaseTree from '../../components/CaseTree'
-import { buildQuickTest } from '@/api/builder'
-import { fetchVersion } from '@/api/version'
+import CaseTree from "@/views/build/components/CaseTree";
+import { buildQuickTest } from "@/api/builder";
+import { fetchVersion } from "@/api/version";
 
 export default {
   name: 'QuickBuild',

@@ -1,6 +1,6 @@
-import { deepCopy } from '@/utils/dcopy'
-import { fetchEntities } from '@/api/entity'
-import { guid } from '@/utils/other'
+import { deepCopy } from "@/utils/dcopy";
+import { fetchEntities } from "@/api/entity";
+import { guid } from "@/utils/other";
 
 const getEntityState = () => {
   return {

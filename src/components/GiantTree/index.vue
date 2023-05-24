@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import $ from 'jquery'
+import $ from "jquery";
 
 require("@ztree/ztree_v3/js/jquery.ztree.all");
 

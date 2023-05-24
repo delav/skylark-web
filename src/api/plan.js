@@ -1,4 +1,4 @@
-import request from '@/http/request'
+import request from "@/http/request";
 
 export function createPlan(data) {
   return request({
@@ -16,11 +16,22 @@ export function updatePlan(planId, data) {
   })
 }
 
-export function fetchPlans(page, size) {
+export function fetchPlans(page, size, project=null) {
+  let params = { page: page, size: size }
+  if (project !== null) {
+    params.project = project
+  }
   return request({
     url: '/build/plan',
     method: 'get',
-    params: { page: page, size: size }
+    params: params
+  })
+}
+
+export function deletePlan(planId) {
+  return request({
+    url: `/build/plan/${planId}`,
+    method: 'delete',
   })
 }
 

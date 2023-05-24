@@ -1,5 +1,5 @@
-import store from '@/store'
-import variables from '@/styles/variables.module.scss'
+import store from "@/store";
+import variables from "@/styles/variables.module.scss";
 
 const treeMinWidth = 200
 const caseMinWidth = 300

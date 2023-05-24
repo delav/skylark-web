@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import NODE from '@/constans/node'
-import Variable from '@/views/design/editor/components/Variable'
-import { fetchVariables, batchCreateVariable } from '@/api/variable'
+import NODE from "@/constans/node";
+import Variable from "@/views/design/editor/components/Variable";
+import { fetchVariables, batchCreateVariable } from "@/api/variable";
 
 export default {
   name: 'EnvVariable',

@@ -1,6 +1,6 @@
 <template>
-  <div class="plan-detail">
-    <div class="back-header">
+  <div class="back-header">
+    <div class="content">
       <el-icon class="back-icon" @click="backToPlanList"><Back /></el-icon>
     </div>
   </div>
@@ -10,12 +10,7 @@
 import PAGE from "@/constans/build";
 
 export default {
-  name: 'PlanDetail',
-  data() {
-    return {
-
-    }
-  },
+  name: 'BackHeader',
   methods: {
     backToPlanList () {
       this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
@@ -25,27 +20,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.plan-detail {
+.back-header {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
   padding: 5px;
   max-width: 800px;
-  .back-header {
+  .content {
     height: 50px;
     padding: 5px 0;
     .back-icon {
       cursor: pointer;
       font-size: 23px;
-    }
-  }
-  .plan-body {
-    width: 100%;
-    .operate-button {
-      float: right;
-      margin-top: 20px;
-      .create-button {
-        margin-left: 25px;
-      }
     }
   }
 }
