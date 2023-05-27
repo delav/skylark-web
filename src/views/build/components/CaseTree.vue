@@ -102,7 +102,6 @@ export default {
       const checkedCases = this.zTreeObj.getNodesByFilter(function (node) {
         return node.checked === true && node.desc === NODE.NodeDesc.CASE
       }, false)
-      console.log(checkedCases)
       let caseIdStrings = ''
       for (let i = 0; i < checkedCases.length; i++) {
         const caseId = checkedCases[i].mid
@@ -115,7 +114,6 @@ export default {
       params['count'] = checkedCases.length
       params['cases'] = caseIdStrings
       params['options'] = this.shortcutOptions
-      console.log(params)
       this.$emit('confirmAction', params)
     }
   }

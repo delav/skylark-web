@@ -1,94 +1,82 @@
 <template>
   <div class="quick-build">
-    <div class="quick-button">
-      <el-button type="primary" size="small" @click="showQuickBuild=true">快速构建</el-button>
-    </div>
-    <div class="dialog">
-      <el-dialog
-        width="65%"
-        v-model="showQuickBuild"
-        title="快速执行构建"
-        :close-on-click-modal="false"
+    <div class="content">
+      <el-form
+        ref="ruleFormRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="130px"
+        status-icon
       >
-        <div class="content">
-          <el-form
-            ref="ruleFormRef"
-            :model="formData"
-            :rules="formRules"
-            label-width="130px"
-            status-icon
+        <el-form-item label="项目名称" prop="project_id">
+          <el-select
+            style="width: 100%"
+            v-model="formData.project_id"
+            placeholder="选择项目">
+            <el-option
+              v-for="(item, index) in projectList"
+              :key="index"
+              :label="item.name"
+              :value="item.id"
+              @click.native="changeProject(item)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="项目分支" prop="branch">
+          <el-select
+            style="width: 100%"
+            v-model="formData.branch"
+            placeholder="选择分支">
+            <el-option
+              v-for="(item, index) in versionList"
+              :key="index"
+              :label="item.branch"
+              :value="item.branch"
+              @click.native="setBranch(index)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="执行环境" prop="envs">
+          <el-select
+            style="width: 100%"
+            v-model="formData.envs"
+            multiple
+            placeholder="选择环境">
+            <el-option
+              v-for="item in envList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="执行地区" prop="regions">
+          <el-select
+            style="width: 100%"
+            v-model="formData.regions"
+            multiple
+            placeholder="选择地区">
+            <el-option
+              v-for="item in regionList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="执行用例" prop="total_case">
+          <el-input
+            style="float: left;width: 120px"
+            v-model="formData.total_case"
+            disabled
           >
-            <el-form-item label="项目名称" prop="project_id">
-              <el-select
-                style="width: 100%"
-                v-model="formData.project_id"
-                placeholder="选择项目">
-                <el-option
-                  v-for="(item, index) in projectList"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                  @click.native="changeProject(item)"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="项目分支" prop="branch">
-              <el-select
-                style="width: 100%"
-                v-model="formData.branch"
-                placeholder="选择分支">
-                <el-option
-                  v-for="(item, index) in versionList"
-                  :key="index"
-                  :label="item.branch"
-                  :value="item.branch"
-                  @click.native="setBranch(index)"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="执行环境" prop="envs">
-              <el-select
-                style="width: 100%"
-                v-model="formData.envs"
-                multiple
-                placeholder="选择环境">
-                <el-option
-                  v-for="item in envList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="执行地区" prop="regions">
-              <el-select
-                style="width: 100%"
-                v-model="formData.regions"
-                multiple
-                placeholder="选择地区">
-                <el-option
-                  v-for="item in regionList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="执行用例" prop="total_case">
-              <el-input
-                style="float: left;width: 120px"
-                v-model="formData.total_case"
-                disabled
-              >
-              </el-input>
-              <el-button style="float: left;margin-left: 20px" type="primary" @click="showCaseTree=true">选择用例</el-button>
-            </el-form-item>
-            <el-form-item class="operate-button">
-              <el-button type="primary" @click="createQuickBuild">构建</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-dialog>
+          </el-input>
+          <el-button style="float: left;margin-left: 20px" type="primary" @click="showCaseTree=true">选择用例</el-button>
+        </el-form-item>
+        <el-form-item class="operate-button">
+          <el-button type="primary" @click="createQuickBuild">构建</el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="case-dialog">
       <el-dialog

@@ -1,8 +1,7 @@
 #app {
-
   .navbar-container {
     transition: width 0.28s;
-    height: $navbarHeight !important;
+    height: $navbarHeight;
     width: 100%;
     font-size: 0;
     top: 0;
@@ -10,105 +9,74 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    background-color: $menuBg !important;
-
+    background-color: $menuBg;
     .navbar {
       width: 100%;
       height: 100%;
-
+      display: flex;
+      align-items: center;
+      justify-content: center;
       .logo {
-        position: relative;
         width: $logoWidth;
-        height: 100%;
-        float: left;
-        text-align: center;
+        text-align: left;
         overflow: hidden;
-
         .navbar-logo {
           width: 36px;
           height: 36px;
-          margin-top: 5px;
-          margin-right: 20px;
+          margin-left: 10px;
+          text-align: left;
         }
       }
-
       .router {
-        float: left;
         height: 100%;
         width: calc(100% - #{$logoWidth} - #{$languageWidth} - #{$profileWidth});
-
         .menu {
           height: 100%;
           border: none;
-          background-color: $menuBg !important;
-
+          background-color: $menuBg;
           .el-menu-item {
             color: $menuText;
             font-weight: 600;
             font-size: 15px;
-
             &:hover {
-              color: $menuHoverText !important;
-              background-color: $menuHoverBg !important;
+              color: $menuHoverText;
+              background-color: $menuHoverBg;
             }
           }
-
           .el-menu-item.is-active {
-            color: $menuActiveText !important;
-            background-color: $menuActiveBg !important;
-            border-bottom: none !important;
+            color: $menuActiveText;
+            background-color: $menuActiveBg;
+            border-bottom: none;
           }
         }
       }
-
       .language {
-        float: left;
-        height: 100%;
         width: $languageWidth;
-
-        .lang-desc {
-          height: 100%;
-          line-height: $navbarHeight;
-
-          .lang-text {
-            font-size: 14px;
-            color: #ffffff;
-          }
-          .lang-icon {
-            vertical-align: -10%;
-          }
+        .el-dropdown-link {
+          cursor: pointer;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
         }
       }
-
       .profile {
-        float: left;
-        height: 100%;
         width: $profileWidth;
-
-        .avatar-wrapper {
-          margin-top: 5px;
+        text-align: right;
+        margin-right: 15px;
+        .el-dropdown-link {
           cursor: pointer;
-          position: relative;
-
-          .btn-avatar {
-            position: absolute;
-            right: -20px;
-            top: 25px;
-            font-size: 12px;
-          }
-          .avatar-icon {
-            color: #ffffff;
-          }
+          color: #ffffff;
+          display: flex;
+          align-items: center;
         }
       }
     }
   }
-
   // mobile responsive
   .mobile {
     .navbar-container {
       transition: transform .28s;
-      height: $navbarHeight !important;
+      height: $navbarHeight;
     }
   }
 }

@@ -1,24 +1,23 @@
 <template>
   <div class="build">
-    <div class="record">
-      <build-record />
+    <div class="mix-menu">
+      <mix-menu />
     </div>
-    <div class="plan">
-      <build-plan />
+    <div class="page-route">
+      <page-route />
     </div>
   </div>
 </template>
 
 <script>
-import BuildRecord from "@/views/build/record";
-import BuildPlan from "@/views/build/plan";
-
+import MixMenu from "@/views/build/common/MixMenu";
+import PageRoute from "@/views/build/common/PageRoute";
 
 export default {
   name: 'Build',
   components: {
-    BuildRecord,
-    BuildPlan,
+    MixMenu,
+    PageRoute,
   },
   created() {
     this.$store.dispatch('base/getBaseInfo')
@@ -35,14 +34,14 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
-  .record {
+  .mix-menu {
     height: 100%;
-    width: 298px;
+    width: 318px;
     border-right: 2px solid #000;
   }
-  .plan {
+  .page-route {
     height: 100%;
-    width: calc(100% - 300px);
+    width: calc(100% - 400px);
     min-width: 500px;
   }
 }

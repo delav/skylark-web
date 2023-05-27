@@ -1,17 +1,14 @@
 #app {
-
   .main-container {
     min-width: 100%;
     height: calc(100% - #{$navbarHeight}) !important;
     transition: margin-left .28s;
     position: relative;
     background-color: $bodyBg;
-
     .app-container {
       height: 100%;
     }
   }
-
   // mobile responsive
   .mobile {
     .main-container {

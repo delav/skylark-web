@@ -1,25 +1,36 @@
 <template>
   <div class="plan-detail">
-    <div class="back-header">
-      <el-icon class="back-icon" @click="backToPlanList"><Back /></el-icon>
+    <div class="head">
+      <back-header title="计划详情" />
+    </div>
+    <div class="body">
+      {{formData}}
     </div>
   </div>
 </template>
 
 <script>
-import PAGE from "@/constans/build";
+import BackHeader from "@/views/build/components/BackHeader";
 
 export default {
   name: 'PlanDetail',
+  components: {
+    BackHeader
+  },
   data() {
     return {
-
+      formData: {}
     }
   },
-  methods: {
-    backToPlanList () {
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
+  watch: {
+    '$store.state.plan.changeFlag': {
+      handler() {
+        this.formData = this.$store.state.plan.planData
+      },
+      immediate: true
     },
+  },
+  methods: {
   }
 }
 </script>
@@ -30,7 +41,7 @@ export default {
   height: calc(100% - 10px);
   padding: 5px;
   max-width: 800px;
-  .back-header {
+  .head {
     height: 50px;
     padding: 5px 0;
     .back-icon {
@@ -38,7 +49,7 @@ export default {
       font-size: 23px;
     }
   }
-  .plan-body {
+  .body {
     width: 100%;
     .operate-button {
       float: right;

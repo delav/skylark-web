@@ -11,10 +11,12 @@
       </el-menu>
     </div>
     <div class="language">
-      <el-dropdown class="lang-desc" :command="changeLanguage">
-        <span class="lang-text">
+      <el-dropdown :command="changeLanguage">
+        <span class="el-dropdown-link">
           {{ $t('Navbar._language') }}
-          <el-icon class="lang-icon"><ArrowDown /></el-icon>
+          <el-icon class="el-icon--right">
+            <ArrowDown />
+          </el-icon>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
@@ -28,13 +30,14 @@
         </template>
       </el-dropdown>
     </div>
-    <el-divider direction="vertical" />
     <div class="profile">
-      <el-dropdown trigger="click">
-        <div class="avatar-wrapper">
-          <el-avatar :size="36" :src="avatar" />
-          <el-icon class="avatar-icon"><CaretBottom /></el-icon>
-        </div>
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          {{ userName }}
+          <el-icon class="el-icon--right">
+            <ArrowDown />
+          </el-icon>
+        </span>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
@@ -79,6 +82,9 @@ export default {
     },
     activeMenu() {
       return this.$route.path
+    },
+    userName() {
+      return this.$store.getters.name
     }
   },
   methods: {

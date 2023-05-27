@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import { deepCopy } from "@/utils/dcopy";
 import { buildInstantTest } from "@/api/builder";
 
 export default {
@@ -93,7 +92,7 @@ export default {
   watch: {
     '$store.state.plan.changeFlag': {
       handler() {
-        this.formData = deepCopy(this.$store.state.plan.planData)
+        this.formData = this.$store.state.plan.planData
       },
       immediate: true
     },

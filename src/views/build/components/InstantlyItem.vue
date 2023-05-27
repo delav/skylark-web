@@ -10,7 +10,6 @@
       <p class="time-tip">下一次构建时间：{{itemData['periodic']['next_time']}}</p>
     </div>
     <div class="item-tip">
-<!--      <el-button type="success" @click="getInstantlyPlanDetail" link>详情</el-button>-->
     </div>
   </div>
 </template>
@@ -33,7 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$itemHeight: 45px;
+$itemHeight: 48px;
 
 .instantly-item {
   width: 100%;
@@ -41,10 +40,11 @@ $itemHeight: 45px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #000;
+  padding-left: 5px;
   .item-title {
-    width: calc(100% - 60px);
-    margin: 5px 15px 0 0;
+    width: 100%;
     .title-text {
+      padding-top: 5px;
       color: #0052cc;
       cursor: pointer;
       :hover {
@@ -52,14 +52,12 @@ $itemHeight: 45px;
       }
     }
     .time-tip {
-      margin: 2px 0 0 0;
+      margin: 5px 0 0 0;
       font-size: 12px;
       color: #a3a7af;
     }
   }
   .item-tip {
-    width: 60px;
-    line-height: $itemHeight;
   }
 }
 </style>

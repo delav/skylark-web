@@ -6,7 +6,7 @@ const getUserState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    info: {}
   }
 }
 
@@ -22,8 +22,8 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_INFO: (state, info) => {
+    state.info = info
   }
 }
 
@@ -35,6 +35,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const data = response.data
         commit('SET_TOKEN', data.token)
+        commit('SET_NAME', data.username)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -46,17 +47,15 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
+      const uid = state.info.id
+      getInfo(uid).then(response => {
+        const data = response.data
+        commit('SET_NAME', data.username)
+        const extraData = {
+          id: data.id,
+          email: data.email
         }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_INFO', extraData)
         resolve(data)
       }).catch(error => {
         reject(error)

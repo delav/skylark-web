@@ -1,36 +1,46 @@
 <template>
-  <div class="plan-edit">
+  <div class="create-plan">
     <div class="head">
-      <back-header />
+      <back-header title="更新计划" />
     </div>
     <div class="body">
-      edit
+      <plan-form
+        @confirmAction="updateBuildPlan"
+        @confirmAndBuildAction="updateAndBuildPlan"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import PAGE from "@/constans/build";
-import BackHeader from "@/views/build/plan/components/BackHeader";
+import BackHeader from "@/views/build/components/BackHeader";
+import PlanForm from "@/views/build/plan/components/PlanForm";
+import { updatePlan } from "@/api/plan";
 
 export default {
-  name: 'PlanEdit',
+  name: 'PlanNew',
   components: {
-    BackHeader
-  },
-  data() {
-    return {
-
-    }
+    BackHeader,
+    PlanForm,
   },
   methods: {
-    backToPlanList () {
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
+    updateBuildPlan(planData) {
+      updatePlan(planData).then(() => {
+        this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
+        this.$message.success('更新计划成功')
+      })
     },
+    updateAndBuildPlan() {}
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.create-plan {
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  padding: 5px;
+  max-width: 800px;
+}
 </style>

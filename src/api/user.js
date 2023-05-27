@@ -10,9 +10,8 @@ export function login(data) {
 
 export function getInfo(userId) {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { uid: userId }
+    url: `/user/info/${userId}`,
+    method: 'get'
   })
 }
 

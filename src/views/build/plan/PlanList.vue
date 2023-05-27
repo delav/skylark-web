@@ -26,7 +26,7 @@
               v-for="(id, index) in scope.row.env_list"
               :key="index"
               style="margin-left: 2px"
-              effect="dark"
+              type="info"
               size="small"
             >
               {{ envMap[id] }}
@@ -39,8 +39,8 @@
               v-for="(id, index) in scope.row.region_list"
               :key="index"
               style="margin-left: 2px"
-              effect="dark"
               size="small"
+              type="info"
             >
               {{ regionMap[id] }}
             </el-tag>
@@ -64,7 +64,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="230">
           <template #default="scope">
-            <el-button style="margin-right: 15px" type="primary" size="small" @click="preBuild(scope.row)" circle >
+            <el-button style="margin-right: 15px" type="primary" size="small" @click="preBuild(scope.row)">
               <el-icon :size="20"><CaretRight /></el-icon>
             </el-button>
             <el-button-group>
@@ -115,7 +115,7 @@ export default {
       total: 0,
       pageSize: 10,
       searchForm: {
-        project_id: null,
+        project_id: 0,
       },
       showBuild: false,
     }
@@ -149,17 +149,17 @@ export default {
       })
     },
     newPlan() {
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.CREATE)
+      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.CREATEPLAN)
     },
     editPlan(planData) {
       this.$store.commit('plan/SET_PLAN_DATA', planData)
       this.$store.commit('plan/SET_CHANGE_FLAG', guid())
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.UPDATE)
+      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.EDITPLAN)
     },
     getPlanDetail(planData) {
       this.$store.commit('plan/SET_PLAN_DATA', planData)
       this.$store.commit('plan/SET_CHANGE_FLAG', guid())
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.DETAIL)
+      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.PLANDETAIL)
     },
     deletePlan(planData) {
       let warnInfo = `将删除计划【${planData.title}】，是否继续？`
@@ -191,6 +191,12 @@ export default {
       this.$message.success('构建请求已发送')
     },
     changePage(pageVal) {
+      const selectProject = this.searchForm.project_id
+      if (selectProject === 0) {
+        this.getPlanList(1)
+      } else {
+        this.getPlanList(1, selectProject)
+      }
       this.getPlanList(pageVal)
     },
     getPlansByProject(projectId) {
