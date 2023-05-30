@@ -54,6 +54,10 @@ export default {
   methods: {
     createNewProject() {
       let createData = {}
+      if (this.newProjectName === '') {
+        this.$message.warning('项目名称不能为空')
+        return
+      }
       createData['name'] = this.newProjectName
       if (this.copySwitch && this.copyProject !== null) {
         createData['cname'] = this.copyProject

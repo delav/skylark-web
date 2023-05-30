@@ -32,7 +32,7 @@
     </div>
     <div class="check-footer">
       <el-button>取消</el-button>
-      <el-button @click="confirmCheck">确认</el-button>
+      <el-button type="primary" @click="confirmCheck">确认</el-button>
     </div>
   </div>
 </template>

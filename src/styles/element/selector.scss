@@ -1,24 +1,39 @@
 //custom selector
 :deep(.el-select) {
-  display: inline-block;
-  .el-select__caret {
-    font-size: 16px;
-  }
   .el-input__wrapper {
-    padding: 0;
-    box-shadow: none;
-    border-radius: 0;
-    .el-input__inner {
-      font-size: 14px;
-      background: $toolbarBg;
-      color: $mainColor;
-    }
-    .el-input__suffix {
-      display: none;
-      background: $toolbarBg;
-    }
+    padding: 0 2px;
   }
-  .el-input--suffix.is-focus{
-    box-shadow: none;
+  .el-select-dropdown {
+    background-color: transparent;
+    border: 1px solid blue;
+  }
+  .el-select-dropdown__item {
+    height: 30px;
+    font-size: 7px;
+    line-height: 19px;
+    color: #fff;
+    font-weight: 200;
+    background-color: #003e00;
+  }
+
+  // 设置下拉框列表的 padding 值为：0；(即：样式调整)
+  .el-select-dropdown__list {
+    padding: 0;
+  }
+
+  // 设置输入框与下拉框的距离为：0; (即：样式调整)
+  .el-popper[x-placement^="bottom"] {
+    margin-top: 0;
+  }
+
+  // 将下拉框上的小箭头取消；(看着像一个箭头，其实是两个重叠在一起的箭头)
+  .el-popper .popper__arrow,
+  .el-popper .popper__arrow::after {
+    display: none;
+  }
+
+  // 设置鼠标悬停在下拉框列表的悬停色；
+  .el-select-dropdown__item:hover {
+    background-color: rgba(0, 225, 219, 0.690196078431373);
   }
 }

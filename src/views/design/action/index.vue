@@ -9,13 +9,17 @@
           @change="changeEnv"
           size="small"
           placeholder=" "
+          :popper-append-to-body="false"
         >
           <el-option
             v-for="item in envList"
             :key="item.id"
             :label="item.name"
             :value="item.id"
-          />
+          >
+            <span style="float: left">{{ item.name }}</span>
+<!--            <span style="float: right;color: #909399FF;font-size: 13px;">{{ item.desc }}</span>-->
+          </el-option>
         </el-select>
       </div>
       <div class="region-list" v-show="showRegion">
@@ -26,13 +30,17 @@
           @change="changeRegion"
           size="small"
           placeholder=" "
+          :popper-append-to-body="false"
         >
           <el-option
             v-for="item in regionList"
             :key="item.id"
             :label="item.name"
             :value="item.id"
-          />
+          >
+            <span style="float: left">{{ item.name }}</span>
+<!--            <span style="float: right;color: #909399FF;font-size: 13px;">{{ item.desc }}</span>-->
+          </el-option>
         </el-select>
       </div>
     </div>
@@ -206,7 +214,8 @@ export default {
         }
         const treeId = that.$store.state.tree.treeId
         const treeObj = $.fn.zTree.getZTreeObj(treeId)
-        getBuildProgress(buildId).then(response => {
+        const params = {'mode': 'debug', 'task_id': buildId}
+        getBuildProgress(params).then(response => {
           let buildResult = response.data
           const caseIdList = Object.keys(buildResult)
           for (let i = 0; i < caseIdList.length; i++) {
@@ -241,15 +250,31 @@ export default {
     },
     startBuild() {
       this.recoverStat()
+      const envId = this.$store.state.action.currentEnv
+      const envMap = this.$store.state.base.envMap
+      const envName = envMap[envId]
+      if (envName === undefined) {
+        this.$message.error('构建数据出错!')
+        return
+      }
       const data = {
         'action_type': 'start',
-        'env_id': this.$store.state.action.currentEnv,
+        'env_id': envId,
+        'env_name': envMap[envId],
         'project_id': this.$store.state.tree.projectId,
         'project_name': this.$store.state.tree.projectName,
         'run_data': this.$store.state.tree.checkedNodes,
       }
-      if (this.$store.state.action.currentRegion !== '') {
-        data['region_id'] = this.$store.state.action.currentRegion
+      if (this.showRegion) {
+        const regionMap = this.$store.state.base.regionMap
+        const regionId = this.$store.state.action.currentRegion
+        const regionName = regionMap[regionId]
+        if (regionName === undefined) {
+          this.$message.error('构建数据出错!')
+          return
+        }
+        data['region_id'] = regionId
+        data['region_name'] = regionMap[regionId]
       }
       buildDebug(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
@@ -352,6 +377,28 @@ export default {
   }
 }
 .action .env-setting {
-  @import "src/styles/element/selector.scss";
+  :deep(.el-select) {
+    display: inline-block;
+    .el-select__caret {
+      font-size: 16px;
+    }
+    .el-input__wrapper {
+      padding: 0;
+      box-shadow: none;
+      border-radius: 0;
+      .el-input__inner {
+        font-size: 14px;
+        background: $toolbarBg;
+        color: $mainColor;
+      }
+      .el-input__suffix {
+        display: none;
+        background: $toolbarBg;
+      }
+    }
+    .el-input--suffix.is-focus{
+      box-shadow: none;
+    }
+  }
 }
 </style>

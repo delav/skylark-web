@@ -44,7 +44,7 @@
             }
           }
           .el-menu-item.is-active {
-            color: $menuActiveText;
+            color: $menuActiveText !important;
             background-color: $menuActiveBg;
             border-bottom: none;
           }

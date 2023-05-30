@@ -189,6 +189,9 @@ $foldExpandIconSize: 32px;
     font-size: $foldExpandIconSize;
     color: $foldIconColor;
     cursor: pointer;
+    :hover {
+      color: $foldIconHoverColor;
+    }
   }
 }
 /deep/ .el-collapse-item__content {

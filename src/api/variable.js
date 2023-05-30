@@ -41,10 +41,10 @@ export function deleteVariable(vId) {
   })
 }
 
-export function batchCreateVariable(data) {
+export function copyVariableByEnv(data) {
   return request({
-    url: '/batch-variable',
+    url: '/variable/copy',
     method: 'post',
-    data
+    data: data
   })
 }

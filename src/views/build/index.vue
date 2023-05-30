@@ -23,6 +23,9 @@ export default {
     this.$store.dispatch('base/getBaseInfo')
   },
   unmounted() {
+    this.$store.commit('page/RESET_STATE')
+    this.$store.commit('plan/RESET_STATE')
+    this.$store.commit('record/RESET_STATE')
     this.$store.commit('base/RESET_STATE')
   },
   methods: {}

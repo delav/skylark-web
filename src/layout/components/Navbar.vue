@@ -40,11 +40,11 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>
-              <span>Setting</span>
+            <el-dropdown-item icon="Setting">
+              设置
             </el-dropdown-item>
-            <el-dropdown-item divided @click.native="logout">
-              <span>Logout</span>
+            <el-dropdown-item divided @click.native="logout" icon="Right">
+              退出
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>

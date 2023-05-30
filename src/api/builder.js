@@ -24,10 +24,11 @@ export function buildDebug(data) {
   })
 }
 
-export function getBuildProgress(buildId) {
+export function getBuildProgress(data) {
   return request({
-    url: `/builder/test/${buildId}`,
-    method: 'get',
+    url: `/builder/progress`,
+    method: 'post',
+    data: data
   })
 }
 

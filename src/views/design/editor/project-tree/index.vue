@@ -6,7 +6,9 @@
           class="project-selector"
           v-model="projectId"
           placement="bottom-start"
-          placeholder="选择项目">
+          placeholder="选择项目"
+          :popper-append-to-body="false"
+        >
           <el-option
             v-for="(item, index) in projectList"
             :key="index"
@@ -110,7 +112,7 @@
           destroy-on-close
         >
           <div class="env-content">
-            <env-variable />
+            <variable-conf />
           </div>
         </el-dialog>
       </div>
@@ -139,7 +141,7 @@ import jquery from "jquery";
 import variables from "@/styles/variables.module.scss";
 import tree from "@/components/GiantTree";
 import NewProject from "@/views/design/editor/project-tree/components/NewProject";
-import EnvVariable from "@/views/design/editor/project-tree/components/EnvVariable";
+import VariableConf from "@/views/design/editor/project-tree/components/VariableConf";
 import NodeAction from "@/views/design/editor/project-tree/components/NodeAction";
 import UploadFile from "@/views/design/editor/project-tree/components/UploadFile";
 import NODE from "@/constans/node";
@@ -147,7 +149,7 @@ import { updateProject } from "@/api/project";
 import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from "@/api/suite";
 import { fetchCaseNode, createCase, updateCase, deleteCase } from "@/api/case";
-import { uploadFile, downloadFile } from "@/api/virfile";
+import { uploadFile, downloadFile, batchDeleteFile } from "@/api/virfile";
 import { addSvgHover } from "@/utils/hover";
 import { transformData } from "@/utils/tree";
 
@@ -156,7 +158,7 @@ export default {
   components: {
     tree,
     NewProject,
-    EnvVariable,
+    VariableConf,
     NodeAction,
     UploadFile
   },
@@ -570,14 +572,40 @@ export default {
         }
       ).then(() => {
         if (node.desc === NODE.NodeDesc.DIR) {
-          deleteDir(node.mid)
-          that.zTreeObj.removeNode(node)
+          deleteDir(node.mid).then(() => {
+            that.zTreeObj.removeNode(node)
+            if (node.checked && node.type === NODE.NodeCategory.TESTCASE) {
+              that.zTreeOnCheck()
+            }
+            if (node.type === NODE.NodeCategory.PROJECTFILE) {
+              const fileInfo = {'suite_list': [node.mid]}
+              batchDeleteFile(fileInfo)
+            }
+            that.$store.commit('tree/SET_DETAIL_TYPE', 0)
+            that.$store.commit('tree/SET_SELECT_NODE', {})
+            that.$store.commit('tree/SET_CURRENT_NODE_ID', '')
+          })
         } else if (node.desc === NODE.NodeDesc.SUITE) {
-          deleteSuite(node.mid)
-          that.zTreeObj.removeNode(node)
+          deleteSuite(node.mid).then(() => {
+            that.zTreeObj.removeNode(node)
+            if (node.checked && node.type === NODE.NodeCategory.TESTCASE) {
+              that.zTreeOnCheck()
+            }
+            that.$store.commit('tree/SET_DETAIL_TYPE', 0)
+            that.$store.commit('tree/SET_SELECT_NODE', {})
+            that.$store.commit('tree/SET_CURRENT_NODE_ID', '')
+          })
         } else if (node.desc === NODE.NodeDesc.CASE) {
-          deleteCase(node.mid)
-          that.zTreeObj.removeNode(node)
+          deleteCase(node.mid).then(() => {
+            that.zTreeObj.removeNode(node)
+            if (node.checked && node.type === NODE.NodeCategory.TESTCASE) {
+              that.zTreeOnCheck()
+            }
+            that.$store.commit('tree/SET_DETAIL_TYPE', 0)
+            that.$store.commit('tree/SET_SELECT_NODE', {})
+            that.$store.commit('tree/SET_CURRENT_NODE_ID', '')
+            that.$store.commit('entity/RESET_STATE')
+          })
         }
       }).catch(() => {})
     },
@@ -744,6 +772,9 @@ $toolHeight: 40px;
     font-size: $foldWidth;
     color: $foldIconColor;
     cursor: pointer;
+    :hover {
+      color: $foldIconHoverColor;
+    }
   }
 }
 </style>

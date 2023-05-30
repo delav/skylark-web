@@ -52,7 +52,7 @@ service.interceptors.response.use(
       ElMessage({
         message: res.msg || 'Error',
         type: 'error',
-        duration: 3 * 1000
+        duration: 2 * 1000
       })
       status = false
       if (res.code === 40100) {
@@ -70,12 +70,19 @@ service.interceptors.response.use(
     }
   },
   error => {
-    ElMessage({
-      message: error.message,
-      type: 'error',
-      duration: 2 * 1000
-    })
-    return Promise.reject(error)
+    if (status) {
+      ElMessage({
+        message: error.message,
+        type: 'error',
+        duration: 2 * 1000
+      })
+      status = false
+      let timeout = setTimeout(() => {
+        status = true
+        clearTimeout(timeout)
+      }, 1500)
+      return Promise.reject(error)
+    }
   }
 )
 

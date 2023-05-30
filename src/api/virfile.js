@@ -25,3 +25,11 @@ export function downloadFile(formData) {
     data: formData
   })
 }
+
+export function batchDeleteFile(data) {
+  return request({
+    url: '/virtual-file',
+    method: 'post',
+    data: data
+  })
+}
