@@ -38,6 +38,7 @@ const ModuleType = {
   PROJECT: 0,
   DIR: 1,
   SUITE: 2,
+  CASE: 3,
 }
 
 const ExtraDataKey = {

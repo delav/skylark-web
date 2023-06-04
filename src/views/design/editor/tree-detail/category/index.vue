@@ -37,7 +37,8 @@ export default {
           // this.variableArray = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
           this.fixtureArray = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
         }
-      }
+      },
+      immediate: true
     },
   }
 }

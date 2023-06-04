@@ -49,7 +49,8 @@ export default {
     '$store.state.entity.syncEntityFlag': {
       handler() {
         this.caseEntities = this.$store.state.entity.caseEntities
-      }
+      },
+      immediate: true
     },
     caseEntities: {
       handler() {

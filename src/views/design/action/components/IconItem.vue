@@ -1,6 +1,6 @@
 <template>
   <div class="icon-item">
-    <el-tooltip>
+    <el-tooltip popper-class="custom-tooltip" :hide-after="50">
       <template #content>
         <span>{{ description }}</span>
       </template>

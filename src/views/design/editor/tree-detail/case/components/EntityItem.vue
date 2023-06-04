@@ -8,52 +8,40 @@
       />
     </div>
     <div class="item-name">
-<!--      <text-tooltip-->
-<!--        ref-name="nameText"-->
-<!--        :content="getKeywordAttrByEntityId('ext_name', entityData['keyword_id'])"-->
-<!--      />-->
-      <el-tooltip
-        placement="top-start"
-        effect="dark"
+      <text-tooltip
+        font-size="12px"
+        ref-name="outName"
         :content="getKeywordAttrByEntityId('ext_name', entityData['keyword_id'])"
-        :disabled="false"
-      >
-        <p class="text-name">{{getKeywordAttrByEntityId('ext_name', entityData['keyword_id'])}}</p>
-      </el-tooltip>
+      />
     </div>
     <div class="item-out">
-<!--      <text-tooltip-->
-<!--        ref-name="outText"-->
-<!--        content="entityData['output_args']"-->
-<!--      />-->
-            <el-tooltip
-              placement="top-start"
-              effect="dark"
-              :content="entityData['output_args']"
-              :disabled="false"
-            >
-              <p class="text-out">{{entityData['output_args']}}</p>
-            </el-tooltip>
+      <text-tooltip
+        font-size="12px"
+        ref-name="outText"
+        :content="entityData['output_args']"
+      />
     </div>
     <div class="item-tip">
       <el-tooltip
+        popper-class="custom-tooltip"
         placement="top-start"
         effect="dark"
         :content="getKeywordAttrByEntityId('desc', entityData['keyword_id'])"
       >
-        <el-icon size="16px" color="#bfcbd9"><QuestionFilled /></el-icon>
+        <el-icon size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
       </el-tooltip>
     </div>
   </div>
 </template>
 
 <script>
-// import TextTooltip from '@/components/TextTooltip'
+import TextTooltip from '@/components/TextTooltip'
+import { guid } from "@/utils/other";
 
 export default {
   name: 'EntityItem',
   components: {
-    // TextTooltip
+    TextTooltip
   },
   props: {
     entityData: Object
@@ -72,6 +60,9 @@ export default {
       if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) !== -1) {
         return 'background: #dfe1e5'
       }
+    },
+    getRefName() {
+      return guid()
     }
   }
 }
@@ -96,32 +87,18 @@ export default {
   }
   .item-name {
     height: 20px;
-    width: 100%;
     text-align: center;
-    .text-name {
-      font-size: 13px;
-      margin: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
+    font-size: 12px;
   }
   .item-out {
     height: 20px;
-    width: 100%;
     margin-top: 5px;
     text-align: center;
-    .text-out {
-      font-size: 13px;
-      margin: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
+    font-size: 12px;
   }
   .item-tip {
     top: 0;
-    right: 0;
+    left: 0;
     position: absolute;
   }
 }

@@ -5,12 +5,14 @@
     </div>
     <div class="item-name">
       <text-tooltip
+        font-size="13px"
         ref-name="itemText"
         :content="keywordData['ext_name']"
       />
     </div>
     <div class="item-tip">
       <el-tooltip
+        popper-class="custom-tooltip"
         placement="top-start"
         effect="dark"
         :content="keywordData['desc']"
@@ -42,9 +44,8 @@ $itemHeight: 50px;
   width: 100%;
   height: $itemHeight;
   display: flex;
-  padding: 0 10px;
   justify-content: space-between;
-  border-bottom: 1px solid #000;
+  border-top: 1px solid #ebeef5;
   cursor: pointer;
   .item-image {
     padding: 5px 0;

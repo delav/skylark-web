@@ -18,6 +18,7 @@
           />
         </el-select>
         <el-tooltip
+          popper-class="custom-tooltip"
           class="tooltip-icon"
           effect="dark"
           content="收起"
@@ -53,6 +54,7 @@
     <div v-else class="project-hide">
       <div class="top-tool">
         <el-tooltip
+          popper-class="custom-tooltip"
           effect="dark"
           content="展开"
           placement="right"
@@ -63,6 +65,7 @@
       <div class="bottom-tool">
         <div class="bottom-flex">
           <el-tooltip
+            popper-class="custom-tooltip"
             effect="dark"
             content="变量配置"
             placement="right"
@@ -70,6 +73,7 @@
             <el-icon class="tool-icon" @click="envSetting"><Setting /></el-icon>
           </el-tooltip>
           <el-tooltip
+            popper-class="custom-tooltip"
             effect="dark"
             content="新建项目"
             placement="right"
@@ -227,16 +231,20 @@ export default {
       ]
     }
   },
-
+  created() {
+    this.$store.dispatch('scalar/getPriorities')
+  },
   methods: {
     changeProject(pId, name) {
       fetchBaseDir(pId).then(response => {
         // this.zTreeNodes = formatBaseNodes(response.data)
         this.zTreeNodes = response.data
+        this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/RESET_STATE')
         this.$store.commit('tree/SET_PROJECT_ID', pId)
         this.$store.commit('tree/SET_PROJECT_NAME', name)
       })
+      this.$store.dispatch('scalar/getProjectTags', pId)
     },
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
@@ -295,63 +303,63 @@ export default {
         this.zTreeObj.removeChildNodes(treeNode)
       }
     },
+    changeNodeStore(treeNode, detailType) {
+      this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+      this.$store.commit('tree/SET_DETAIL_TYPE', detailType)
+      this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
+    },
+    updateTreeNode(treeNode) {
+      this.zTreeObj.updateNode(treeNode)
+      this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+    },
     // click node, get node detail data
     zTreeOnClick(event, treeId, treeNode) {
       const selectNodeId = this.$store.state.tree.currentNodeId
       if (treeNode.id === selectNodeId) return
-      this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
       if (treeNode.type === NODE.NodeCategory.TESTCASE) {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
-          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
-            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+            this.changeNodeStore(treeNode, NODE.DetailType.CASE)
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.SUITE)
+            this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
           } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.DIR)
+            this.changeNodeStore(treeNode, NODE.DetailType.DIR)
           }
           this.$store.commit('entity/RELOAD_STATE')
-          this.$store.commit('tree/SET_SELECT_NODE', treeNode)
         }
       } else if (treeNode.type === NODE.NodeCategory.KEYWORD) {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
-          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CASE)
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
-            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+            this.changeNodeStore(treeNode, NODE.DetailType.CASE)
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+            this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
           } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-            this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+            this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
           }
           this.$store.commit('entity/RELOAD_STATE')
-          this.$store.commit('tree/SET_SELECT_NODE', treeNode)
         }
       } else if (treeNode.type === NODE.NodeCategory.RESOURCE) {
         if (treeNode.desc === NODE.NodeDesc.SUITE) {
-          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.CONST)
           this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
-            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+            this.changeNodeStore(treeNode, NODE.DetailType.CONST)
           })
         } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+          this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
         }
         this.$store.commit('entity/RELOAD_STATE')
-        this.$store.commit('tree/SET_SELECT_NODE', treeNode)
       } else if (treeNode.type === NODE.NodeCategory.PROJECTFILE) {
         if (treeNode.desc === NODE.NodeDesc.SUITE) {
-          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.FILE)
           this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
-            this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+            this.changeNodeStore(treeNode, NODE.DetailType.FILE)
           })
         } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          this.$store.commit('tree/SET_DETAIL_TYPE', NODE.DetailType.EMPTY)
+          this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
         }
         this.$store.commit('entity/RELOAD_STATE')
-        this.$store.commit('tree/SET_SELECT_NODE', treeNode)
       }
     },
     saveEnvVariables() {},
@@ -422,7 +430,7 @@ export default {
           const params = {'name': newNodeName}
           updateProject(node.mid, params).then(response => {
             node.name = response.data.name
-            that.zTreeObj.updateNode(node)
+            that.updateTreeNode(node)
             that.closeNodeDialog()
           })
         }
@@ -445,7 +453,7 @@ export default {
           const params = {'name': newNodeName}
           updateDir(node.mid, params).then(response => {
             node.name = response.data.name
-            that.zTreeObj.updateNode(node)
+            that.updateTreeNode(node)
             that.closeNodeDialog()
           })
         }
@@ -467,7 +475,7 @@ export default {
           const params = {'name': newNodeName}
           updateSuite(node.mid, params).then(response => {
             node.name = response.data.name
-            that.zTreeObj.updateNode(node)
+            that.updateTreeNode(node)
             that.closeNodeDialog()
           })
         }
@@ -489,7 +497,7 @@ export default {
           const params = {'name': newNodeName}
           updateCase(node.mid, params).then(response => {
             node.name = response.data.name
-            that.zTreeObj.updateNode(node)
+            that.updateTreeNode(node)
             that.closeNodeDialog()
           })
         }
@@ -670,7 +678,7 @@ export default {
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
 //@import "src/styles/element/dialog.scss";
-$selectorHeight: 45px;
+$selectorHeight: 40px;
 $toolHeight: 40px;
 
 .project-tree {
@@ -680,7 +688,7 @@ $toolHeight: 40px;
     .head {
       height: $selectorHeight;
       width: 100%;
-      padding-left: 5px;
+      padding: 5px 0 0 5px;
       .project-selector {
         float: left;
         width: calc(100% - #{$foldWidth});

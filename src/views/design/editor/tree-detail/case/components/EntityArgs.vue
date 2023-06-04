@@ -53,7 +53,14 @@
                   @change="updateCaseEntities"
                   v-model="entityArgs['inputValues'][index]">
                 </el-input>
-                <el-icon class="argument-icon" color="#f56c6c" title="删除" @click="delInputArg(index)"><Delete /></el-icon>
+                <el-tooltip
+                  popper-class="custom-tooltip"
+                  placement="top-start"
+                  effect="dark"
+                  content="删除"
+                >
+                  <el-icon class="argument-icon" color="#f56c6c" @click="delInputArg(index)"><Delete /></el-icon>
+                </el-tooltip>
               </p>
             </template>
           </draggable>
@@ -77,7 +84,14 @@
             @change="updateCaseEntities"
             v-model="entityArgs['outputValues'][index]">
           </el-input>
-          <el-icon class="argument-icon" color="#f56c6c" title="复制" @click="copyOutputArg(index)"><CopyDocument /></el-icon>
+          <el-tooltip
+            popper-class="custom-tooltip"
+            placement="top-start"
+            effect="dark"
+            content="复制"
+          >
+            <el-icon class="argument-icon" color="#f56c6c" @click="copyOutputArg(index)"><CopyDocument /></el-icon>
+          </el-tooltip>
         </p>
       </div>
     </div>
@@ -228,7 +242,8 @@ $labelWidth: 80px;
 .entity-args {
   width: 100%;
   height: 100%;
-  padding: 5px 0;
+  padding: 5px 0 10px 0;
+  overflow-y: auto;
   .entity-desc {
     height: 60px;
     p {
@@ -275,7 +290,7 @@ $labelWidth: 80px;
         }
         .argument-value {
           margin-left: calc(#{$labelWidth} + 20px);
-          width: calc(100% - #{$labelWidth});
+          width: calc(100% - #{$labelWidth} - 20px);
         }
       }
       .dynamic-argument {

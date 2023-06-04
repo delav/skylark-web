@@ -1,13 +1,14 @@
 <template>
   <div class="text-tooltip">
     <el-tooltip
+      show-after="50"
       effect="dark"
       :disabled="isShowTooltip"
       :content="content"
       :placement="placement"
     >
-      <p class="over-flow" :class="className" @mouseover="onMouseOver(refName)">
-        <span :ref="refName">{{content||'-'}}</span>
+      <p class="over-flow" @mouseover="onMouseOver(refName)">
+        <span :style="{fontSize: fontSize}" :ref="refName">{{content}}</span>
       </p>
     </el-tooltip>
   </div>
@@ -29,10 +30,10 @@ export default {
         return 'top'
       }
     },
-    className: {
+    fontSize: {
       type: String,
       default: () => {
-        return ''
+        return '13px'
       }
     },
     refName: {
@@ -49,12 +50,9 @@ export default {
   },
   methods: {
     onMouseOver(str) {
-      // console.log('ref-name:' + str)
-      // console.log(this.content)
-      let parentWidth = this.$refs[str].parentNode.offsetWidth
-      let contentWidth = this.$refs[str].offsetWidth
-      // console.log(this.$refs[str].parentNode)
-      // console.log(this.$refs[str])
+      const tag = this.$refs[str]
+      const parentWidth = tag.parentNode.offsetWidth
+      const contentWidth = tag.offsetWidth
       this.isShowTooltip = contentWidth <= parentWidth
     }
   }

@@ -7,3 +7,18 @@ export function fetchTagsByProject(projectId) {
     params: { project: projectId }
   })
 }
+
+export function createTag(data) {
+  return request({
+    url: '/tag',
+    method: 'post',
+    data: data
+  })
+}
+
+export function deleteTag(tagId) {
+  return request({
+    url: `/tag/${tagId}`,
+    method: 'delete',
+  })
+}

@@ -10,6 +10,7 @@ import action from "@/store/modules/design/action";
 import page from "@/store/modules/build/page";
 import plan from "@/store/modules/build/plan";
 import record from "@/store/modules/build/record";
+import scalar from "@/store/modules/scalar";
 
 const store = createStore({
     modules: {
@@ -23,6 +24,7 @@ const store = createStore({
       page,
       plan,
       record,
+      scalar,
     },
     getters
 })

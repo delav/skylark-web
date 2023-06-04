@@ -2,7 +2,13 @@
   <div class="keyword-list">
     <div v-if="!hideKeyword" class="keyword-show">
       <div class="head">
+        <el-input
+          class="keyword-search"
+          v-model="searchKeyword"
+          placeholder="关键字搜索">
+        </el-input>
         <el-tooltip
+          popper-class="custom-tooltip"
           class="tooltip-icon"
           effect="dark"
           content="收起"
@@ -10,11 +16,6 @@
         >
           <el-icon class="fold-expand-icon" @click="hideOrShowKeywordArea(true)"><Expand /></el-icon>
         </el-tooltip>
-        <el-input
-          class="keyword-search"
-          v-model="searchKeyword"
-          placeholder="搜索">
-        </el-input>
       </div>
       <div class="content">
         <el-collapse v-model="groupNames">
@@ -40,6 +41,7 @@
     </div>
     <div v-else class="keyword-hide">
       <el-tooltip
+        popper-class="custom-tooltip"
         effect="dark"
         content="展开"
         placement="bottom"
@@ -166,21 +168,24 @@ $foldExpandIconSize: 32px;
 
 .keyword-list {
   height: 100%;
+  overflow-y: auto;
   .keyword-show {
     height: 100%;
     .head {
       height: $searchHeight;
+      padding: 5px 0 0 5px;
       .tooltip-icon {
         float: right;
         width: $foldExpandIconSize;
       }
       .keyword-search {
-        float: right;
+        float: left;
         width: calc(100% - #{$foldExpandIconSize});
       }
     }
     .content {
       height: calc(100% - #{$searchHeight});
+      padding: 0 5px;
     }
   }
   .keyword-hide {
@@ -193,10 +198,6 @@ $foldExpandIconSize: 32px;
       color: $foldIconHoverColor;
     }
   }
-}
-/deep/ .el-collapse-item__content {
-  border-top: 1px solid #000;
-  padding-bottom: 15px
 }
 
 .ghost-item {
@@ -271,6 +272,14 @@ $foldExpandIconSize: 32px;
   .item-tip {
     visibility: hidden !important;
     display: none !important;
+  }
+}
+:deep(.el-collapse) {
+  .el-collapse-item__header {
+    font-size: 13px;
+  }
+  .el-collapse-item__content {
+    padding-bottom: 0;
   }
 }
 </style>

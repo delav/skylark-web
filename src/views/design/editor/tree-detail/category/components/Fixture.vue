@@ -80,13 +80,13 @@ export default {
   created() {
   },
   methods: {
-    updateZTreeNode(extraDataKey, extraDataValue) {
+    updateTreeNode(extraDataKey, extraDataValue) {
       const selectedNode = this.$store.state.tree.selectedNode
       selectedNode.meta['extra_data'][extraDataKey] = extraDataValue
-      this.$store.commit('tree/SET_SELECT_NODE', selectedNode)
       const treeId = this.$store.state.tree.treeId
       const treeObj = $.fn.zTree.getZTreeObj(treeId)
       treeObj.updateNode(selectedNode)
+      this.$store.commit('tree/SET_SELECT_NODE', selectedNode)
     },
     getModuleInfo() {
       const selectedNode = this.$store.state.tree.selectedNode
@@ -116,7 +116,7 @@ export default {
       postSetupTeardown(postData).then(response => {
         this.inputDisabled = true
         this.fixtureObject = response.data
-        this.updateZTreeNode('fixtures', this.fixtureObject)
+        this.updateTreeNode('fixtures', this.fixtureObject)
       })
     }
   }

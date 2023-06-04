@@ -4,7 +4,7 @@ import { fetchEnvs } from "@/api/env";
 import { fetchRegions } from "@/api/region";
 
 
-const getProjectState = () => {
+const getBaseState = () => {
   return {
     baseLoaded: false,
     projectList: [],
@@ -17,11 +17,11 @@ const getProjectState = () => {
   }
 }
 
-const state = getProjectState()
+const state = getBaseState()
 
 const mutations = {
   RESET_STATE: (state) => {
-    Object.assign(state, getProjectState())
+    Object.assign(state, getBaseState())
   },
   SET_BASE_LOADED: (state, flag) => {
     state.baseLoaded = flag
