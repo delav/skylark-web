@@ -4,7 +4,8 @@
       <div class="head">
         <el-input
           class="keyword-search"
-          v-model="searchKeyword"
+          v-model="searchInput"
+          @change="filterKeyword"
           placeholder="关键字搜索">
         </el-input>
         <el-tooltip
@@ -17,7 +18,7 @@
           <el-icon class="fold-expand-icon" @click="hideOrShowKeywordArea(true)"><Expand /></el-icon>
         </el-tooltip>
       </div>
-      <div class="content">
+      <div class="content" id="et-keyword">
         <el-collapse v-model="groupNames">
           <el-collapse-item v-for="(group, index) in keywordArray" :key="index" :title="group['name']">
             <draggable
@@ -27,12 +28,15 @@
               :clone="cloneKeyword"
               :force-fallback="true"
               :options="getOptions()"
-              ghost-class="ghost-item"
-              drag-class="drag-item"
+              :move="moveKeyword"
+              drag-class="drag-chosen"
+              ghost-class="drag-ghost"
               item-key="id"
             >
               <template #item="{ element }">
-                <keyword-item :keyword-data="element" />
+                <div class="component-item">
+                  <keyword-item :keyword-data="element" />
+                </div>
               </template>
             </draggable>
           </el-collapse-item>
@@ -75,7 +79,7 @@ export default {
         pull: 'clone',
       },
       groupNames: [],
-      searchKeyword: ''
+      searchInput: ''
     }
   },
   computed: {
@@ -119,15 +123,19 @@ export default {
     },
     getGroupsUserKeywords (projectId) {
       getUserKeyword(projectId).then(response => {
-        for (let i = 0; i < this.keywordArray.length; i++) {
-          if (this.keywordArray[i]['name'] === '用户类'){
-            this.keywordArray[i]['keywords'] = response.data
-            break
-          }
+        const userKeywords = response.data
+        const keywordDict = this.$store.state.keyword.keywordsObject
+        for (let i = 0; i < userKeywords.length; i++) {
+          const kw = userKeywords[i]
+          keywordDict[kw.id] = kw
         }
+        this.$store.commit('keyword/SET_KEYWORDS_OBJECT', keywordDict)
+        const userGroupIndex = this.keywordArray.findIndex((item) => {return item['group_type'] === 1})
+        this.keywordArray[userGroupIndex]['keywords'] = userKeywords
       })
     },
     cloneKeyword(original) {
+      console.log(original)
       return {
         'keyword_id': original['id'],
         'keyword_type': 1,
@@ -135,6 +143,10 @@ export default {
         'output_args': original['output_params'],
         'uuid': guid()
       }
+    },
+    moveKeyword(e) {
+      console.log(e)
+      // return e.to && e.to.id === 'et-case'
     },
     hideOrShowKeywordArea(isHide) {
       this.$store.commit('keyword/SET_HIDE_KEYWORD', isHide)
@@ -156,7 +168,8 @@ export default {
           dataTransfer.setDragImage(img, 0, 0)
         }
       }
-    }
+    },
+    filterKeyword () {}
   }
 }
 </script>
@@ -186,6 +199,91 @@ $foldExpandIconSize: 32px;
     .content {
       height: calc(100% - #{$searchHeight});
       padding: 0 5px;
+      .component-item {
+        width: 100%;
+      }
+      .drag-chosen {
+        position: relative;
+        z-index: 2;
+        opacity: 0;
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+        display: inline-block;
+        .keyword-item {
+          width: 100px;
+          height: 100px;
+          border-bottom: none;
+          display: inline-block;
+          .item-image {
+            margin-left: 20px;
+            padding: 5px 0;
+            text-align: center;
+          }
+          .item-name {
+            width: 60px !important;
+            margin-right: 15px !important;
+            text-align: center !important;
+            display: none !important;
+            .text-name {
+              font-size: 14px !important;
+              margin: 0 !important;
+              white-space: nowrap !important;
+              text-overflow: ellipsis !important;
+              overflow: hidden !important;
+            }
+          }
+          .item-tip {
+            display: none !important;
+          }
+        }
+      }
+      .drag-ghost {
+        opacity: 1;
+        width: 40px !important;
+        height: 40px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        display: inline-block !important;
+        border-bottom: none !important;
+        .item-image {
+          padding: 5px 0;
+          text-align: center;
+        }
+        .item-name {
+          height: 20px;
+          width: 100%;
+          text-align: center !important;
+          display: none !important;
+          .text-name {
+            font-size: 13px;
+            margin: 0;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+        .item-out {
+          height: 20px;
+          width: 100%;
+          margin-top: 5px;
+          text-align: center;
+          display: none !important;
+          .text-out {
+            font-size: 13px;
+            margin: 0;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+        .item-tip {
+          display: none !important;
+          top: 0;
+          right: 0;
+          position: absolute;
+        }
+      }
     }
   }
   .keyword-hide {
@@ -197,81 +295,6 @@ $foldExpandIconSize: 32px;
     :hover {
       color: $foldIconHoverColor;
     }
-  }
-}
-
-.ghost-item {
-  width: 40px !important;
-  height: 40px !important;
-  position: relative !important;
-  overflow: hidden !important;
-  display: inline-block !important;
-  //background-color: #bdc6ce !important;
-  border-bottom: none !important;
-  .item-image {
-    padding: 5px 0 !important;
-    text-align: center !important;
-  }
-  .item-name {
-    height: 20px;
-    width: 100%;
-    text-align: center !important;
-    .text-name {
-      font-size: 13px;
-      margin: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  }
-  .item-out {
-    height: 20px;
-    width: 100%;
-    margin-top: 5px;
-    text-align: center;
-    .text-out {
-      font-size: 13px;
-      margin: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  }
-  .item-tip {
-    top: 0;
-    right: 0;
-    position: absolute;
-  }
-}
-//.chosen-item {
-//  background-color: #7a869a;
-//}
-.drag-item {
-  width: 40px;
-  height: 40px;
-  background-color: #bdc6ce !important;
-  display: inline-block !important;
-  border-bottom: none !important;
-  .item-image {
-    margin-left: 20px;
-    padding: 5px 0 !important;
-    text-align: center !important;
-  }
-  .item-name {
-    width: 60px !important;
-    margin-right: 15px !important;
-    text-align: center !important;
-    .text-name {
-      font-size: 14px !important;
-      margin: 0 !important;
-      white-space: nowrap !important;
-      text-overflow: ellipsis !important;
-      overflow: hidden !important;
-    }
-  }
-  .item-tip {
-    visibility: hidden !important;
-    display: none !important;
   }
 }
 :deep(.el-collapse) {

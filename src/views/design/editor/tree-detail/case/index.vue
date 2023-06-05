@@ -1,7 +1,8 @@
 <template>
   <div class="case-detail">
     <div class="information" id="infos">
-      <case-config />
+      <keyword-config v-if="isKeyword" />
+      <case-config v-else />
       <case-entity />
     </div>
     <div class="resize-h" id="resize-y">
@@ -15,10 +16,12 @@
 
 <script>
 import { dragHController } from "@/utils/resize";
+import NODE from "@/constans/node";
 import SvgIcon from "@/components/SvgIcon";
 import CaseEntity from "@/views/design/editor/tree-detail/case/components/CaseEntity";
 import EntityArgs from "@/views/design/editor/tree-detail/case/components/EntityArgs";
 import CaseConfig from "@/views/design/editor/tree-detail/case/components/CaseConfig";
+import KeywordConfig from "@/views/design/editor/tree-detail/case/components/KeywordConfig";
 
 export default {
   name: 'Case',
@@ -27,6 +30,12 @@ export default {
     CaseEntity,
     EntityArgs,
     CaseConfig,
+    KeywordConfig,
+  },
+  computed: {
+    isKeyword() {
+      return this.$store.state.tree.nodeCategory === NODE.NodeCategory.KEYWORD
+    }
   },
   mounted() {
     dragHController('infos', 'args', 'resize-y')

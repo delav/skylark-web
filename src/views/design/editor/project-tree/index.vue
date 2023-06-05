@@ -320,6 +320,7 @@ export default {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
             this.changeNodeStore(treeNode, NODE.DetailType.CASE)
+            this.$store.commit('tree/SET_NODE_CATEGORY', NODE.NodeCategory.TESTCASE)
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {
@@ -333,6 +334,7 @@ export default {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
             this.changeNodeStore(treeNode, NODE.DetailType.CASE)
+            this.$store.commit('tree/SET_NODE_CATEGORY', NODE.NodeCategory.KEYWORD)
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {

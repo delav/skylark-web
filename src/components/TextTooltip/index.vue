@@ -1,8 +1,8 @@
 <template>
   <div class="text-tooltip">
     <el-tooltip
-      show-after="50"
       effect="dark"
+      :hide-after="50"
       :disabled="isShowTooltip"
       :content="content"
       :placement="placement"

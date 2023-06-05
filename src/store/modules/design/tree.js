@@ -5,6 +5,7 @@ const getTreeState = () => {
     hideTree: false,
     treeId: '',
     detailType: 0,
+    nodeCategory: '',
     currentNodeId: '',
     selectedNode: {},
     checkedNodes: [],
@@ -37,6 +38,9 @@ const mutations = {
   },
   SET_DETAIL_TYPE: (state, typeNum) => {
     state.detailType = typeNum
+  },
+  SET_NODE_CATEGORY: (state, category) => {
+    state.nodeCategory = category
   },
   SET_CHECKED_NODES: (state, nodes) => {
     state.checkedNodes = nodes
