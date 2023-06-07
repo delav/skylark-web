@@ -1,7 +1,8 @@
 const getKeywordState = () => {
   return {
-    keywordsObject: {},
+    keywordObjects: {},
     hideKeyword: false,
+    updateUserKeyword: ''
   }
 }
 
@@ -11,12 +12,15 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getKeywordState())
   },
-  SET_KEYWORDS_OBJECT: (state, keywordObj) => {
-    state.keywordsObject = keywordObj
+  SET_KEYWORD_OBJECTS: (state, keywordObj) => {
+    state.keywordObjects = keywordObj
   },
   SET_HIDE_KEYWORD: (state, isHide) => {
     state.hideKeyword = isHide
   },
+  SET_UPDATE_USER_KEYWORD: (state, flag) => {
+    state.updateUserKeyword = flag
+  }
 }
 
 const actions = {

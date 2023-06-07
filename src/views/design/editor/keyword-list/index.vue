@@ -91,9 +91,14 @@ export default {
     '$store.state.tree.projectId': {
       handler(value) {
         if (value === '') return
-        this.getGroupsUserKeywords(value)
+        this.getGroupsUserKeywords()
       },
       immediate: true
+    },
+    '$store.state.keyword.updateUserKeyword': {
+      handler() {
+        this.getGroupsUserKeywords()
+      },
     }
   },
   created() {
@@ -116,30 +121,30 @@ export default {
             keywordDict[kw.id] = kw
             groupDict[kw['group_id']]['keywords'].push(kw)
           }
-          this.$store.commit('keyword/SET_KEYWORDS_OBJECT', keywordDict)
+          this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
           this.keywordArray = Object.values(groupDict)
         })
       )
     },
-    getGroupsUserKeywords (projectId) {
+    getGroupsUserKeywords () {
+      const projectId = this.$store.state.tree.projectId
       getUserKeyword(projectId).then(response => {
         const userKeywords = response.data
-        const keywordDict = this.$store.state.keyword.keywordsObject
+        const keywordDict = this.$store.state.keyword.keywordObjects
         for (let i = 0; i < userKeywords.length; i++) {
           const kw = userKeywords[i]
           keywordDict[kw.id] = kw
         }
-        this.$store.commit('keyword/SET_KEYWORDS_OBJECT', keywordDict)
+        this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
         const userGroupIndex = this.keywordArray.findIndex((item) => {return item['group_type'] === 1})
         this.keywordArray[userGroupIndex]['keywords'] = userKeywords
       })
     },
     cloneKeyword(original) {
-      console.log(original)
       return {
         'keyword_id': original['id'],
-        'keyword_type': 1,
-        'input_args': '',
+        'keyword_type': original['keyword_type'],
+        'input_args': original['input_params'],
         'output_args': original['output_params'],
         'uuid': guid()
       }

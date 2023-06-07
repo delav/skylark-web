@@ -23,7 +23,7 @@
               <el-input
                 @blur="saveCaseDoc"
                 v-model="caseInfo.document"
-                autosize
+                :autosize="{ minRows: 1, maxRows: 4 }"
                 type="textarea"
                 placeholder="Please input"
               />

@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     keywordDict() {
-      return this.$store.state.keyword.keywordsObject
+      return this.$store.state.keyword.keywordObjects
     },
   },
   methods: {

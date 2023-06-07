@@ -122,7 +122,7 @@ export default {
       return this.$store.state.entity.currentEntity
     },
     keywordDict() {
-      return this.$store.state.keyword.keywordsObject
+      return this.$store.state.keyword.keywordObjects
     }
   },
   watch: {
@@ -336,6 +336,7 @@ $labelWidth: 80px;
       height: 25px;
       .output-icon {
         cursor: pointer;
+        font-size: 16px;
       }
       span {
         font-size: 14px;
