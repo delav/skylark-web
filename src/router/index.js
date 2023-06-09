@@ -63,12 +63,6 @@ export const routes = [
     hidden: true
   },
   {
-    path: '/auth-redirect',
-    meta: { navbar: false },
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
-  },
-  {
     path: '/404',
     meta: { navbar: false },
     component: () => import('@/views/error/404'),
