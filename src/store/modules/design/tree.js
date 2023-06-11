@@ -1,3 +1,5 @@
+import {deepCopy} from "@/utils/dcopy";
+
 const getTreeState = () => {
   return {
     projectId: '',
@@ -9,6 +11,7 @@ const getTreeState = () => {
     currentNodeId: '',
     selectedNode: {},
     checkedNodes: [],
+    copiedNode: {}
   }
 }
 
@@ -17,6 +20,15 @@ const state = getTreeState()
 const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getTreeState())
+  },
+  RELOAD_STATE: (state) => {
+    if (state.copiedNode.length === 0) {
+      Object.assign(state, getTreeState())
+    } else {
+      const cpNode = deepCopy(state.copiedNode)
+      Object.assign(state, getTreeState())
+      state.copiedNode = cpNode
+    }
   },
   SET_PROJECT_ID: (state, projectId) => {
     state.projectId = projectId
@@ -44,6 +56,9 @@ const mutations = {
   },
   SET_CHECKED_NODES: (state, nodes) => {
     state.checkedNodes = nodes
+  },
+  SET_COPY_NODE: (state, node) => {
+    state.copiedNode = node
   }
 }
 

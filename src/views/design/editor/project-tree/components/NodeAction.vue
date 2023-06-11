@@ -1,6 +1,6 @@
 <template>
   <div class="node-action">
-    <el-form :model="changeFrom" label-width="110px">
+    <el-form ref="newForm" :model="changeFrom" label-width="110px">
       <el-form-item
         prop="name"
         :label="changeFrom.label"
@@ -32,7 +32,12 @@ export default {
       this.$emit('closeDialogAction')
     },
     clickCommit() {
-      this.$emit('commitDialogAction', this.changeFrom.name)
+      this.$refs['newForm'].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        this.$emit('commitDialogAction', this.changeFrom.name)
+      })
     }
   }
 }
@@ -44,7 +49,7 @@ export default {
     text-align: right;
     margin-top: 30px;
     .commit-button {
-      margin-left: 25px;
+      margin-left: 15px;
     }
   }
 }

@@ -34,12 +34,14 @@
           :nodes="zTreeNodes"
           @onCreated="zTreeOnCreated">
         </tree>
-        <div v-show="showNodeMenu" class="node-menu" v-bind:style="nodeMenuPosition" id="operateMenu">
-          <ul>
-            <li v-for="(item, index) in menuMethods" @click="executeMethod(item)" :key="index">
-              <span>{{ item.title }}</span>
-            </li>
-          </ul>
+        <div v-show="showNodeMenu" class="node-menu">
+          <div class="menu-content" v-bind:style="nodeMenuPosition" id="operateMenu">
+            <ul>
+              <li v-for="(item, index) in menuMethods" @click="executeMethod(item)" :key="index">
+                <span>{{ item.title }}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="tool">
@@ -149,10 +151,11 @@ import VariableConf from "@/views/design/editor/project-tree/components/Variable
 import NodeAction from "@/views/design/editor/project-tree/components/NodeAction";
 import UploadFile from "@/views/design/editor/project-tree/components/UploadFile";
 import NODE from "@/constans/node";
+import { ElLoading } from "element-plus";
 import { updateProject } from "@/api/project";
 import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
-import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite } from "@/api/suite";
-import { fetchCaseNode, createCase, updateCase, deleteCase } from "@/api/case";
+import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite, duplicateSuite } from "@/api/suite";
+import { fetchCaseNode, createCase, updateCase, deleteCase, duplicateCase } from "@/api/case";
 import { uploadFile, downloadFile, batchDeleteFile } from "@/api/virfile";
 import { addSvgHover } from "@/utils/hover";
 import { transformData } from "@/utils/tree";
@@ -240,7 +243,7 @@ export default {
         // this.zTreeNodes = formatBaseNodes(response.data)
         this.zTreeNodes = response.data
         this.$store.commit('entity/RELOAD_STATE')
-        this.$store.commit('tree/RESET_STATE')
+        this.$store.commit('tree/RELOAD_STATE')
         this.$store.commit('tree/SET_PROJECT_ID', pId)
         this.$store.commit('tree/SET_PROJECT_NAME', name)
       })
@@ -365,8 +368,9 @@ export default {
       }
     },
     saveEnvVariables() {},
-    showTreeMenu(type, x, y) {
-      y = y - 20
+    showTreeMenu(x, y) {
+      x = x + 15
+      y = y + 15
       this.nodeMenuPosition.top = y + 'px'
       this.nodeMenuPosition.left = x + 'px'
       this.showNodeMenu = true
@@ -400,7 +404,7 @@ export default {
       const iconBtn = document.getElementById(id)
       const rect = iconBtn.getBoundingClientRect()
       this.currentMenuNodeId = id
-      this.showTreeMenu('root', rect.left, rect.top)
+      this.showTreeMenu(rect.left, rect.top)
     },
     initNodeDialog(nodeInfo, dialogInfo) {
       let nameText  = ''
@@ -552,12 +556,73 @@ export default {
     },
     nullAction() {},
     copyNode(nodeTId, actionInfo) {
+      console.log(nodeTId)
+      console.log(actionInfo)
       const node = this.zTreeObj.getNodeByTId(nodeTId)
-      if (JSON.stringify(actionInfo) === '{}') return
-      console.log(node)
+      this.$store.commit('tree/SET_COPY_NODE', node)
+      this.$message.success('复制节点成功')
+      this.hideTreeMenu()
     },
     pasteNode(nodeTId, actionInfo) {
-      console.log(nodeTId + actionInfo)
+      console.log(nodeTId)
+      console.log(actionInfo)
+      const copyNode = this.$store.state.tree.copiedNode
+      const parentNode = this.zTreeObj.getNodeByTId(nodeTId)
+      if (JSON.stringify(copyNode) === '{}') {
+        this.$message.warning('请先复制节点')
+        return
+      }
+      if (parentNode.type !== copyNode.type
+        || copyNode.type !== NODE.NodeCategory.TESTCASE
+      ) {
+        this.$message.warning('非法操作1')
+        return
+      }
+      if (parentNode.desc === NODE.NodeDesc.SUITE
+        && copyNode.desc !== NODE.NodeDesc.CASE
+      ) {
+        this.$message.warning('非法操作2')
+        return
+      }
+      if (parentNode.desc === NODE.NodeDesc.DIR
+        && copyNode.desc !== NODE.NodeDesc.SUITE
+      ) {
+        this.$message.warning('非法操作3')
+        return
+      }
+      this.hideTreeMenu()
+      const loading = ElLoading.service({
+        lock: true,
+        text: '复制节点中，请稍后...',
+        background: 'rgba(0, 0, 0, 0.8)',
+      })
+      if (parentNode.desc === NODE.NodeDesc.SUITE) {
+        const copyData = {
+          'to_project_id': this.$store.state.tree.projectId,
+          'to_suite_id': parentNode.mid,
+          'raw_case_id': copyNode.mid
+        }
+        duplicateCase(copyData).then(response => {
+          const newNodeData = response.data
+          this.zTreeObj.addNodes(parentNode, newNodeData)
+          loading.close()
+        }).catch(() => {
+          loading.close()
+        })
+      } else if (parentNode.desc === NODE.NodeDesc.DIR) {
+        const copyData = {
+          'to_project_id': this.$store.state.tree.projectId,
+          'to_dir_id': parentNode.mid,
+          'raw_suite_id': copyNode.mid
+        }
+        duplicateSuite(copyData).then(response => {
+          const newNodeData = response.data
+          this.zTreeObj.addNodes(parentNode, newNodeData)
+          loading.close()
+        }).catch(() => {
+          loading.close()
+        })
+      }
     },
     renameNode(nodeTId, actionInfo) {
       const node = this.zTreeObj.getNodeByTId(nodeTId)
@@ -705,32 +770,40 @@ $toolHeight: 40px;
       overflow: auto;
       padding: 0 5px;
       .node-menu {
-        position: absolute;
-        background: #ffffff;
-        z-index: 10;
-        box-shadow: 0 0 12px rgba(0, 0, 0, .18);
-        border-radius: 2px;
-        ul {
-          position: relative;
-          padding: 5px 0;
-          margin: 0;
-          border: none;
-          box-shadow: none;
-          list-style: none;
-          li {
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-            list-style: none;
-            line-height: 20px;
-            padding: 3px 16px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        .menu-content {
+          position: absolute;
+          background: #ffffff;
+          z-index: 10;
+          box-shadow: 0 0 12px rgba(0, 0, 0, .18);
+          border-radius: 2px;
+          ul {
+            position: relative;
+            padding: 5px 0;
             margin: 0;
-            font-size: 14px;
-            cursor: pointer;
-            outline: none;
-            &:hover {
-              color: $mainColor;
-              background-color: #dfe1e5;
+            border: none;
+            box-shadow: none;
+            list-style: none;
+            li {
+              display: flex;
+              align-items: center;
+              white-space: nowrap;
+              list-style: none;
+              line-height: 20px;
+              padding: 3px 16px;
+              margin: 0;
+              font-size: 14px;
+              cursor: pointer;
+              outline: none;
+              &:hover {
+                color: $mainColor;
+                background-color: #dfe1e5;
+              }
             }
           }
         }

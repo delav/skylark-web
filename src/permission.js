@@ -1,13 +1,12 @@
 import router from './router'
 import store from './store'
-import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress'
+import { ElMessage } from 'element-plus'
+import { NotAuthUrl } from "@/utils/auth";
 import 'nprogress/nprogress.css'
-import { getToken } from '@/utils/auth'
+import { getToken, notAuth } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false })
-
-const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -17,7 +16,7 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
-    if (to.path === '/login') {
+    if (to.path === NotAuthUrl.Login) {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
@@ -31,22 +30,21 @@ router.beforeEach(async(to, from, next) => {
           // await store.dispatch('user/getInfo')
           next()
         } catch (error) {
-          // remove token and go to login page to re-login
+          // remove token and go to login page
           await store.dispatch('user/resetToken')
           ElMessage.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
+          next(`${NotAuthUrl.Login}?redirect=${to.path}`)
           NProgress.done()
         }
       }
     }
   } else {
     /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
+    if (notAuth(to.path)) {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
+      next(`${NotAuthUrl.Login}?redirect=${to.path}`)
       NProgress.done()
     }
   }

@@ -15,10 +15,18 @@ export function getInfo(userId) {
   })
 }
 
-export function logout() {
+export function reset(data) {
   return request({
-    url: 'user/logout',
+    url: 'user/reset',
     method: 'post',
-    data: {}
+    data: data
+  })
+}
+
+export function register(data) {
+  return request({
+    url: 'user/register',
+    method: 'post',
+    data: data
   })
 }

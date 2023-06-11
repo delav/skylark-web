@@ -8,11 +8,15 @@
       />
     </div>
     <div class="login-box">
-<!--      <div class="desc">-->
-<!--        <span>skylark</span>-->
-<!--      </div>-->
-      <el-form ref="loginForm" class="login-form" :model="loginForm" :rules="loginRules" label-position="left">
-        <p style="margin: 0 0 5px 0">Username</p>
+      <el-form ref="loginForm" class="login-form" :model="loginForm" :rules="loginRules">
+        <div class="login-image">
+          <el-image
+            style="width: 140px; height: auto"
+            :src="login1Image"
+            fit="contain"
+          />
+        </div>
+        <p class="label-desc">Username</p>
         <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -24,10 +28,10 @@
             name="username"
             type="text"
             tabindex="1"
-            auto-complete="on"
+            autocomplete="on"
           />
         </el-form-item>
-        <p style="margin: 25px 0 5px 0">Password</p>
+        <p class="label-desc" style="margin-top: 30px">Password</p>
         <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
@@ -47,13 +51,10 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
         </el-form-item>
-
-        <el-button :loading="loading" type="primary" style="width:100%;height:40px;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-        <div class="tips">
-          <span style="margin-right:20px;">username: admin</span>
-          <span> password: 111111</span>
+        <div class="forgot-password">
+          <el-button type="primary" link>Forgot password?</el-button>
         </div>
+        <el-button :loading="loading" class="login-button" type="primary" @click.native.prevent="handleLogin">Login</el-button>
       </el-form>
     </div>
   </div>
@@ -66,6 +67,7 @@ export default {
     return {
       loginImage: require('@/assets/login.svg'),
       logoImage: require('@/assets/logo.png'),
+      login1Image: require('@/assets/login-1.png'),
       loginForm: {
         username: '123456@163.com',
         password: '+LbLATJm7w2F21Dqdp33tA=='
@@ -113,7 +115,6 @@ export default {
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -146,34 +147,45 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: 1;
     width: 50%;
-    .desc {
-      text-align: left;
-      justify-content: left;
-      margin-bottom: 50px;
+    .login-image {
+      margin-right: auto;
+      margin-bottom: 60px;
     }
     .login-form {
       min-width: 400px;
-      position: relative;
       margin: 0 auto;
-      overflow: hidden;
-    }
-    .svg-container {
-      padding: 6px 5px 6px 15px;
-      color: #889AA4FF;
-      vertical-align: middle;
-      width: 30px;
-      display: inline-block;
-    }
-    .show-pwd {
-      position: absolute;
-      right: 10px;
-      top: 7px;
-      font-size: 16px;
-      color: #889AA4FF;
-      cursor: pointer;
-      user-select: none;
+      align-items: center;
+      justify-content: center;
+      .label-desc {
+        margin: 0 0 5px 0;
+        font-weight: 500;
+        font-size: 15px;
+      }
+      .svg-container {
+        padding: 6px 5px 6px 15px;
+        color: #889AA4FF;
+        vertical-align: middle;
+        width: 30px;
+        display: inline-block;
+      }
+      .show-pwd {
+        position: absolute;
+        right: 10px;
+        top: 7px;
+        font-size: 16px;
+        color: #889AA4FF;
+        cursor: pointer;
+        user-select: none;
+      }
+      .forgot-password {
+        margin: 10px 0 10px 0;
+        float: right;
+      }
+      .login-button {
+        width: 100%;
+        height: 48px;
+      }
     }
   }
 }
@@ -187,25 +199,17 @@ export default {
     padding: 0;
     box-shadow: none;
     input {
-      background: transparent;
       border: 0;
       -webkit-appearance: none;
       border-radius: 0;
       padding: 12px 5px 12px 15px;
-      color: #9dd6f0;
-      height: 50px;
-      caret-color: #fff;
-      &:-webkit-autofill {
-        box-shadow: 0 0 0 1000px #2D3A4BFF inset !important;
-        -webkit-text-fill-color: #fff !important;
-      }
+      height: 48px;
+      font-size: 14px;
     }
   }
 }
 :deep(.el-form-item) {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  color: #454545;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
 }
 </style>

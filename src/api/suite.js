@@ -30,3 +30,11 @@ export function deleteSuite(suiteId) {
     method: 'delete',
   })
 }
+
+export function duplicateSuite(data) {
+  return request({
+    url: '/test-suite/duplicate',
+    method: 'post',
+    data: data
+  })
+}

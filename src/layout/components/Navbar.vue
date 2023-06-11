@@ -55,6 +55,7 @@
 
 <script>
 import path from "path";
+import { NotAuthUrl } from "@/utils/auth";
 import { isExternal } from "@/utils/validate";
 
 export default {
@@ -113,9 +114,9 @@ export default {
       }
       return route.path
     },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      return this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    logout() {
+      this.$store.dispatch('user/logout')
+      return this.$router.push(`${NotAuthUrl.Login}?redirect=${this.$route.fullPath}`)
     }
   }
 }

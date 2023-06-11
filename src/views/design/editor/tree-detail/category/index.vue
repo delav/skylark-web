@@ -54,7 +54,6 @@ export default {
     max-height: calc(100% - 320px);
   }
   .fixture-list {
-    margin-top: 20px;
     width: 100%;
     min-height: 300px;
   }

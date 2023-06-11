@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from "@/api/user";
+import { login, register, getInfo } from "@/api/user";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { resetRouter } from "@/router";
 
@@ -28,11 +28,15 @@ const mutations = {
 }
 
 const actions = {
-    // user login
+  // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      const data = {
+        'username': username,
+        'password': password
+      }
+      login(data).then(response => {
         const data = response.data
         commit('SET_TOKEN', data.token)
         commit('SET_NAME', data.username)
@@ -43,7 +47,23 @@ const actions = {
       })
     })
   },
-
+  register({ commit }, userInfo) {
+    const { username, password, confirmPassword } = userInfo
+    return new Promise((resolve, reject) => {
+      const data = {
+        'username': username.trim(),
+        'password': password,
+        'confirm_password': confirmPassword
+      }
+      register(data).then(response => {
+        const data = response.data
+        commit('SET_NAME', data.username)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
@@ -62,28 +82,17 @@ const actions = {
       })
     })
   },
-
   // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  logout({ commit }) {
+    removeToken()
+    resetRouter()
+    commit('RESET_STATE')
   },
 
   // remove token
   resetToken({ commit }) {
-    return new Promise(resolve => {
-      removeToken() // must remove  token  first
-      commit('RESET_STATE')
-      resolve()
-    })
+    removeToken()
+    commit('RESET_STATE')
   }
 }
 

@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import jquery from "jquery";
 import IconItem from "@/views/design/action/components/IconItem";
 import PushInfo from "@/views/design/action/components/PushInfo";
 import NODE from "@/constans/node";
@@ -187,7 +188,7 @@ export default {
         return node.mid.toString() === mid && node.desc === NODE.NodeDesc.CASE
       }, true)
       if (node === null) return
-      $('#' + node.tId + '_span').css('color', color)
+      jquery('#' + node.tId + '_span').css('color', color)
     },
     getNodeTextColor(result) {
       let textColor = CASE.StatusColor.DEFAULT

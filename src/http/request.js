@@ -2,6 +2,7 @@ import axios from "axios";
 import store from "@/store";
 import router from "@/router";
 import { ElMessage } from "element-plus";
+import { NotAuthUrl } from "@/utils/auth";
 import { getToken, notAuth } from "@/utils/auth";
 
 // create an axios instance
@@ -57,7 +58,7 @@ service.interceptors.response.use(
       status = false
       if (res.code === 40100) {
         // to re-login
-        router.push({ path: '/login' }).then(() => {})
+        router.push({ path: NotAuthUrl.Login }).then(() => {})
         store.dispatch('user/resetToken').then(() => {})
       }
       let timeout = setTimeout(() => {

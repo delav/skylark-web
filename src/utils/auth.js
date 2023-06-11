@@ -2,6 +2,12 @@ import Cookies from "js-cookie";
 
 const TokenKey = 'Authorization'
 
+export const NotAuthUrl = {
+  Login: '/user/login',
+  Reset: '/user/reset',
+  Register: '/user/register'
+}
+
 export function getToken() {
     return Cookies.get(TokenKey)
 }
@@ -16,5 +22,7 @@ export function removeToken() {
 }
 
 export function notAuth(url) {
-  return url !== '/user/login'
+  return url !== NotAuthUrl.Login
+    || url !== NotAuthUrl.Reset
+    || url !== NotAuthUrl.Register
 }

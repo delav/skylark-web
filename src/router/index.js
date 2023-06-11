@@ -57,10 +57,27 @@ export const routes = [
     ]
   },
   {
-    path: '/login',
+    path: '/user',
     meta: { navbar: false },
-    component: () => import('@/views/login/index'),
-    hidden: true
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: () => import('@/views/user/login/index')
+      },
+      {
+        path: 'register',
+        name: 'Register',
+        component: () => import('@/views/user/register/index')
+      },
+      {
+        path: 'reset',
+        name: 'Reset',
+        component: () => import('@/views/user/reset/index')
+      }
+    ]
   },
   {
     path: '/404',

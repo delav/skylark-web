@@ -3,6 +3,27 @@
     <div class="project-info">
       <el-input class="project-name" placeholder="输入项目名称" type="text" v-model.trim="newProjectName"></el-input>
     </div>
+    <div class="project-type">
+      <span class="switch-text">是否公开项目
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          :content="personalDesc"
+          placement="top-start"
+        >
+        <el-icon style="vertical-align: -15%;cursor: pointer;margin-left: 3px" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+      </el-tooltip>
+      </span>
+      <span class="switch-item">
+          <el-switch
+            v-model="isPublic"
+            inline-prompt
+            style="--el-switch-on-color: #00acc1; --el-switch-off-color: #00acc1"
+            active-text="是"
+            inactive-text="否"
+          />
+        </span>
+    </div>
     <div class="copy-info">
       <p class="copy-switch">
         <span class="switch-text">是否复制已有项目</span>
@@ -10,13 +31,13 @@
           <el-switch
             v-model="copySwitch"
             inline-prompt
-            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #bdc6ce"
+            style="--el-switch-on-color: #00acc1; --el-switch-off-color: #00acc1"
             active-text="是"
             inactive-text="否"
           />
         </span>
         <span class="project-list" v-show="copySwitch">
-          <el-select style="width: 280px" v-model="copyProject" placeholder="Select">
+          <el-select style="width: 320px" v-model="copyProject" placeholder="Select">
             <el-option
               v-for="(item, index) in projectList"
               :key="index"
@@ -40,8 +61,10 @@ export default {
   data() {
     return {
       newProjectName: '',
+      isPublic: true,
       copySwitch: false,
       copyProject: null,
+      personalDesc: '公开的项目将允许与你同组的人员查看和编辑项目'
     }
   },
   computed: {
@@ -59,6 +82,7 @@ export default {
         return
       }
       createData['name'] = this.newProjectName
+      createData['personal'] = !this.isPublic
       if (this.copySwitch && this.copyProject !== null) {
         createData['cname'] = this.copyProject
       }
@@ -69,10 +93,12 @@ export default {
         background: 'rgba(0, 0, 0, 0.8)',
       })
       createProject(createData).then(response => {
-        loading.close()
         const newProjectData = response.data
-        this.$store.dispatch('project/getProjects')
-        this.$emit('successAction', newProjectData)
+        this.$store.dispatch('base/getProjects').then(() => {
+          loading.close()
+          console.log(this.$store.state.base.projectList)
+          this.$emit('successAction', newProjectData)
+        })
       }).catch(() => {
         loading.close()
       })
@@ -89,20 +115,38 @@ export default {
     width: 100%;
     height: 100%;
     .project-name {
-
+    }
+  }
+  .project-type {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    .switch-text {
+      width: 125px;
+    }
+    .switch-item {
+      width: 50px;
     }
   }
   .copy-info {
     width: 100%;
-    height: 100%;
+    height: 35px;
     margin-top: 20px;
     .copy-switch {
       margin: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      .switch-text {
+        width: 125px;
+      }
       .switch-item {
-        margin-left: 25px;
+        width: 50px;
       }
       .project-list {
-        float: right;
+        margin-left: auto;
       }
     }
   }

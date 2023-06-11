@@ -1,5 +1,10 @@
 <template>
   <div class="fixture">
+    <div class="fixture-alter">
+      <el-alert type="info" :closable="false" show-icon>
+        <p>单个组件书写格式：【组件名称|参数1|参数2|...】，多个组件使用AND连接，书写格式：【组件名称1|参数1|参数2|AND|组件名称2|参数1|参数2|...】</p>
+      </el-alert>
+    </div>
     <div class="fixture-body">
       <el-form ref="form" :model="fixtureObject" label-width="80px">
         <el-form-item label="套件前置:">
@@ -19,9 +24,6 @@
           <el-button v-else type="primary" @click="cancelSetupTeardown">取消</el-button>
           <el-button type="primary" @click="saveSetupTeardown">保存</el-button>
         </el-form-item>
-        <el-alert type="info" :closable="false" show-icon>
-          <p>单个组件书写格式：【组件名称|参数1|参数2|...】，多个组件使用AND连接，书写格式：【组件名称1|参数1|参数2|AND|组件名称2|参数1|参数2|...】</p>
-        </el-alert>
       </el-form>
     </div>
   </div>
@@ -125,6 +127,9 @@ export default {
 
 <style lang="scss" scoped>
 .fixture {
+  .fixture-alter {
+    margin: 5px 0 20px 0;
+  }
   .fixture-body {
   }
 }

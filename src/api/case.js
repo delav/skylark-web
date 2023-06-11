@@ -30,3 +30,11 @@ export function deleteCase(caseId) {
     method: 'delete',
   })
 }
+
+export function duplicateCase(data) {
+  return request({
+    url: '/test-case/duplicate',
+    method: 'post',
+    data: data
+  })
+}
