@@ -49,31 +49,6 @@
         title="新建变量"
         :close-on-click-modal="false"
       >
-        <div class="env-region" v-show="isProjectVariable">
-          <span class="env-label">环境</span>
-          <div class="env-body">
-            <div class="env-select">
-              <el-select v-model="variableModuleInfo.env" style="width: 100%" placeholder="env">
-                <el-option
-                  v-for="(item, index) in envList"
-                  :key="index"
-                  :label="item['name']"
-                  :value="item.id"
-                />
-              </el-select>
-            </div>
-            <div class="region-select" v-show="showRegion">
-              <el-select v-model="variableModuleInfo.region" style="width: 100%" placeholder="region">
-                <el-option
-                  v-for="(item, index) in containNullRegionList"
-                  :key="index"
-                  :label="item['name']"
-                  :value="item.id"
-                />
-              </el-select>
-            </div>
-          </div>
-        </div>
         <div class="form-content">
           <el-form
             ref="ruleForm"
@@ -95,7 +70,7 @@
         </div>
         <template #footer>
           <el-button @click="closeVarDialog">取消</el-button>
-          <el-button type="primary" @click="createEnvVariable">确定</el-button>
+          <el-button type="primary" @click="commitVariable">确定</el-button>
         </template>
       </el-dialog>
     </div>
@@ -130,59 +105,29 @@ export default {
         name: [
           { required: true, validator: validateName, trigger: 'blur' },
         ],
-      },
-      isProjectVariable: false,
-      containNullRegionList: [
-        {id: 0, name: 'None', ext_name: 'None'}
-      ],
-      variableModuleInfo: {
-        env: '',
-        region: ''
-      }
-    }
-  },
-  props: {
-    variables: {
-      type: Array,
-      default: function () {
-        return []
-      }
-    },
-    moduleInfo: {
-      type: Object,
-      default: function () {
-        return {}
       }
     }
   },
   watch: {
-    variables: {
-      handler(value) {
-        this.initVariableInfo(value)
-      },
-      deep: true,
-    }
-  },
-  computed: {
-    envList() {
-      return this.$store.state.base.envList
+    '$store.state.tree.currentNodeId': {
+      handler() {
+        const detailType = this.$store.state.tree.detailType
+        if (detailType !== detailType) return
+        const cateInfo = this.$store.state.tree.selectedNode.meta
+        this.variableArray = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
+      }
     },
-    showRegion() {
-      return this.$store.state.base.showRegion
-    }
-  },
-  created() {
-    const regions = this.$store.state.base.regionList
-    this.containNullRegionList.push(...regions)
   },
   methods: {
-    initVariableInfo(variableArray) {
-      this.variableList = variableArray
-      if (Object.keys(this.moduleInfo).length === 0) return
-      this.variableModuleInfo = this.moduleInfo
-      if (this.moduleInfo.type === NODE.ModuleType.PROJECT) {
-        this.isProjectVariable = true
+    getModuleInfo() {
+      const selectedNode = this.$store.state.tree.selectedNode
+      let moduleType = NODE.ModuleType.PROJECT
+      if (selectedNode.desc === NODE.NodeDesc.SUITE) {
+        moduleType = NODE.ModuleType.SUITE
+      } else if (selectedNode.desc === NODE.NodeDesc.DIR) {
+        moduleType = NODE.ModuleType.DIR
       }
+      return {id: selectedNode.mid, type: moduleType}
     },
     showVarDialog() {
       this.showNewVarDialog = true
@@ -194,9 +139,7 @@ export default {
     variableNameExist (name) {
       let isExist = false
       for (let i = 0; i < this.variableList.length; i++) {
-        if (this.variableList[i]['name'] === name
-          && this.variableList[i]['env_id'] === this.variableModuleInfo.env
-          && this.variableList[i]['region_id'] === this.variableModuleInfo.region) {
+        if (this.variableList[i]['name'] === name) {
           isExist = true
           break
         }
@@ -211,7 +154,7 @@ export default {
       const treeObj = $.fn.zTree.getZTreeObj(treeId)
       treeObj.updateNode(selectedNode)
     },
-    createEnvVariable() {
+    commitVariable() {
       this.$refs['ruleForm'].validate((valid) => {
         if (!valid) {
           return
@@ -220,22 +163,19 @@ export default {
           this.$message.warning('该变量名已存在')
           return
         }
+        const moduleInfo = this.getModuleInfo()
         const createData = {
           'name': this.variableForm['name'],
           'value': this.variableForm['value'],
           'remark': this.variableForm['remark'],
-          'module_id':  this.moduleInfo.mid,
-          'module_type':  this.moduleInfo.type,
-          'env_id':  this.moduleInfo.env,
-          'region_id': this.moduleInfo.region
+          'module_id':  moduleInfo.id,
+          'module_type':  moduleInfo.type
         }
         createVariable(createData).then(response => {
           this.variableList.push(response.data)
           this.variableForm = {}
           this.showNewVarDialog = false
-          if (!this.isProjectVariable) {
-            this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
-          }
+          this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
         })
       })
     },
@@ -257,9 +197,7 @@ export default {
       }
       updateVariable(row.id, row).then(() => {
         row.edit = false
-        if (!this.isProjectVariable) {
-          this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
-        }
+        this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
       })
     },
     delVariable(row, index) {
@@ -269,9 +207,7 @@ export default {
       }).then( () => {
         deleteVariable(row.id).then(() => {
           this.variableList.splice(index, 1)
-          if (!this.isProjectVariable) {
-            this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
-          }
+          this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
         })
       })
     },

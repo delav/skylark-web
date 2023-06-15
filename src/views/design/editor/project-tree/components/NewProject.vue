@@ -18,7 +18,7 @@
           <el-switch
             v-model="isPublic"
             inline-prompt
-            style="--el-switch-on-color: #00acc1; --el-switch-off-color: #00acc1"
+            style="--el-switch-on-color: #00acc1; --el-switch-off-color: #9DA3A4FF"
             active-text="是"
             inactive-text="否"
           />
@@ -31,7 +31,7 @@
           <el-switch
             v-model="copySwitch"
             inline-prompt
-            style="--el-switch-on-color: #00acc1; --el-switch-off-color: #00acc1"
+            style="--el-switch-on-color: #00acc1; --el-switch-off-color: #9DA3A4FF"
             active-text="是"
             inactive-text="否"
           />
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       newProjectName: '',
-      isPublic: true,
+      isPublic: false,
       copySwitch: false,
       copyProject: null,
       personalDesc: '公开的项目将允许与你同组的人员查看和编辑项目'
@@ -95,9 +95,8 @@ export default {
       createProject(createData).then(response => {
         const newProjectData = response.data
         this.$store.dispatch('base/getProjects').then(() => {
-          loading.close()
-          console.log(this.$store.state.base.projectList)
           this.$emit('successAction', newProjectData)
+          loading.close()
         })
       }).catch(() => {
         loading.close()

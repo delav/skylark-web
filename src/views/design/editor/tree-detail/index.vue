@@ -1,10 +1,10 @@
 <template>
   <div class="tree-detail">
-    <empty v-if="isEmpty(detailType)"></empty>
-    <case v-else-if="isCase(detailType)"></case>
-    <category v-else-if="isCategory(detailType)"></category>
-    <const v-else-if="isConst(detailType)"></const>
-    <file v-else-if="isFile(detailType)"></file>
+    <empty v-if="isEmpty"></empty>
+    <case v-else-if="isCase"></case>
+    <category v-else-if="isCategory"></category>
+    <const v-else-if="isConst"></const>
+    <file v-else-if="isFile"></file>
   </div>
 </template>
 
@@ -26,31 +26,25 @@ export default {
     File,
   },
   computed: {
-    detailType() {
-      return this.$store.state.tree.detailType
+    isEmpty() {
+      return this.$store.state.tree.detailType === NODE.DetailType.EMPTY
+    },
+    isCase() {
+      return this.$store.state.tree.detailType === NODE.DetailType.CASE
+    },
+    isCategory() {
+      const type = this.$store.state.tree.detailType
+      const category = [NODE.DetailType.ROOT, NODE.DetailType.DIR, NODE.DetailType.SUITE]
+      return category.indexOf(type) !== -1
+    },
+    isConst() {
+      return this.$store.state.tree.detailType === NODE.DetailType.CONST
+    },
+    isFile() {
+      return this.$store.state.tree.detailType === NODE.DetailType.FILE
     }
   },
   methods: {
-    isEmpty(type) {
-      return type === NODE.DetailType.EMPTY
-    },
-    isCase(type) {
-      return type === NODE.DetailType.CASE
-    },
-    isCategory(type) {
-      const category = [
-        NODE.DetailType.ROOT,
-        NODE.DetailType.DIR,
-        NODE.DetailType.SUITE
-      ]
-      return category.indexOf(type) !== -1
-    },
-    isConst(type) {
-      return type === NODE.DetailType.CONST
-    },
-    isFile(type) {
-      return type === NODE.DetailType.FILE
-    }
   }
 }
 </script>

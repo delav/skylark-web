@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import { postSetupTeardown } from "@/api/fixture";
 import NODE from "@/constans/node";
+import { postSetupTeardown } from "@/api/fixture";
 
 export default {
   name: 'Fixture',
@@ -64,19 +64,15 @@ export default {
       rawFixtureObject: ''
     }
   },
-  props: {
-    fixtures: Object
-  },
   watch: {
-    fixtures: {
-      handler(value) {
-        if (JSON.stringify(value) !== '{}') {
-          this.fixtureObject = value
-        } else {
-          this.fixtureObject = this.$options.data().fixtureObject
-        }
-      },
-      deep: true,
+    '$store.state.tree.currentNodeId': {
+      handler() {
+        const detailType = this.$store.state.tree.detailType
+        const categories = [NODE.DetailType.DIR, NODE.DetailType.SUITE]
+        if (categories.indexOf(detailType) === -1) return
+        const cateInfo = this.$store.state.tree.selectedNode.meta
+        this.fixtureObject = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
+      }
     },
   },
   created() {
