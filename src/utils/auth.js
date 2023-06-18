@@ -1,3 +1,4 @@
+import CryptoJS from "crypto-js";
 import Cookies from "js-cookie";
 
 const TokenKey = 'Authorization'
@@ -25,4 +26,16 @@ export function notAuth(url) {
   return url !== NotAuthUrl.Login
     || url !== NotAuthUrl.Reset
     || url !== NotAuthUrl.Register
+}
+
+
+export function encrypt (plaintext) {
+  const keyStr = '20220427@)@@)$@&'
+  const key = CryptoJS.enc.Utf8.parse(keyStr)
+  const src = CryptoJS.enc.Utf8.parse(plaintext)
+  const encrypted = CryptoJS.AES.encrypt(src, key, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7
+  })
+  return encrypted.toString()
 }

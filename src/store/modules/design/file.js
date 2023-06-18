@@ -1,10 +1,11 @@
-import { fetchFileContent } from "@/api/virfile";
+import { fetchFileContent } from "@/api/file";
 import { guid } from "@/utils/other";
 
 const getFileState = () => {
   return {
     fileContent: {},
-    syncFileFlag: false
+    syncFileFlag: false,
+    editMode: false
   }
 }
 
@@ -19,6 +20,9 @@ const mutations = {
   },
   SET_FILE_SYNC_FLAG: (state, flag) => {
     state.syncFileFlag = flag
+  },
+  SET_EDIT_MODE: (state, flag) => {
+    state.editMode = flag
   }
 }
 

@@ -156,7 +156,7 @@ import { updateProject } from "@/api/project";
 import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite, duplicateSuite } from "@/api/suite";
 import { fetchCaseNode, createCase, updateCase, deleteCase, duplicateCase } from "@/api/case";
-import { uploadFile, downloadFile, batchDeleteFile } from "@/api/virfile";
+import { uploadFile, downloadFile, batchDeleteFile } from "@/api/file";
 import { addSvgHover } from "@/utils/hover";
 import { transformData } from "@/utils/tree";
 

@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { encrypt } from "@/utils/auth";
+
 export default {
   name: 'Login',
   data() {
@@ -70,7 +72,7 @@ export default {
       login1Image: require('@/assets/login-1.png'),
       loginForm: {
         username: '123456@163.com',
-        password: '+LbLATJm7w2F21Dqdp33tA=='
+        password: '123456'
       },
       loginRules: {
         username: [
@@ -108,6 +110,8 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          // +LbLATJm7w2F21Dqdp33tA==
+          this.loginForm.password = encrypt(this.loginForm.password)
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false

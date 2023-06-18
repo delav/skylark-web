@@ -72,7 +72,8 @@ export default {
         if (categories.indexOf(detailType) === -1) return
         const cateInfo = this.$store.state.tree.selectedNode.meta
         this.fixtureObject = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
-      }
+      },
+      immediate: true
     },
   },
   created() {

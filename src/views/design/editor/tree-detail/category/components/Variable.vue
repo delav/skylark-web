@@ -7,7 +7,7 @@
         style="width: 100%"
         :row-style="{height: '0'}"
         :cell-style="{padding: '3px'}"
-        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px' }"
+        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px', fontWeight: 500 }"
       >
         <el-table-column fixed prop="name" label="变量名" width="180" sortable>
           <template #default="scope">
@@ -112,10 +112,11 @@ export default {
     '$store.state.tree.currentNodeId': {
       handler() {
         const detailType = this.$store.state.tree.detailType
-        if (detailType !== detailType) return
+        if (detailType !== NODE.DetailType.SUITE) return
         const cateInfo = this.$store.state.tree.selectedNode.meta
-        this.variableArray = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
-      }
+        this.variableList = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
+      },
+      immediate: true
     },
   },
   methods: {

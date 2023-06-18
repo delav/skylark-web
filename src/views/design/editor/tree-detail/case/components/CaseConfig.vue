@@ -16,7 +16,6 @@
           <div v-else class="collapse-title"></div>
         </template>
         <div class="config-detail">
-          {{caseInfo}}
           <div class="detail-item">
             <span class="item-title">用例说明</span>
             <div class="item-content">

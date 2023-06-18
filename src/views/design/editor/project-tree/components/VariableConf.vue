@@ -198,7 +198,7 @@ export default {
         region: ''
       },
       containNullRegionList: [
-        {id: 0, name: 'None', ext_name: 'None'}
+        { id: 0, name: 'None', ext_name: 'None' }
       ],
       fieldRules: {
         name: [

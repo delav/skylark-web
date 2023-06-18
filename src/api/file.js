@@ -8,6 +8,14 @@ export function fetchFileContent(suiteId) {
   })
 }
 
+export function saveFileContent(data) {
+  return request({
+    url: '/virtual-file',
+    method: 'post',
+    data: data
+  })
+}
+
 export function uploadFile(formData) {
   return request({
     url: '/project-file/upload',

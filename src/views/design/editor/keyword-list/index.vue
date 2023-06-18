@@ -20,14 +20,19 @@
       </div>
       <div class="content" id="et-keyword">
         <el-collapse v-model="groupNames">
-          <el-collapse-item v-for="(group, index) in keywordArray" :key="index" :title="group['name']">
+          <el-collapse-item
+            v-for="(group, index) in keywordArray"
+            :name="group['name']"
+            :key="index"
+            :title="group['name']"
+          >
             <draggable
               :sort="false"
               :list="group['keywords']"
               :group="dragSetting"
               :clone="cloneKeyword"
               :force-fallback="true"
-              :options="getOptions()"
+              :set-data="setData"
               :move="moveKeyword"
               drag-class="drag-chosen"
               ghost-class="drag-ghost"
@@ -79,7 +84,8 @@ export default {
         pull: 'clone',
       },
       groupNames: [],
-      searchInput: ''
+      searchInput: '',
+      keywordArrayCache: ''
     }
   },
   computed: {
@@ -98,7 +104,12 @@ export default {
     '$store.state.keyword.updateUserKeyword': {
       handler() {
         this.getGroupsUserKeywords()
-      },
+      }
+    },
+    searchInput: {
+      handler() {
+        this.filterKeyword()
+      }
     }
   },
   created() {
@@ -123,6 +134,7 @@ export default {
           }
           this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
           this.keywordArray = Object.values(groupDict)
+          this.keywordArrayCache = JSON.stringify(this.keywordArray)
         })
       )
     },
@@ -138,6 +150,7 @@ export default {
         this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
         const userGroupIndex = this.keywordArray.findIndex((item) => {return item['group_type'] === 1})
         this.keywordArray[userGroupIndex]['keywords'] = userKeywords
+        this.keywordArrayCache = JSON.stringify(this.keywordArray)
       })
     },
     cloneKeyword(original) {
@@ -165,16 +178,36 @@ export default {
         left.style.width = `calc(100% - ${variables.keywordWidth} - ${variables.rightResizeWidth})`
       }
     },
-    getOptions() {
-      return {
-        setdata: (dataTransfer) => {
-          let img = new Image()
-          img.src = 'https://www.google.no/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
-          dataTransfer.setDragImage(img, 0, 0)
+    setData(event) {
+      let img = new Image()
+      img.src = 'https://www.google.no/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
+      event.dataTransfer.setDragImage(img, 0, 0)
+    },
+    filterKeyword () {
+      const expandGroups = []
+      const keywordArr = JSON.parse(this.keywordArrayCache)
+      if (this.searchInput.trim() === '') {
+        this.keywordArray = keywordArr
+        this.groupNames = expandGroups
+        return
+      }
+      const searchStr = this.searchInput.trim().toLowerCase()
+      const length = keywordArr.length - 1
+      for (let i = length; i >= 0; i--) {
+        const groupData = keywordArr[i]
+        groupData['keywords'] = groupData['keywords'].filter(function (item) {
+          const nameStr = item['ext_name'].toLowerCase()
+          return nameStr.indexOf(searchStr) !== -1
+        })
+        if (groupData['keywords'].length === 0) {
+          keywordArr.splice(i, 1)
+        } else {
+          expandGroups.push(keywordArr[i]['name'])
         }
       }
-    },
-    filterKeyword () {}
+      this.keywordArray = keywordArr
+      this.groupNames = expandGroups
+    }
   }
 }
 </script>

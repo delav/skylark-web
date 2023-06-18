@@ -14,7 +14,8 @@ export default {
     '$store.state.file.syncFileFlag': {
       handler() {
         this.content = this.$store.state.file.fileContent
-      }
+      },
+      immediate: true
     }
   },
 }
