@@ -45,6 +45,7 @@ export default {
       }
     }
     return {
+      cateDocument: '',
       fixtureObject: {
         'suite_setup': '',
         'suite_teardown': '',

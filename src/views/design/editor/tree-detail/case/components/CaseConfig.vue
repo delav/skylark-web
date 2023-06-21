@@ -17,14 +17,14 @@
         </template>
         <div class="config-detail">
           <div class="detail-item">
-            <span class="item-title">用例说明</span>
+            <span class="item-title">用例说明：</span>
             <div class="item-content">
               <el-input
-                @blur="saveCaseDoc"
+                @change="saveCaseDoc"
                 v-model="caseInfo.document"
-                :autosize="{ minRows: 1, maxRows: 4 }"
+                :autosize="{ minRows: 2, maxRows: 4 }"
                 type="textarea"
-                placeholder="Please input"
+                placeholder="Test Case Document"
               />
             </div>
           </div>
@@ -69,7 +69,7 @@
             <span class="item-title">超时时间：</span>
             <div class="item-content">
               <el-input
-                @blur="saveCaseTimeout"
+                @change="saveCaseTimeout"
                 v-model="timeNum"
                 placeholder="Please input"
                 class="input-with-select"
@@ -130,8 +130,9 @@ export default {
   watch: {
     '$store.state.tree.currentNodeId': {
       handler() {
+        const category = this.$store.state.tree.nodeCategory
         const detailType = this.$store.state.tree.detailType
-        if (detailType !== NODE.DetailType.CASE) return
+        if (detailType !== NODE.DetailType.CASE && category !== NODE.NodeCategory.TESTCASE) return
         this.initCaseData()
       },
       immediate: true

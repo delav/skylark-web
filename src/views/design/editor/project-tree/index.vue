@@ -278,33 +278,42 @@ export default {
     },
     // expand node, get children nodes
     zTreeOnExpand(event, treeId, treeNode) {
-      let desc = treeNode.desc
-      if (desc === NODE.NodeDesc.DIR) {
+      if (treeNode.desc === NODE.NodeDesc.DIR) {
         fetchDirAndSuiteNode(treeNode.mid).then(response => {
           // const addNodes = formatDirNodes(response.data, treeNode.id, treeNode.checked)
           this.zTreeObj.removeChildNodes(treeNode)
           this.zTreeObj.addNodes(treeNode, response.data)
           if (treeNode.checked) {
-            this.zTreeOnCheck()
+            const childNodes = treeNode.children
+            for (let i = 0; i < childNodes.length; i ++) {
+              this.zTreeObj.checkNode(childNodes[i], true, true, true)
+            }
           }
         })
-      } else if (desc === NODE.NodeDesc.SUITE) {
+      } else if (treeNode.desc === NODE.NodeDesc.SUITE) {
         fetchCaseNode(treeNode.mid).then(response => {
           // const addNodes = formatSuiteNodes(response.data, treeNode.id, treeNode.checked)
           this.zTreeObj.removeChildNodes(treeNode)
           this.zTreeObj.addNodes(treeNode, response.data)
           if (treeNode.checked) {
-            this.zTreeOnCheck()
+            const childNodes = treeNode.children
+            for (let i = 0; i < childNodes.length; i ++) {
+              this.zTreeObj.checkNode(childNodes[i], true, true, true)
+            }
           }
         })
       }
     },
     // collapse node, remove children nodes
     zTreeOnCollapse(event, treeId, treeNode) {
-      let desc = treeNode.desc
-      if (desc !== NODE.NodeDesc.ROOT) {
+      if (treeNode.desc !== NODE.NodeDesc.ROOT) {
         this.zTreeObj.removeChildNodes(treeNode)
+        if (!treeNode.nocheck) {
+          this.zTreeOnCheck()
+        }
       }
+      //TODO
+      // RESET tree detail
     },
     changeNodeStore(treeNode, detailType) {
       this.$store.commit('tree/SET_SELECT_NODE', treeNode)
@@ -319,11 +328,11 @@ export default {
     zTreeOnClick(event, treeId, treeNode) {
       const selectNodeId = this.$store.state.tree.currentNodeId
       if (treeNode.id === selectNodeId) return
+      this.$store.commit('tree/SET_NODE_CATEGORY', treeNode.type)
       if (treeNode.type === NODE.NodeCategory.TESTCASE) {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
             this.changeNodeStore(treeNode, NODE.DetailType.CASE)
-            this.$store.commit('tree/SET_NODE_CATEGORY', NODE.NodeCategory.TESTCASE)
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {
@@ -337,7 +346,6 @@ export default {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
             this.changeNodeStore(treeNode, NODE.DetailType.CASE)
-            this.$store.commit('tree/SET_NODE_CATEGORY', NODE.NodeCategory.KEYWORD)
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {

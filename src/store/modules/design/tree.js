@@ -7,7 +7,7 @@ const getTreeState = () => {
     hideTree: false,
     treeId: '',
     detailType: 0,
-    nodeCategory: '',
+    nodeCategory: 0,
     currentNodeId: '',
     selectedNode: {},
     checkedNodes: [],

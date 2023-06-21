@@ -1,8 +1,8 @@
 <template>
   <div class="case-detail">
     <div class="information" id="infos">
-      <keyword-config v-if="isKeyword" />
-      <case-config v-else />
+      <case-config v-if="isTestcase" />
+      <keyword-config v-else-if="isKeyword" />
       <case-entity />
     </div>
     <div class="resize-h" id="resize-y">
@@ -33,6 +33,9 @@ export default {
     KeywordConfig,
   },
   computed: {
+    isTestcase() {
+      return this.$store.state.tree.nodeCategory === NODE.NodeCategory.TESTCASE
+    },
     isKeyword() {
       return this.$store.state.tree.nodeCategory === NODE.NodeCategory.KEYWORD
     }

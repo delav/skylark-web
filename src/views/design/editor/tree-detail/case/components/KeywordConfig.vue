@@ -6,7 +6,6 @@
           <div class="collapse-title">设置输入输出</div>
         </template>
         <div class="config-detail">
-          {{keywordInfo}}
           <div class="detail-item">
             <span class="item-title">组件说明</span>
             <div class="item-content">
@@ -60,8 +59,9 @@ export default {
   watch: {
     '$store.state.tree.currentNodeId': {
       handler() {
+        const category = this.$store.state.tree.nodeCategory
         const detailType = this.$store.state.tree.detailType
-        if (detailType !== NODE.DetailType.CASE) return
+        if (detailType !== NODE.DetailType.CASE && category !== NODE.NodeCategory.KEYWORD) return
         this.initKeywordData()
       },
       immediate: true

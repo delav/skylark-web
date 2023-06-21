@@ -1,10 +1,10 @@
 <template>
   <div class="category">
-    <div class="variable-list" v-if="isSuite">
-      <variable />
-    </div>
     <div class="fixture-list">
       <fixture />
+    </div>
+    <div class="variable-list" v-if="isSuite">
+      <variable />
     </div>
   </div>
 </template>
