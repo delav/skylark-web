@@ -265,6 +265,17 @@ export default {
         middle.style.width = `calc(100% - ${variables.treeDefaultWidth} - ${variables.leftResizeWidth})`
       }
     },
+    isInChildrenNode(targetNodeId, treeNodes) {
+      for (let i = 0; i < treeNodes.length; i++) {
+        if (treeNodes[i].id === targetNodeId) {
+          return true
+        }
+        if ('children' in treeNodes[i]) {
+          return this.isInChildrenNode(targetNodeId, treeNodes[i].children)
+        }
+      }
+      return false
+    },
     zTreeOnCheck() {
       const checkedSimpleNodes = this.zTreeObj.getCheckedNodes(true)
       const selectedNode = this.$store.state.tree.selectedNode
@@ -306,16 +317,23 @@ export default {
     },
     // collapse node, remove children nodes
     zTreeOnCollapse(event, treeId, treeNode) {
-      if (treeNode.desc !== NODE.NodeDesc.ROOT) {
-        this.zTreeObj.removeChildNodes(treeNode)
-        if (!treeNode.nocheck) {
-          this.zTreeOnCheck()
-        }
+      // project root node, not use temporarily
+      if (treeNode.desc === NODE.NodeDesc.ROOT) {
+        return
       }
-      //TODO
-      // RESET tree detail
+      const removeNodes = this.zTreeObj.removeChildNodes(treeNode)
+      if (!treeNode.nocheck) {
+        this.zTreeOnCheck()
+      }
+      // RESET tree detail data
+      const selectNode = this.$store.state.tree.selectedNode
+      const resetDetailFlag = this.isInChildrenNode(selectNode.id, removeNodes)
+      if (resetDetailFlag) {
+        this.$store.commit('tree/RESET_DETAIL_PAGE')
+      }
     },
     changeNodeStore(treeNode, detailType) {
+      this.$store.commit('tree/SET_NODE_CATEGORY', treeNode.type)
       this.$store.commit('tree/SET_SELECT_NODE', treeNode)
       this.$store.commit('tree/SET_DETAIL_TYPE', detailType)
       this.$store.commit('tree/SET_CURRENT_NODE_ID', treeNode.id)
@@ -328,7 +346,6 @@ export default {
     zTreeOnClick(event, treeId, treeNode) {
       const selectNodeId = this.$store.state.tree.currentNodeId
       if (treeNode.id === selectNodeId) return
-      this.$store.commit('tree/SET_NODE_CATEGORY', treeNode.type)
       if (treeNode.type === NODE.NodeCategory.TESTCASE) {
         if (treeNode.desc === NODE.NodeDesc.CASE) {
           this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
@@ -440,7 +457,7 @@ export default {
       const node = this.nodeParams.meta_data
       if (this.nodeParams.desc === NODE.NodeDesc.ROOT) {
         if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
-          // rename project
+          // rename project, not use temporarily
           const params = {'name': newNodeName}
           updateProject(node.mid, params).then(response => {
             node.name = response.data.name

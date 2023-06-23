@@ -46,14 +46,17 @@
 
 <script>
 import NODE from "@/constans/node";
-import { deepCopy } from "@/utils/dcopy";
 import { updateCase } from "@/api/case";
 
 export default {
   name: 'KeywordConfig',
   data() {
     return {
-      keywordInfo: {}
+      keywordInfo: {
+        document: '',
+        inputs: '',
+        outputs: '',
+      }
     }
   },
   watch: {
@@ -61,8 +64,9 @@ export default {
       handler() {
         const category = this.$store.state.tree.nodeCategory
         const detailType = this.$store.state.tree.detailType
-        if (detailType !== NODE.DetailType.CASE && category !== NODE.NodeCategory.KEYWORD) return
-        this.initKeywordData()
+        if (detailType === NODE.DetailType.CASE && category === NODE.NodeCategory.KEYWORD) {
+          this.initKeywordData()
+        }
       },
       immediate: true
     },
@@ -70,7 +74,8 @@ export default {
   methods: {
     initKeywordData() {
       const nodeInfo = this.$store.state.tree.selectedNode
-      this.keywordInfo = deepCopy(nodeInfo['meta'])
+      if (JSON.stringify(nodeInfo) === '{}') return
+      this.keywordInfo = nodeInfo['meta']
     },
     updateTreeNode() {
       const treeId = this.$store.state.tree.treeId

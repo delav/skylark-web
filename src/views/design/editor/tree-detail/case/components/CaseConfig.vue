@@ -97,7 +97,6 @@
 import NODE from "@/constans/node";
 import { createTag, deleteTag } from "@/api/tag";
 import { updateCase } from "@/api/case";
-import { deepCopy } from "@/utils/dcopy";
 
 export default {
   name: 'CaseConfig',
@@ -132,21 +131,25 @@ export default {
       handler() {
         const category = this.$store.state.tree.nodeCategory
         const detailType = this.$store.state.tree.detailType
-        if (detailType !== NODE.DetailType.CASE && category !== NODE.NodeCategory.TESTCASE) return
-        this.initCaseData()
+        if (detailType === NODE.DetailType.CASE && category === NODE.NodeCategory.TESTCASE) {
+          this.initCaseData()
+        }
       },
       immediate: true
     },
   },
   methods: {
     initCaseData() {
+      Object.assign(this.$data, this.$options.data())
       const nodeInfo = this.$store.state.tree.selectedNode
-      this.caseInfo = deepCopy(nodeInfo['meta'])
+      if (JSON.stringify(nodeInfo) === '{}') return
+      this.caseInfo = nodeInfo['meta']
       this.handlerTimeout(this.caseInfo.timeout)
       this.handlerPriority(this.caseInfo.priority_id)
-      this.handlerTags(nodeInfo['meta']['extra_data'][NODE.ExtraDataKey.TAG])
+      this.handlerTags(this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG])
     },
     handlerTags(itemTags) {
+      if (!itemTags) return
       const tagNames = []
       for (let i = 0; i < itemTags.length; i++) {
         tagNames.push(itemTags[i].name)
@@ -155,7 +158,7 @@ export default {
       this.cacheSelect = JSON.stringify(this.selectTags)
     },
     handlerTimeout(timeoutStr) {
-      if (timeoutStr === null || timeoutStr === '') return
+      if (!timeoutStr) return
       const numUnit = timeoutStr.split(' ')
       if (numUnit.length !== 2) return
       this.timeNum = numUnit[0]

@@ -30,6 +30,13 @@ const mutations = {
       state.copiedNode = cpNode
     }
   },
+  RESET_DETAIL_PAGE: (state) => {
+    const rawState = getTreeState()
+    state.detailType = rawState.detailType
+    state.nodeCategory = rawState.nodeCategory
+    state.currentNodeId = rawState.currentNodeId
+    state.selectedNode = rawState.selectedNode
+  },
   SET_PROJECT_ID: (state, projectId) => {
     state.projectId = projectId
   },

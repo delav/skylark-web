@@ -6,14 +6,14 @@
     <div class="entity-input" v-if="inputType!==getInputType('none')">
       <div class="input-title">
         <span class="title-desc">
-          <span class="title-icon" @click="expandInputArg=!expandInputArg">
+          <span class="input-icon" @click="expandInputArg=!expandInputArg">
             <el-icon v-if="expandInputArg"><CirclePlusFilled /></el-icon>
             <el-icon v-else><RemoveFilled /></el-icon>
           </span>
-          <span class="title-text">输入参数</span>
+          <span class="input-text">输入参数</span>
         </span>
         <el-button
-          class="new-button"
+          class="input-button"
           v-if="inputType===getInputType('list')||inputType===getInputType('dict')"
           type="success" size="small"
           @click="addInputArg"
@@ -70,10 +70,10 @@
     <div class="entity-output" v-if="outputExist">
       <div class="output-title">
         <span class="output-icon" @click="expandOutputArg=!expandOutputArg">
-          <el-icon style="vertical-align: -20%;" color="#1fb496" size="16" v-if="expandOutputArg"><CirclePlusFilled /></el-icon>
-          <el-icon style="vertical-align: -20%;" color="#1fb496" size="16" v-else><RemoveFilled /></el-icon>
+          <el-icon v-if="expandOutputArg"><CirclePlusFilled /></el-icon>
+          <el-icon v-else><RemoveFilled /></el-icon>
         </span>
-        <span>输出参数</span>
+        <span class="output-text">输出参数</span>
       </div>
       <div v-if="expandOutputArg" class="output-content">
         <p class="argument-content" v-for="(name, index) in entityArgs['outputNames']" :key="index">
@@ -237,12 +237,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 $labelWidth: 80px;
 
 .entity-args {
   width: 100%;
   height: 100%;
-  padding: 5px 0 10px 0;
+  padding: 5px 0 5px 0;
   overflow-y: auto;
   .entity-desc {
     height: 60px;
@@ -258,17 +259,16 @@ $labelWidth: 80px;
       height: 25px;
       .title-desc {
         cursor: pointer;
-        .title-icon {
+        color: $mainColor;
+        .input-icon {
           font-size: 16px;
           vertical-align: -15%;
-          color: #1fb496;
         }
-        .title-text {
+        .input-text {
           font-size: 15px;
-          color: #008489;
         }
       }
-      .new-button {
+      .input-button {
         margin-left: 35px;
       }
     }
@@ -334,13 +334,14 @@ $labelWidth: 80px;
     margin-top: 15px;
     .output-title {
       height: 25px;
+      cursor: pointer;
+      color: $mainColor;
       .output-icon {
-        cursor: pointer;
         font-size: 16px;
+        vertical-align: -15%;
       }
-      span {
-        font-size: 14px;
-        color: #008489;
+      .output-text {
+        font-size: 15px;
       }
     }
     .output-content {
