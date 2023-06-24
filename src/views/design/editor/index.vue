@@ -58,6 +58,7 @@ export default {
       height: 100%;
       width: calc(70% - #{$leftResizeWidth});
       float: left;
+      overflow: hidden;
     }
     .resize-left {
       cursor: col-resize;
@@ -84,6 +85,7 @@ export default {
     height: 100%;
     float: left;
     width: $keywordWidth;
+    overflow: hidden;
   }
   .resize-right {
     float: left;

@@ -1,25 +1,27 @@
 <template>
   <div class="entity-item" :style="entityStyle(entityData)">
-    <div class="item-image">
-      <el-image
-        style="width: 40px;height: 40px"
-        :src="getKeywordAttrByEntityId('image', entityData['keyword_id'])"
-        fit="cover"
-      />
-    </div>
-    <div class="item-name">
-      <text-tooltip
-        font-size="12px"
-        ref-name="outName"
-        :content="getKeywordAttrByEntityId('ext_name', entityData['keyword_id'])"
-      />
-    </div>
-    <div class="item-out">
-      <text-tooltip
-        font-size="12px"
-        ref-name="outText"
-        :content="entityData['output_args']"
-      />
+    <div class="item-content">
+      <div class="item-image">
+        <el-image
+          style="width: 40px;height: 40px"
+          :src="getKeywordAttrByEntityId('image', entityData['keyword_id'])"
+          fit="cover"
+        />
+      </div>
+      <div class="item-name">
+        <text-tooltip
+          font-size="12px"
+          ref-name="outName"
+          :content="getKeywordAttrByEntityId('ext_name', entityData['keyword_id'])"
+        />
+      </div>
+<!--      <div class="item-out">-->
+<!--        <text-tooltip-->
+<!--          font-size="12px"-->
+<!--          ref-name="outText"-->
+<!--          :content="entityData['output_args']"-->
+<!--        />-->
+<!--      </div>-->
     </div>
     <div class="item-tip">
       <el-tooltip
@@ -75,26 +77,32 @@ export default {
   width: calc(#{$entityGridWidth} - 4px);
   height: calc(#{$entityGridHeight} - 4px);
   margin: 2px;
-  padding: 0 3px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   display: inline-block;
   background-color: #fff;
-  .item-image {
-    padding: 5px 0;
+  .item-content {
+    width: 100%;
+    height: 100%;
     text-align: center;
-  }
-  .item-name {
-    height: 20px;
-    text-align: center;
-    font-size: 12px;
-  }
-  .item-out {
-    height: 20px;
-    margin-top: 5px;
-    text-align: center;
-    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    .item-image {
+      padding: 5px 0;
+    }
+    .item-name {
+      padding: 0 3px;
+      height: 20px;
+      font-size: 12px;
+    }
+    .item-out {
+      height: 20px;
+      margin-top: 5px;
+      font-size: 12px;
+    }
   }
   .item-tip {
     top: 0;

@@ -1,5 +1,16 @@
 <template>
   <div class="fixture">
+    <div class="cate-document">
+      <div class="item-content">
+        <el-input
+          v-model="cateDocument"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          type="textarea"
+          :disabled="inputDisabled"
+          placeholder="Document"
+        />
+      </div>
+    </div>
     <div class="fixture-alter">
       <el-alert type="info" :closable="false" show-icon>
         <p>单个组件书写格式：【组件名称|参数1|参数2|...】，多个组件使用AND连接，书写格式：【组件名称1|参数1|参数2|AND|组件名称2|参数1|参数2|...】</p>
@@ -20,8 +31,8 @@
           <el-input :disabled="inputDisabled" v-model="fixtureObject['test_teardown']"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="inputDisabled" type="primary" @click="editSetupTeardown">编辑</el-button>
-          <el-button v-else type="primary" @click="cancelSetupTeardown">取消</el-button>
+          <el-button v-if="inputDisabled" type="primary" @click="editCateInfo">编辑</el-button>
+          <el-button v-else type="primary" @click="cancelCateInfo">取消</el-button>
           <el-button type="primary" @click="saveSetupTeardown">保存</el-button>
         </el-form-item>
       </el-form>
@@ -32,6 +43,7 @@
 <script>
 import NODE from "@/constans/node";
 import { postSetupTeardown } from "@/api/fixture";
+import {updateCase} from "@/api/case";
 
 export default {
   name: 'Fixture',
@@ -46,6 +58,7 @@ export default {
     }
     return {
       cateDocument: '',
+      rawCateDocument: '',
       fixtureObject: {
         'suite_setup': '',
         'suite_teardown': '',
@@ -71,7 +84,10 @@ export default {
         const detailType = this.$store.state.tree.detailType
         const categories = [NODE.DetailType.DIR, NODE.DetailType.SUITE]
         if (categories.indexOf(detailType) === -1) return
-        const cateInfo = this.$store.state.tree.selectedNode.meta
+        const nodeInfo = this.$store.state.tree.selectedNode
+        if (JSON.stringify(nodeInfo) === '{}') return
+        const cateInfo = nodeInfo['meta']
+        this.cateDocument = cateInfo.document
         this.fixtureObject = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
       },
       immediate: true
@@ -98,13 +114,34 @@ export default {
       }
       return {id: selectedNode.mid, type: moduleType}
     },
-    editSetupTeardown() {
+    editCateInfo() {
       this.inputDisabled = false
+      this.rawCateDocument = this.cateDocument
       this.rawFixtureObject = JSON.stringify(this.fixtureObject)
     },
-    cancelSetupTeardown() {
+    cancelCateInfo() {
       this.inputDisabled = true
+      this.cateDocument = this.rawCateDocument
       this.fixtureObject = JSON.parse(this.rawFixtureObject)
+    },
+    saveCateInfo() {
+      if (this.rawCateDocument !== this.cateDocument) {
+        this.saveCateDocument()
+      }
+      if (JSON.stringify(this.fixtureObject) !== this.rawFixtureObject) {
+        this.saveSetupTeardown()
+      }
+      this.inputDisabled = true
+    },
+    saveCateDocument() {
+      const params = {'document': this.cateDocument}
+      updateCase(this.caseInfo.id, params).then((response) => {
+        this.cateDocument = response.data.document
+        this.updateTreeNode()
+      }).catch(error => {
+        this.$message.error(error)
+        this.inputDisabled = false
+      })
     },
     saveSetupTeardown() {
       const postData = this.fixtureObject
@@ -114,9 +151,11 @@ export default {
         postData['module_type'] = moduleInfo.type
       }
       postSetupTeardown(postData).then(response => {
-        this.inputDisabled = true
         this.fixtureObject = response.data
         this.updateTreeNode('fixtures', this.fixtureObject)
+      }).catch(error => {
+        this.$message.error(error)
+        this.inputDisabled = false
       })
     }
   }
@@ -134,6 +173,12 @@ export default {
 :deep(.el-input.is-disabled) {
   cursor: auto;
   .el-input__inner {
+    cursor: auto;
+  }
+}
+:deep(.el-textarea.is-disabled) {
+  cursor: auto;
+  .el-textarea__inner {
     cursor: auto;
   }
 }

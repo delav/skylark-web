@@ -12,6 +12,7 @@
       item-key="id"
       animation="300"
       class="entity-info"
+      ghost-class="drag-ghost"
       @add="entityChange"
       @update="entityChange"
       @click.left="clickOutOfEntity"

@@ -32,16 +32,13 @@
               :group="dragSetting"
               :clone="cloneKeyword"
               :force-fallback="true"
-              :set-data="setData"
-              :move="moveKeyword"
-              drag-class="drag-chosen"
+              fallback-class="drag-fallback"
               ghost-class="drag-ghost"
+              chosen-class="drag-chosen"
               item-key="id"
             >
               <template #item="{ element }">
-                <div class="component-item">
-                  <keyword-item :keyword-data="element" />
-                </div>
+                <keyword-item :keyword-data="element" />
               </template>
             </draggable>
           </el-collapse-item>
@@ -162,8 +159,8 @@ export default {
         'uuid': guid()
       }
     },
-    moveKeyword(e) {
-      console.log(e)
+    moveKeyword(event) {
+      console.log(event)
       // return e.to && e.to.id === 'et-case'
     },
     hideOrShowKeywordArea(isHide) {
@@ -178,10 +175,12 @@ export default {
         left.style.width = `calc(100% - ${variables.keywordWidth} - ${variables.rightResizeWidth})`
       }
     },
-    setData(event) {
+    dragStart(event) {
+      console.log(event)
       let img = new Image()
       img.src = 'https://www.google.no/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
-      event.dataTransfer.setDragImage(img, 0, 0)
+      event.item = img
+      // event.originalEvent.dataTransfer.setDragImage(img, 0, 0)
     },
     filterKeyword () {
       const expandGroups = []
@@ -237,91 +236,6 @@ $foldExpandIconSize: 32px;
     .content {
       height: calc(100% - #{$searchHeight});
       padding: 0 5px;
-      .component-item {
-        width: 100%;
-      }
-      .drag-chosen {
-        position: relative;
-        z-index: 2;
-        opacity: 0;
-        width: 100px;
-        height: 100px;
-        overflow: hidden;
-        display: inline-block;
-        .keyword-item {
-          width: 100px;
-          height: 100px;
-          border-bottom: none;
-          display: inline-block;
-          .item-image {
-            margin-left: 20px;
-            padding: 5px 0;
-            text-align: center;
-          }
-          .item-name {
-            width: 60px !important;
-            margin-right: 15px !important;
-            text-align: center !important;
-            display: none !important;
-            .text-name {
-              font-size: 14px !important;
-              margin: 0 !important;
-              white-space: nowrap !important;
-              text-overflow: ellipsis !important;
-              overflow: hidden !important;
-            }
-          }
-          .item-tip {
-            display: none !important;
-          }
-        }
-      }
-      .drag-ghost {
-        opacity: 1;
-        width: 40px !important;
-        height: 40px !important;
-        position: relative !important;
-        overflow: hidden !important;
-        display: inline-block !important;
-        border-bottom: none !important;
-        .item-image {
-          padding: 5px 0;
-          text-align: center;
-        }
-        .item-name {
-          height: 20px;
-          width: 100%;
-          text-align: center !important;
-          display: none !important;
-          .text-name {
-            font-size: 13px;
-            margin: 0;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-          }
-        }
-        .item-out {
-          height: 20px;
-          width: 100%;
-          margin-top: 5px;
-          text-align: center;
-          display: none !important;
-          .text-out {
-            font-size: 13px;
-            margin: 0;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-          }
-        }
-        .item-tip {
-          display: none !important;
-          top: 0;
-          right: 0;
-          position: absolute;
-        }
-      }
     }
   }
   .keyword-hide {
@@ -333,6 +247,75 @@ $foldExpandIconSize: 32px;
     :hover {
       color: $foldIconHoverColor;
     }
+  }
+}
+.drag-chosen {
+}
+.drag-ghost {
+  width: calc(#{$entityGridWidth} - 4px);
+  height: calc(#{$entityGridHeight} - 4px);
+  margin: 2px;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  border-bottom: none;
+  background-color: #7a869a;
+  .item-content {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    position: absolute;
+    //top: 50%;
+    //left: 50%;
+    //transform: translate(-50%,-50%);
+    .item-image {
+      padding: 5px 0;
+    }
+    .item-name {
+      padding: 0 3px;
+      height: 20px;
+      font-size: 12px;
+    }
+    .item-out {
+      height: 20px;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+  }
+  .item-tip {
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
+}
+.drag-fallback {
+  width: calc(#{$entityGridWidth} - 4px);
+  height: calc(#{$entityGridHeight} - 4px);
+  display: inline-block;
+  background-color: #9a6e3a;
+  cursor: move;
+  overflow: hidden;
+  position: relative;
+  .item-image {
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .item-name {
+    text-align: center;
+    display: none;
+    .text-name {
+      font-size: 14px;
+      margin: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+  .item-tip {
+    display: none;
   }
 }
 :deep(.el-collapse) {

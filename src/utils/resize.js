@@ -2,8 +2,8 @@ import store from "@/store";
 import variables from "@/styles/variables.module.scss";
 
 const treeMinWidth = 200
-const caseMinWidth = 300
-const caseMinHeight = 80
+const caseMinWidth = 500
+const caseMinHeight = 150
 const argMinHeight = 50
 
 export function dragWController(leftId, rightId, boxId, resizeId) {
