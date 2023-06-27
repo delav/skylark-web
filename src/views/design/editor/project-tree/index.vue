@@ -159,6 +159,7 @@ import { fetchCaseNode, createCase, updateCase, deleteCase, duplicateCase } from
 import { uploadFile, downloadFile, batchDeleteFile } from "@/api/file";
 import { addSvgHover } from "@/utils/hover";
 import { transformData } from "@/utils/tree";
+import {updateEntities} from "@/api/entity";
 
 export default {
   name: 'ProjectTree',
@@ -195,10 +196,12 @@ export default {
         view: {
           showTitle: false,
           showIcon: false,
+          expandSpeed: 'normal',
           addHoverDom: this.addHoverDom,
           removeHoverDom: this.removeHoverDom,
         },
         callback: {
+          beforeClick: this.zTreeBeforeClick,
           onClick: this.zTreeOnClick,
           onCheck: this.zTreeOnCheck,
           onExpand: this.zTreeOnExpand,
@@ -341,6 +344,35 @@ export default {
     updateTreeNode(treeNode) {
       this.zTreeObj.updateNode(treeNode)
       this.$store.commit('tree/SET_SELECT_NODE', treeNode)
+    },
+    zTreeBeforeClick(treeId, treeNode) {
+      const that = this
+      // alter had edited case if save
+      const isChange = this.$store.state.entity.entityChange
+      if (!isChange) return true
+      this.$messageBox.confirm(
+        '节点内容已编辑，是否保存？',
+        '警告',
+        {
+          confirmButtonText: '保存',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      ).then(() => {
+        const postData = {
+          'case_id': this.$store.state.tree.selectedNode['mid'],
+          'entity_list': this.$store.state.entity.caseEntities
+        }
+        updateEntities(postData).then(() => {
+          that.$store.commit('entity/SET_ENTITY_CHANGE', false)
+          that.zTreeObj.selectNode(treeNode)
+          that.zTreeOnClick(null, treeId, treeNode)
+        })
+      }).catch(() => {
+        that.zTreeObj.selectNode(treeNode)
+        that.zTreeOnClick(null, treeId, treeNode)
+      })
+      return false
     },
     // click node, get node detail data
     zTreeOnClick(event, treeId, treeNode) {
@@ -580,17 +612,15 @@ export default {
       })
     },
     nullAction() {},
+    // eslint-disable-next-line no-unused-vars
     copyNode(nodeTId, actionInfo) {
-      console.log(nodeTId)
-      console.log(actionInfo)
       const node = this.zTreeObj.getNodeByTId(nodeTId)
       this.$store.commit('tree/SET_COPY_NODE', node)
       this.$message.success('复制节点成功')
       this.hideTreeMenu()
     },
+    // eslint-disable-next-line no-unused-vars
     pasteNode(nodeTId, actionInfo) {
-      console.log(nodeTId)
-      console.log(actionInfo)
       const copyNode = this.$store.state.tree.copiedNode
       const parentNode = this.zTreeObj.getNodeByTId(nodeTId)
       if (JSON.stringify(copyNode) === '{}') {

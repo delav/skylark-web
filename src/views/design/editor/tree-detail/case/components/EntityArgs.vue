@@ -1,7 +1,7 @@
 <template>
   <div class="entity-args">
     <div class="entity-desc">
-      <p>{{getRelatedKeywordAttrById('desc', currentEntity['keyword_id'])}}</p>
+      <p>{{entityArgs['keywordDesc']}}</p>
     </div>
     <div class="entity-input" v-if="inputType!==getInputType('none')">
       <div class="input-title">
@@ -24,7 +24,15 @@
       <div v-if="expandInputArg" class="input-content">
         <template v-if="inputType===getInputType('single')||inputType===getInputType('multi')">
           <p class="fixate-argument" v-for="(name, index) in entityArgs['inputNames']" :key="index">
-            <span :title="name" class="argument-name">{{name}}:</span>
+            <el-tooltip
+              popper-class="custom-tooltip"
+              placement="top-start"
+              effect="dark"
+              :hide-after="50"
+              :content="entityArgs['inputDesc'][index]"
+            >
+              <span class="argument-name">{{name}}:</span>
+            </el-tooltip>
             <el-input
               class="argument-value"
               type="text"
@@ -77,7 +85,15 @@
       </div>
       <div v-if="expandOutputArg" class="output-content">
         <p class="argument-content" v-for="(name, index) in entityArgs['outputNames']" :key="index">
-          <span class="argument-name">{{name}}:</span>
+          <el-tooltip
+            popper-class="custom-tooltip"
+            placement="top-start"
+            effect="dark"
+            :hide-after="50"
+            :content="entityArgs['outputDesc'][index]"
+          >
+            <span class="argument-name">{{name}}:</span>
+          </el-tooltip>
           <el-input
             class="argument-value"
             type="text"
@@ -108,8 +124,8 @@ export default {
   // components: {SvgIcon},
   data() {
     return {
-      entityInputSplitSep: '#@#',
-      keywordInputSplitSep: '|',
+      entitySplitSep: '#@#',
+      keywordSplitSep: '|',
       inputType: 0,
       outputExist: false,
       entityArgs: {},
@@ -150,8 +166,8 @@ export default {
     },
     updateCaseEntities() {
       const entities = this.$store.state.entity.caseEntities
-      const newInputArgs = this.entityArgs['inputValues'].join(this.entityInputSplitSep)
-      const newOutputArgs = this.entityArgs['outputValues'].join(this.entityInputSplitSep)
+      const newInputArgs = this.entityArgs['inputValues'].join(this.entitySplitSep)
+      const newOutputArgs = this.entityArgs['outputValues'].join(this.entitySplitSep)
       for (let i = 0; i < entities.length; i++) {
         if (entities[i]['uuid'] === this.entityArgs['meta']['uuid']) {
           entities[i]['input_args'] = newInputArgs
@@ -177,6 +193,7 @@ export default {
       }
       this.entityArgs['meta'] = deepCopy(entity)
       this.inputType = this.getRelatedKeywordAttrById('input_type', entity['keyword_id'])
+      this.entityArgs['keywordDesc'] = this.getRelatedKeywordAttrById('desc',  entity['keyword_id'])
       if (this.inputType === this.getInputType('none')) {
         // not input args
         this.entityArgs['inputNames'] = []
@@ -185,23 +202,30 @@ export default {
         // single input args
         this.entityArgs['inputNames'] = [this.getRelatedKeywordAttrById('input_params', entity['keyword_id'])]
         this.entityArgs['inputValues'] = [entity['input_args']]
+        this.entityArgs['inputDesc'] = [this.getRelatedKeywordAttrById('input_desc', entity['keyword_id'])]
       } else if (this.inputType === this.getInputType('multi')) {
         // multi input args
-        this.entityArgs['inputNames'] = this.getRelatedKeywordAttrById('input_params', entity['keyword_id']).split(this.keywordInputSplitSep)
-        let values = entity['input_args'].split(this.entityInputSplitSep)
+        this.entityArgs['inputNames'] = this.getRelatedKeywordAttrById('input_params', entity['keyword_id']).split(this.keywordSplitSep)
+        let values = entity['input_args'].split(this.entitySplitSep)
         const diffValue = this.entityArgs['inputNames'].length - values.length
         if (diffValue > 0) {
           values = values.concat(Array(diffValue))
         }
         this.entityArgs['inputValues'] = values
+        let descList = this.getRelatedKeywordAttrById('input_desc', entity['keyword_id']).split(this.keywordSplitSep)
+        const diffDesc = this.entityArgs['inputNames'].length - descList.length
+        if (diffDesc > 0) {
+          descList = descList.concat(Array(diffDesc))
+        }
+        this.entityArgs['inputDesc'] = descList
       } else if (this.inputType === this.getInputType('list')) {
         // list input args
         this.entityArgs['inputNames'] = []
-        this.entityArgs['inputValues'] = entity['input_args'].split(this.entityInputSplitSep)
+        this.entityArgs['inputValues'] = entity['input_args'].split(this.entitySplitSep)
       } else if (this.inputType === this.getInputType('dict')) {
         // dict input args
         this.entityArgs['inputNames'] = []
-        this.entityArgs['inputValues'] = entity['input_args'].split(this.entityInputSplitSep)
+        this.entityArgs['inputValues'] = entity['input_args'].split(this.entitySplitSep)
       }
       if (entity['output_args'] === '' || entity['output_args'] === null) {
         this.entityArgs['outputNames'] = []
@@ -210,6 +234,7 @@ export default {
         this.outputExist = true
         this.entityArgs['outputNames'] = ['Result']
         this.entityArgs['outputValues'] = [entity['output_args']]
+        this.entityArgs['outputDesc'] = [this.getRelatedKeywordAttrById('output_desc', entity['keyword_id'])]
       }
     },
     addInputArg() {

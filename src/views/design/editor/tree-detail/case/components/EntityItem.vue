@@ -84,7 +84,6 @@ export default {
   background-color: #fff;
   .item-content {
     width: 100%;
-    height: 100%;
     text-align: center;
     position: absolute;
     top: 50%;

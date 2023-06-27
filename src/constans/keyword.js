@@ -1,3 +1,8 @@
+const KeywordType = {
+  LIB: 1,
+  USER: 2
+}
+
 const KeywordArgType = {
   NONE: 0,
   SINGLE: 1,
@@ -7,5 +12,6 @@ const KeywordArgType = {
 }
 
 export default {
+  KeywordType,
   KeywordArgType,
 }

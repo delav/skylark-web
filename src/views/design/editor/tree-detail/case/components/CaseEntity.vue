@@ -12,7 +12,8 @@
       item-key="id"
       animation="300"
       class="entity-info"
-      ghost-class="drag-ghost"
+      ghost-class="custom-ghost"
+      drag-class="custom-drag"
       @add="entityChange"
       @update="entityChange"
       @click.left="clickOutOfEntity"
@@ -204,5 +205,11 @@ export default {
     z-index: 10;
     font-size: 0;
   }
+}
+.custom-ghost {
+  background-color: #7a869a;
+}
+.custom-drag {
+  background-color: #9a6e3a;
 }
 </style>

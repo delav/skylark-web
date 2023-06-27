@@ -32,9 +32,9 @@
               :group="dragSetting"
               :clone="cloneKeyword"
               :force-fallback="true"
-              fallback-class="drag-fallback"
-              ghost-class="drag-ghost"
-              chosen-class="drag-chosen"
+              fallback-class="custom-fallback"
+              ghost-class="custom-ghost"
+              chosen-class="custom-chosen"
               item-key="id"
             >
               <template #item="{ element }">
@@ -151,11 +151,12 @@ export default {
       })
     },
     cloneKeyword(original) {
+      // keyword item change to entity
       return {
         'keyword_id': original['id'],
         'keyword_type': original['keyword_type'],
-        'input_args': original['input_params'],
-        'output_args': original['output_params'],
+        'input_args': '',
+        'output_args': '',
         'uuid': guid()
       }
     },
@@ -249,9 +250,9 @@ $foldExpandIconSize: 32px;
     }
   }
 }
-.drag-chosen {
+.custom-chosen {
 }
-.drag-ghost {
+.custom-ghost {
   width: calc(#{$entityGridWidth} - 4px);
   height: calc(#{$entityGridHeight} - 4px);
   margin: 2px;
@@ -262,12 +263,12 @@ $foldExpandIconSize: 32px;
   background-color: #7a869a;
   .item-content {
     width: 100%;
-    height: 100%;
     text-align: center;
     position: absolute;
-    //top: 50%;
-    //left: 50%;
-    //transform: translate(-50%,-50%);
+    display: inline-block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
     .item-image {
       padding: 5px 0;
     }
@@ -288,7 +289,7 @@ $foldExpandIconSize: 32px;
     position: absolute;
   }
 }
-.drag-fallback {
+.custom-fallback {
   width: calc(#{$entityGridWidth} - 4px);
   height: calc(#{$entityGridHeight} - 4px);
   display: inline-block;
@@ -296,26 +297,36 @@ $foldExpandIconSize: 32px;
   cursor: move;
   overflow: hidden;
   position: relative;
-  .item-image {
-    position: absolute;
+  .item-content {
+    width: 100%;
     text-align: center;
+    position: absolute;
+    display: inline-block;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
-  }
-  .item-name {
-    text-align: center;
-    display: none;
-    .text-name {
-      font-size: 14px;
-      margin: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+    transform: translate(-50%, -50%);
+    .item-image {
+      position: absolute;
+      text-align: center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
-  }
-  .item-tip {
-    display: none;
+    .item-name {
+      text-align: center;
+      display: none;
+      .text-name {
+        font-size: 14px;
+        margin: 0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+
+    .item-tip {
+      display: none;
+    }
   }
 }
 :deep(.el-collapse) {
