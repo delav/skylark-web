@@ -3,7 +3,7 @@ const RootPId = 0
 const NodeCategory = {
   TESTCASE: 0,
   KEYWORD: 1,
-  RESOURCE: 2,
+  VARIABLE: 2,
   PROJECTFILE: 3,
 }
 

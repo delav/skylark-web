@@ -2,7 +2,7 @@ import request from "@/http/request";
 
 export function fetchEntities(caseId) {
   return request({
-    url: '/case-entity',
+    url: '/case_entity',
     method: 'get',
     params: { case: caseId }
   })
@@ -10,7 +10,7 @@ export function fetchEntities(caseId) {
 
 export function updateEntities(data) {
   return request({
-    url: '/case-entity',
+    url: '/case_entity',
     method: 'post',
     data: data
   })

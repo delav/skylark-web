@@ -38,7 +38,6 @@
 
 <script>
 import TextTooltip from '@/components/TextTooltip'
-import { guid } from "@/utils/other";
 
 export default {
   name: 'EntityItem',
@@ -55,6 +54,9 @@ export default {
   },
   methods: {
     getKeywordAttrByEntityId(attr, kid) {
+      if (!(kid in this.keywordDict)) {
+        return ''
+      }
       return this.keywordDict[kid][attr]
     },
     entityStyle(entityItem) {
@@ -62,9 +64,6 @@ export default {
       if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) !== -1) {
         return 'background: #dfe1e5'
       }
-    },
-    getRefName() {
-      return guid()
     }
   }
 }

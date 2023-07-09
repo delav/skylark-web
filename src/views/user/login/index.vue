@@ -110,9 +110,11 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          // +LbLATJm7w2F21Dqdp33tA==
-          this.loginForm.password = encrypt(this.loginForm.password)
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          const postData = {
+            username: this.loginForm.username,
+            password: encrypt(this.loginForm.password)
+          }
+          this.$store.dispatch('user/login', postData).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {

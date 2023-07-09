@@ -3,7 +3,7 @@
     <div class="entity-desc">
       <p>{{entityArgs['keywordDesc']}}</p>
     </div>
-    <div class="entity-input" v-if="inputType!==getInputType('none')">
+    <div class="entity-input" v-if="inputType!==getArgType('none')">
       <div class="input-title">
         <span class="title-desc">
           <span class="input-icon" @click="expandInputArg=!expandInputArg">
@@ -14,7 +14,7 @@
         </span>
         <el-button
           class="input-button"
-          v-if="inputType===getInputType('list')||inputType===getInputType('dict')"
+          v-if="inputType===getArgType('list')||inputType===getArgType('dict')"
           type="success" size="small"
           @click="addInputArg"
         >
@@ -22,7 +22,7 @@
         </el-button>
       </div>
       <div v-if="expandInputArg" class="input-content">
-        <template v-if="inputType===getInputType('single')||inputType===getInputType('multi')">
+        <template v-if="inputType===getArgType('single')||inputType===getArgType('multi')">
           <p class="fixate-argument" v-for="(name, index) in entityArgs['inputNames']" :key="index">
             <el-tooltip
               popper-class="custom-tooltip"
@@ -41,7 +41,7 @@
             </el-input>
           </p>
         </template>
-        <template v-if="inputType===getInputType('list')||inputType===getInputType('dict')">
+        <template v-if="inputType===getArgType('list')||inputType===getArgType('dict')">
           <draggable
             id="case-entity"
             v-model="entityArgs['inputValues']"
@@ -75,7 +75,7 @@
         </template>
       </div>
     </div>
-    <div class="entity-output" v-if="outputExist">
+    <div class="entity-output" v-if="outputType!==getArgType('none')">
       <div class="output-title">
         <span class="output-icon" @click="expandOutputArg=!expandOutputArg">
           <el-icon v-if="expandOutputArg"><CirclePlusFilled /></el-icon>
@@ -127,7 +127,7 @@ export default {
       entitySplitSep: '#@#',
       keywordSplitSep: '|',
       inputType: 0,
-      outputExist: false,
+      outputType: 0,
       entityArgs: {},
       expandInputArg: true,
       expandOutputArg: true,
@@ -150,7 +150,7 @@ export default {
     }
   },
   methods: {
-    getInputType(v) {
+    getArgType(v) {
       if (v === 'none') {
         return KEYWORD.KeywordArgType.NONE
       } else if (v === 'single') {
@@ -193,17 +193,18 @@ export default {
       }
       this.entityArgs['meta'] = deepCopy(entity)
       this.inputType = this.getRelatedKeywordAttrById('input_type', entity['keyword_id'])
+      this.outputType = this.getRelatedKeywordAttrById('output_type', entity['keyword_id'])
       this.entityArgs['keywordDesc'] = this.getRelatedKeywordAttrById('desc',  entity['keyword_id'])
-      if (this.inputType === this.getInputType('none')) {
+      if (this.inputType === this.getArgType('none')) {
         // not input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = []
-      } else if (this.inputType === this.getInputType('single')) {
+      } else if (this.inputType === this.getArgType('single')) {
         // single input args
         this.entityArgs['inputNames'] = [this.getRelatedKeywordAttrById('input_params', entity['keyword_id'])]
         this.entityArgs['inputValues'] = [entity['input_args']]
         this.entityArgs['inputDesc'] = [this.getRelatedKeywordAttrById('input_desc', entity['keyword_id'])]
-      } else if (this.inputType === this.getInputType('multi')) {
+      } else if (this.inputType === this.getArgType('multi')) {
         // multi input args
         this.entityArgs['inputNames'] = this.getRelatedKeywordAttrById('input_params', entity['keyword_id']).split(this.keywordSplitSep)
         let values = entity['input_args'].split(this.entitySplitSep)
@@ -218,20 +219,19 @@ export default {
           descList = descList.concat(Array(diffDesc))
         }
         this.entityArgs['inputDesc'] = descList
-      } else if (this.inputType === this.getInputType('list')) {
+      } else if (this.inputType === this.getArgType('list')) {
         // list input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = entity['input_args'].split(this.entitySplitSep)
-      } else if (this.inputType === this.getInputType('dict')) {
+      } else if (this.inputType === this.getArgType('dict')) {
         // dict input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = entity['input_args'].split(this.entitySplitSep)
       }
-      if (entity['output_args'] === '' || entity['output_args'] === null) {
+      if (this.outputType === this.getArgType('none')) {
         this.entityArgs['outputNames'] = []
         this.entityArgs['outputValues'] = []
-      } else {
-        this.outputExist = true
+      } else if (this.outputType === this.getArgType('single')) {
         this.entityArgs['outputNames'] = ['Result']
         this.entityArgs['outputValues'] = [entity['output_args']]
         this.entityArgs['outputDesc'] = [this.getRelatedKeywordAttrById('output_desc', entity['keyword_id'])]

@@ -63,7 +63,6 @@ import variables from "@/styles/variables.module.scss";
 import axios from "axios";
 import KeywordItem from "@/views/design/editor/keyword-list/components/KeywordItem";
 import { getLibKeyword, getUserKeyword } from "@/api/keyword";
-import { getKeywordGroup } from "@/api/kgroup";
 import { guid } from "@/utils/other";
 
 export default {
@@ -94,13 +93,13 @@ export default {
     '$store.state.tree.projectId': {
       handler(value) {
         if (value === '') return
-        this.getGroupsUserKeywords()
+        this.getProjectKeywords()
       },
       immediate: true
     },
     '$store.state.keyword.updateUserKeyword': {
       handler() {
-        this.getGroupsUserKeywords()
+        this.getGroupUserKeywords()
       }
     },
     searchInput: {
@@ -110,53 +109,63 @@ export default {
     }
   },
   created() {
-    this.getGroupsLibKeywords()
+    this.getLibKeywordList()
   },
   methods: {
-    getGroupsLibKeywords() {
-      let keywordDict = {}
-      axios.all([getKeywordGroup(), getLibKeyword()]).then(
+    getLibKeywordList() {
+      getLibKeyword({}).then(response => {
+        this.keywordArray = response.data
+        this.keywordArrayCache = JSON.stringify(this.keywordArray)
+        let keywordDict = {}
+        for (let i = 0; i < this.keywordArray.length; i++) {
+          const groupKeywordList = this.keywordArray[i]['keywords']
+          for (let j = 0; j < groupKeywordList.length; j++) {
+            const keywordItem = groupKeywordList[j]
+            keywordDict[keywordItem.id] = keywordItem
+          }
+        }
+        this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
+      })
+    },
+    getProjectKeywords() {
+      const projectId = this.$store.state.tree.projectId
+      const params = {base: false}
+      axios.all([getLibKeyword(params), getUserKeyword(projectId)]).then(
         axios.spread((r1, r2) => {
-          const groups = r1.data
-          const keywords = r2.data
-          const groupDict = {}
-          for (let i = 0; i < groups.length; i++) {
-            groups[i]['keywords'] = []
-            groupDict[groups[i].id] = groups[i]
-          }
-          for (let j = 0; j < keywords.length; j++) {
-            const kw = keywords[j]
-            keywordDict[kw.id] = kw
-            groupDict[kw['group_id']]['keywords'].push(kw)
-          }
-          this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
-          this.keywordArray = Object.values(groupDict)
-          this.keywordArrayCache = JSON.stringify(this.keywordArray)
+          const libProjectKeywords = r1.data
+          const userProjectKeywords = r2.data
+          const newGroupList = libProjectKeywords.concat(userProjectKeywords)
+          this.updateKeywordList(newGroupList)
         })
       )
     },
-    getGroupsUserKeywords () {
+    getGroupUserKeywords () {
       const projectId = this.$store.state.tree.projectId
       getUserKeyword(projectId).then(response => {
-        const userKeywords = response.data
-        const keywordDict = this.$store.state.keyword.keywordObjects
-        for (let i = 0; i < userKeywords.length; i++) {
-          const kw = userKeywords[i]
-          keywordDict[kw.id] = kw
-        }
-        this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
-        const userGroupIndex = this.keywordArray.findIndex((item) => {return item['group_type'] === 1})
-        this.keywordArray[userGroupIndex]['keywords'] = userKeywords
-        this.keywordArrayCache = JSON.stringify(this.keywordArray)
+        const newGroupList = response.data
+        this.updateKeywordList(newGroupList)
       })
+    },
+    updateKeywordList(addGroupList) {
+      const keywordDict = this.$store.state.keyword.keywordObjects
+      for (let i = 0; i < addGroupList.length; i++) {
+        const groupKeywordList = addGroupList[i]['keywords']
+        for (let j = 0; j < groupKeywordList.length; j++) {
+          const keywordItem = groupKeywordList[j]
+          keywordDict[keywordItem.id] = keywordItem
+        }
+      }
+      this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
+      this.keywordArray.push(...addGroupList)
+      this.keywordArrayCache = JSON.stringify(this.keywordArray)
     },
     cloneKeyword(original) {
       // keyword item change to entity
       return {
         'keyword_id': original['id'],
         'keyword_type': original['keyword_type'],
-        'input_args': '',
-        'output_args': '',
+        'input_args': original['input_params'],
+        'output_args': original['output_params'],
         'uuid': guid()
       }
     },

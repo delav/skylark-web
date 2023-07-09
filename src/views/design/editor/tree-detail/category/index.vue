@@ -1,6 +1,6 @@
 <template>
   <div class="category">
-    <div class="fixture-list">
+    <div class="fixture-list" v-if="isTestCase">
       <fixture />
     </div>
     <div class="variable-list" v-if="isSuite">
@@ -24,6 +24,9 @@ export default {
     isSuite() {
       return this.$store.state.tree.detailType === NODE.DetailType.SUITE
     },
+    isTestCase() {
+      return this.$store.state.tree.nodeCategory === NODE.NodeCategory.TESTCASE
+    }
   }
 }
 </script>

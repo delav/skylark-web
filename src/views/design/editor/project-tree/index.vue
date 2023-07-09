@@ -110,17 +110,28 @@
         </el-dialog>
       </div>
       <div class="env-dialog">
-        <el-dialog
-          width="75%"
+        <el-drawer
           v-model="showEnvDialog"
           title="环境变量配置"
-          :close-on-click-modal="false"
+          direction="ltr"
+          size="80%"
           destroy-on-close
         >
           <div class="env-content">
             <variable-conf />
           </div>
-        </el-dialog>
+        </el-drawer>
+<!--        <el-dialog-->
+<!--          width="75%"-->
+<!--          v-model="showEnvDialog"-->
+<!--          title="环境变量配置"-->
+<!--          :close-on-click-modal="false"-->
+<!--          destroy-on-close-->
+<!--        >-->
+<!--          <div class="env-content">-->
+<!--            <variable-conf />-->
+<!--          </div>-->
+<!--        </el-dialog>-->
       </div>
       <div class="new-dialog">
         <el-dialog
@@ -398,13 +409,13 @@ export default {
           })
         } else {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {
-            this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
+            this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
           } else if (treeNode.desc === NODE.NodeDesc.DIR) {
             this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
           }
           this.$store.commit('entity/RELOAD_STATE')
         }
-      } else if (treeNode.type === NODE.NodeCategory.RESOURCE) {
+      } else if (treeNode.type === NODE.NodeCategory.VARIABLE) {
         if (treeNode.desc === NODE.NodeDesc.SUITE) {
           this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
             this.changeNodeStore(treeNode, NODE.DetailType.CONST)
@@ -894,6 +905,10 @@ $toolHeight: 40px;
           font-size: 25px;
           color: $foldIconColor;
           cursor: pointer;
+          font-weight: bold;
+          :hover {
+            color: $foldIconHoverColor;
+          }
         }
       }
     }

@@ -2,7 +2,7 @@ import request from "@/http/request";
 
 export function fetchCaseNode(suiteId) {
   return request({
-    url: '/test-case',
+    url: '/test_case',
     method: 'get',
     params: { suite: suiteId }
   })
@@ -10,7 +10,7 @@ export function fetchCaseNode(suiteId) {
 
 export function createCase(data) {
   return request({
-    url: '/test-case',
+    url: '/test_case',
     method: 'post',
     data: data
   })
@@ -18,7 +18,7 @@ export function createCase(data) {
 
 export function updateCase(caseId, data) {
   return request({
-    url: `/test-case/${caseId}`,
+    url: `/test_case/${caseId}`,
     method: 'patch',
     data: data
   })
@@ -26,14 +26,14 @@ export function updateCase(caseId, data) {
 
 export function deleteCase(caseId) {
   return request({
-    url: `/test-case/${caseId}`,
+    url: `/test_case/${caseId}`,
     method: 'delete',
   })
 }
 
 export function duplicateCase(data) {
   return request({
-    url: '/test-case/duplicate',
+    url: '/test_case/duplicate',
     method: 'post',
     data: data
   })
