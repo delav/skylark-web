@@ -2,7 +2,7 @@ import request from "@/http/request";
 
 export function fetchFileContent(suiteId) {
   return request({
-    url: '/virtual_file',
+    url: '/file/virtual_file/get_content',
     method: 'get',
     params: { suite: suiteId }
   })
@@ -10,7 +10,7 @@ export function fetchFileContent(suiteId) {
 
 export function saveFileContent(data) {
   return request({
-    url: '/virtual_file',
+    url: '/file/virtual_file/save_content',
     method: 'post',
     data: data
   })
@@ -36,7 +36,7 @@ export function downloadFile(formData) {
 
 export function batchDeleteFile(data) {
   return request({
-    url: '/file/virtual_file',
+    url: '/file/virtual_file/batch_delete',
     method: 'post',
     data: data
   })

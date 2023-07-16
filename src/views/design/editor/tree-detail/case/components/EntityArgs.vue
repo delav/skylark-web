@@ -116,8 +116,9 @@
 
 <script>
 // import SvgIcon from "@/components/SvgIcon";
-import { deepCopy } from "@/utils/dcopy";
 import KEYWORD from "@/constans/keyword";
+import { deepCopy } from "@/utils/dcopy";
+import { getKeywordUid } from "@/utils/keyword";
 
 export default {
   name: 'EntityArgs',
@@ -178,42 +179,48 @@ export default {
       this.$store.commit('entity/SET_CASE_ENTITIES', entities)
       this.$store.commit('entity/SET_ENTITY_CHANGE', true)
     },
-    getRelatedKeywordAttrById(attr, keywordId) {
-      if (keywordId in this.keywordDict) {
-        if (attr in this.keywordDict[keywordId]) {
-          return this.keywordDict[keywordId][attr]
-        }
+    getKeywordAttr(attr, keywordObject) {
+      if (attr in keywordObject) {
+        return keywordObject[attr]
       }
       return ''
+    },
+    getRelatedKeyword(keywordId, keywordType) {
+      const keywordUid = getKeywordUid(keywordId, keywordType)
+      if (keywordUid in this.keywordDict) {
+        return this.keywordDict[keywordUid]
+      }
+      return {}
     },
     getEntityArgs(entity) {
       if (JSON.stringify(entity) === '{}') {
         Object.assign(this.$data, this.$options.data())
         return
       }
+      const keyword = this.getRelatedKeyword(entity['keyword_id'], entity['keyword_type'])
       this.entityArgs['meta'] = deepCopy(entity)
-      this.inputType = this.getRelatedKeywordAttrById('input_type', entity['keyword_id'])
-      this.outputType = this.getRelatedKeywordAttrById('output_type', entity['keyword_id'])
-      this.entityArgs['keywordDesc'] = this.getRelatedKeywordAttrById('desc',  entity['keyword_id'])
+      this.inputType = this.getKeywordAttr('input_type', keyword)
+      this.outputType = this.getKeywordAttr('output_type', keyword)
+      this.entityArgs['keywordDesc'] = this.getKeywordAttr('desc',  keyword)
       if (this.inputType === this.getArgType('none')) {
         // not input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = []
       } else if (this.inputType === this.getArgType('single')) {
         // single input args
-        this.entityArgs['inputNames'] = [this.getRelatedKeywordAttrById('input_params', entity['keyword_id'])]
+        this.entityArgs['inputNames'] = [this.getKeywordAttr('input_params', keyword)]
         this.entityArgs['inputValues'] = [entity['input_args']]
-        this.entityArgs['inputDesc'] = [this.getRelatedKeywordAttrById('input_desc', entity['keyword_id'])]
+        this.entityArgs['inputDesc'] = [this.getKeywordAttr('input_desc', keyword)]
       } else if (this.inputType === this.getArgType('multi')) {
         // multi input args
-        this.entityArgs['inputNames'] = this.getRelatedKeywordAttrById('input_params', entity['keyword_id']).split(this.keywordSplitSep)
+        this.entityArgs['inputNames'] = this.getKeywordAttr('input_params', keyword).split(this.keywordSplitSep)
         let values = entity['input_args'].split(this.entitySplitSep)
         const diffValue = this.entityArgs['inputNames'].length - values.length
         if (diffValue > 0) {
           values = values.concat(Array(diffValue))
         }
         this.entityArgs['inputValues'] = values
-        let descList = this.getRelatedKeywordAttrById('input_desc', entity['keyword_id']).split(this.keywordSplitSep)
+        let descList = this.getKeywordAttr('input_desc', keyword).split(this.keywordSplitSep)
         const diffDesc = this.entityArgs['inputNames'].length - descList.length
         if (diffDesc > 0) {
           descList = descList.concat(Array(diffDesc))
@@ -234,7 +241,7 @@ export default {
       } else if (this.outputType === this.getArgType('single')) {
         this.entityArgs['outputNames'] = ['Result']
         this.entityArgs['outputValues'] = [entity['output_args']]
-        this.entityArgs['outputDesc'] = [this.getRelatedKeywordAttrById('output_desc', entity['keyword_id'])]
+        this.entityArgs['outputDesc'] = [this.getKeywordAttr('output_desc', keyword)]
       }
     },
     addInputArg() {

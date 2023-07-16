@@ -4,7 +4,7 @@
       <div class="item-image">
         <el-image
           style="width: 40px;height: 40px"
-          :src="getKeywordAttrByEntityId('image', entityData['keyword_id'])"
+          :src="getKeywordAttr('image', entityData['keyword_id'], entityData['keyword_type'])"
           fit="cover"
         />
       </div>
@@ -12,7 +12,7 @@
         <text-tooltip
           font-size="12px"
           ref-name="outName"
-          :content="getKeywordAttrByEntityId('ext_name', entityData['keyword_id'])"
+          :content="getKeywordAttr('ext_name', entityData['keyword_id'], entityData['keyword_type'])"
         />
       </div>
 <!--      <div class="item-out">-->
@@ -28,7 +28,7 @@
         popper-class="custom-tooltip"
         placement="top-start"
         effect="dark"
-        :content="getKeywordAttrByEntityId('desc', entityData['keyword_id'])"
+        :content="getKeywordAttr('desc', entityData['keyword_id'], entityData['keyword_type'])"
       >
         <el-icon size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
       </el-tooltip>
@@ -37,7 +37,8 @@
 </template>
 
 <script>
-import TextTooltip from '@/components/TextTooltip'
+import TextTooltip from "@/components/TextTooltip";
+import { getKeywordUid } from "@/utils/keyword";
 
 export default {
   name: 'EntityItem',
@@ -53,11 +54,14 @@ export default {
     },
   },
   methods: {
-    getKeywordAttrByEntityId(attr, kid) {
-      if (!(kid in this.keywordDict)) {
-        return ''
+    getKeywordAttr(attr, keywordId, keywordType) {
+      const keywordUid = getKeywordUid(keywordId, keywordType)
+      if (keywordUid in this.keywordDict) {
+        if (attr in this.keywordDict[keywordUid]) {
+          return this.keywordDict[keywordUid][attr]
+        }
       }
-      return this.keywordDict[kid][attr]
+      return ''
     },
     entityStyle(entityItem) {
       const selectedEntities = this.$store.state.entity.selectedEntities

@@ -289,7 +289,10 @@ export default {
     showLog() {
       if (this.reportPath === '') return
       const url = this.reportPath + '/log.html'
-      window.open(url, '_blank')
+      // window.open(url, '_blank')
+      this.$messageBox({
+        title: url.replace(/\//g,'\\\\')
+      })
     },
     saveEntity() {
       const postData = {

@@ -36,8 +36,31 @@ export default {
         if (!valid) {
           return
         }
+        const info = this.validateRules(this.changeFrom)
+        if (!info.pass) {
+          this.$message.warning(info.msg)
+          return
+        }
         this.$emit('commitDialogAction', this.changeFrom.name)
       })
+    },
+    validateRules(changeFrom) {
+      let result = {pass: true, msg: ''}
+      if ('suffix' in changeFrom.rules) {
+        const suffixList = changeFrom.rules.suffix
+        if (!Array.isArray(suffixList)) {
+          return result
+        }
+        if (suffixList.length === 0) {
+          return result
+        }
+        const nameSuffix = '.' + changeFrom.name.split('.').pop()
+        if (suffixList.indexOf(nameSuffix) === -1) {
+          result.pass = false
+          result.msg = `后缀名必须为【${suffixList}】`
+        }
+      }
+      return result
     }
   }
 }

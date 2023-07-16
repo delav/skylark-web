@@ -4,8 +4,7 @@ import { guid } from "@/utils/other";
 const getFileState = () => {
   return {
     fileContent: {},
-    syncFileFlag: false,
-    editMode: false
+    syncFileFlag: false
   }
 }
 
@@ -20,9 +19,6 @@ const mutations = {
   },
   SET_FILE_SYNC_FLAG: (state, flag) => {
     state.syncFileFlag = flag
-  },
-  SET_EDIT_MODE: (state, flag) => {
-    state.editMode = flag
   }
 }
 

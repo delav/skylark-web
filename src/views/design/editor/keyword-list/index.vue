@@ -21,7 +21,7 @@
       <div class="content" id="et-keyword">
         <el-collapse v-model="groupNames">
           <el-collapse-item
-            v-for="(group, index) in keywordArray"
+            v-for="(group, index) in keywordGroups"
             :name="group['name']"
             :key="index"
             :title="group['name']"
@@ -64,6 +64,7 @@ import axios from "axios";
 import KeywordItem from "@/views/design/editor/keyword-list/components/KeywordItem";
 import { getLibKeyword, getUserKeyword } from "@/api/keyword";
 import { guid } from "@/utils/other";
+import { getKeywordUid } from "@/utils/keyword";
 
 export default {
   name: 'KeywordList',
@@ -73,7 +74,7 @@ export default {
   data() {
     return {
       splitSep: '#@#',
-      keywordArray: [],
+      keywordGroups: [],
       dragSetting: {
         name: 'kws',
         put: false,
@@ -81,7 +82,7 @@ export default {
       },
       groupNames: [],
       searchInput: '',
-      keywordArrayCache: ''
+      keywordGroupsCache: ''
     }
   },
   computed: {
@@ -94,8 +95,7 @@ export default {
       handler(value) {
         if (value === '') return
         this.getProjectKeywords()
-      },
-      immediate: true
+      }
     },
     '$store.state.keyword.updateUserKeyword': {
       handler() {
@@ -108,70 +108,62 @@ export default {
       }
     }
   },
-  created() {
-    this.getLibKeywordList()
-  },
   methods: {
-    getLibKeywordList() {
-      getLibKeyword({}).then(response => {
-        this.keywordArray = response.data
-        this.keywordArrayCache = JSON.stringify(this.keywordArray)
-        let keywordDict = {}
-        for (let i = 0; i < this.keywordArray.length; i++) {
-          const groupKeywordList = this.keywordArray[i]['keywords']
-          for (let j = 0; j < groupKeywordList.length; j++) {
-            const keywordItem = groupKeywordList[j]
-            keywordDict[keywordItem.id] = keywordItem
-          }
-        }
-        this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
-      })
-    },
     getProjectKeywords() {
       const projectId = this.$store.state.tree.projectId
-      const params = {base: false}
-      axios.all([getLibKeyword(params), getUserKeyword(projectId)]).then(
+      axios.all([getLibKeyword({'project_id': projectId}), getUserKeyword(projectId)]).then(
         axios.spread((r1, r2) => {
-          const libProjectKeywords = r1.data
-          const userProjectKeywords = r2.data
-          const newGroupList = libProjectKeywords.concat(userProjectKeywords)
-          this.updateKeywordList(newGroupList)
+          this.keywordGroups = r1.data.concat(r2.data)
+          this.keywordGroupsCache = JSON.stringify(this.keywordGroups)
+          let keywordDict = {}
+          for (let i = 0; i < this.keywordGroups.length; i++) {
+            const keywords = this.keywordGroups[i]['keywords']
+            for (let j = 0; j < keywords.length; j++) {
+              const keywordItem = keywords[j]
+              const keywordUid = getKeywordUid(keywordItem.id, keywordItem.keyword_type)
+              keywordDict[keywordUid] = keywordItem
+            }
+          }
+          this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
         })
       )
     },
     getGroupUserKeywords () {
       const projectId = this.$store.state.tree.projectId
       getUserKeyword(projectId).then(response => {
-        const newGroupList = response.data
-        this.updateKeywordList(newGroupList)
-      })
-    },
-    updateKeywordList(addGroupList) {
-      const keywordDict = this.$store.state.keyword.keywordObjects
-      for (let i = 0; i < addGroupList.length; i++) {
-        const groupKeywordList = addGroupList[i]['keywords']
-        for (let j = 0; j < groupKeywordList.length; j++) {
-          const keywordItem = groupKeywordList[j]
-          keywordDict[keywordItem.id] = keywordItem
+        const updateGroupList = response.data
+        const updateGroupMap = {}
+        // update keywordObject
+        const keywordDict = this.$store.state.keyword.keywordObjects
+        for (let i = 0; i < updateGroupList.length; i++) {
+          updateGroupMap[updateGroupList[i].id] = updateGroupList[i]
+          const groupKeywordList = updateGroupList[i]['keywords']
+          for (let j = 0; j < groupKeywordList.length; j++) {
+            const keywordItem = groupKeywordList[j]
+            const keywordUid = getKeywordUid(keywordItem.id, keywordItem.keyword_type)
+            keywordDict[keywordUid] = keywordItem
+          }
         }
-      }
-      this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
-      this.keywordArray.push(...addGroupList)
-      this.keywordArrayCache = JSON.stringify(this.keywordArray)
+        // update keywordGroups
+        for (let i = 0; i < this.keywordGroups.length; i++) {
+          const groupId = this.keywordGroups[i].id
+          if (groupId in updateGroupMap) {
+            this.keywordGroups.splice(i, 1, updateGroupMap[groupId])
+          }
+        }
+        this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
+        this.keywordGroupsCache = JSON.stringify(this.keywordGroups)
+      })
     },
     cloneKeyword(original) {
       // keyword item change to entity
       return {
         'keyword_id': original['id'],
         'keyword_type': original['keyword_type'],
-        'input_args': original['input_params'],
-        'output_args': original['output_params'],
+        'input_args': '',
+        'output_args': '',
         'uuid': guid()
       }
-    },
-    moveKeyword(event) {
-      console.log(event)
-      // return e.to && e.to.id === 'et-case'
     },
     hideOrShowKeywordArea(isHide) {
       this.$store.commit('keyword/SET_HIDE_KEYWORD', isHide)
@@ -194,9 +186,9 @@ export default {
     },
     filterKeyword () {
       const expandGroups = []
-      const keywordArr = JSON.parse(this.keywordArrayCache)
+      const keywordArr = JSON.parse(this.keywordGroupsCache)
       if (this.searchInput.trim() === '') {
-        this.keywordArray = keywordArr
+        this.keywordGroups = keywordArr
         this.groupNames = expandGroups
         return
       }
@@ -214,7 +206,7 @@ export default {
           expandGroups.push(keywordArr[i]['name'])
         }
       }
-      this.keywordArray = keywordArr
+      this.keywordGroups = keywordArr
       this.groupNames = expandGroups
     }
   }

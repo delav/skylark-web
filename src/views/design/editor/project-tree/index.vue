@@ -479,12 +479,16 @@ export default {
       if ('name' in dialogInfo) {
         nameText = dialogInfo.name
       }
+      let rules = {}
+      if ('rules' in dialogInfo) {
+        rules = dialogInfo.rules
+      }
       if (nodeInfo.action_type === NODE.ActionType.UPLOAD) {
         this.showDialogType = 1
       }
       this.nodeParams = nodeInfo
       this.nodeDialogTitle = dialogInfo.title
-      this.nodeDialogForm = {label: dialogInfo.label, name: nameText}
+      this.nodeDialogForm = {label: dialogInfo.label, name: nameText, rules: rules}
       this.showNodeDialog = true
     },
     closeNodeDialog() {

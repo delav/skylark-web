@@ -1,6 +1,7 @@
 const KeywordType = {
   LIB: 0,
-  USER: 1
+  USER: 1,
+  PRO: 2
 }
 
 const KeywordArgType = {
