@@ -1,7 +1,7 @@
 <template>
   <div class="plan-detail">
     <div class="head">
-      <back-header title="计划详情" />
+      计划详情
     </div>
     <div class="body">
       {{formData}}
@@ -10,13 +10,9 @@
 </template>
 
 <script>
-import BackHeader from "@/views/build/components/BackHeader";
 
 export default {
   name: 'PlanDetail',
-  components: {
-    BackHeader
-  },
   data() {
     return {
       formData: {}

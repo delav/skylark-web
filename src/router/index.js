@@ -5,6 +5,7 @@ import Layout from "@/layout";
 export const routes = [
   {
     path: '/',
+    name: 'Home',
     component: Layout,
     redirect: '/home',
     meta: { navbar: true, title: i18n.global.t('Navbar._home') },
@@ -13,12 +14,40 @@ export const routes = [
         path: 'home',
         name: 'Home',
         component: () => import('@/views/home/index'),
-        meta: { title: 'Home', icon: 'home' }
+        meta: { }
       }
     ]
   },
   {
+    path: '/setting',
+    name: 'Setting',
+    component: Layout,
+    meta: { navbar: true, title: i18n.global.t('Navbar._setting') },
+    children: [
+      {
+        path: '',
+        redirect: '/setting/variable',
+        component: () => import('@/views/setting/index'),
+        children: [
+          {
+            path: '/setting/variable',
+            name: 'Variable',
+            component: () => import('@/views/setting/components/Variable'),
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'project-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
+          },
+          {
+            path: '/setting/notify',
+            name: 'Notify',
+            component: () => import('@/views/setting/components/Notify'),
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'project-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notify' }
+          }
+        ]
+      },
+    ]
+  },
+  {
     path: '/design',
+    name: 'Design',
     component: Layout,
     meta: { navbar: true, title: i18n.global.t('Navbar._design') },
     children: [
@@ -26,33 +55,72 @@ export const routes = [
         path: 'index',
         name: 'Design',
         component: () => import('@/views/design/index'),
-        meta: { title: 'Design', icon: 'design' }
+        meta: { }
       }
     ]
   },
   {
     path: '/build',
+    name: 'Build',
     component: Layout,
     meta: { navbar: true, title: i18n.global.t('Navbar._build') },
     children: [
       {
-        path: 'index',
-        name: 'Plan',
+        path: '',
+        redirect: '/build/plan/list',
         component: () => import('@/views/build/index'),
-        meta: { title: 'Plan', icon: 'build' }
-      }
+        children: [
+          {
+            path: '/build/plan/list',
+            name: 'PlanList',
+            component: () => import('@/views/build/plan/PlanList'),
+            meta: { navbar: true, title: i18n.global.t('BuildNavBar._plan'), icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/list' }
+          },
+          {
+            path: '/build/record/list',
+            name: 'RecordList',
+            component: () => import('@/views/build/record/RecordList'),
+            meta: { navbar: true, title: i18n.global.t('BuildNavBar._record'), icon: 'record', activeMenu: '/build', secondActiveMenu: '/build/record/list' }
+          },
+          {
+            path: '/build/plan/create',
+            name: 'PlanCreate',
+            component: () => import('@/views/build/plan/PlanCreate'),
+            meta: { navbar: true, title: i18n.global.t('BuildNavBar._quick'), icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/create' }
+          },
+          {
+            path: '/build/plan/detail/:id',
+            name: 'PlanDetail',
+            component: () => import('@/views/build/plan/PlanDetail'),
+            meta: { activeMenu: '/build', secondActiveMenu: '/build/plan/detail' }
+          },
+          {
+            path: '/build/plan/edit/id',
+            name: 'PlanEdit',
+            component: () => import('@/views/build/plan/PlanEdit'),
+            meta: { activeMenu: '/build', secondActiveMenu: '/build/plan/edit' }
+          },
+          {
+            path: '/build/record/detail/:id',
+            name: 'RecordDetail',
+            component: () => import('@/views/build/record/RecordDetail'),
+            meta: { activeMenu: '/build', secondActiveMenu: '/build/record/detail' }
+          },
+        ]
+      },
     ]
   },
   {
-    path: '/analyze',
+    path: '/statistics',
+    name: 'Statistics',
     component: Layout,
-    meta: { navbar: true, title: i18n.global.t('Navbar._analyze') },
+    meta: { navbar: true, title: i18n.global.t('Navbar._statistics') },
     children: [
       {
         path: 'index',
-        name: 'Analyze',
-        component: () => import('@/views/analyze/index'),
-        meta: { title: 'Analyze', icon: 'analyze' }
+        name: 'Statistics',
+        component: () => import('@/views/statistics/index'),
+        meta: { }
       }
     ]
   },

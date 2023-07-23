@@ -1,7 +1,7 @@
 <template>
   <div class="create-plan">
     <div class="head">
-      <back-header title="更新计划" />
+      更新计划
     </div>
     <div class="body">
       <plan-form
@@ -14,14 +14,12 @@
 
 <script>
 import PAGE from "@/constans/build";
-import BackHeader from "@/views/build/components/BackHeader";
 import PlanForm from "@/views/build/plan/components/PlanForm";
 import { updatePlan } from "@/api/plan";
 
 export default {
   name: 'PlanNew',
   components: {
-    BackHeader,
     PlanForm,
   },
   methods: {

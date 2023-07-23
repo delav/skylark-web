@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <router-view :key="key" v-slot="{ Component }" class="app-main">
+    <router-view v-slot="{ Component }" class="app-main">
       <transition name="fade-transform" mode="out-in">
         <keep-alive>
           <component :is="Component" />

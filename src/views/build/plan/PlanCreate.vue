@@ -1,7 +1,7 @@
 <template>
-  <div class="create-plan">
+  <div class="plan-create">
     <div class="head">
-      <back-header title="创建计划" />
+      创建计划
     </div>
     <div class="body">
       <plan-form
@@ -14,14 +14,12 @@
 
 <script>
 import PAGE from "@/constans/build";
-import BackHeader from "@/views/build/components/BackHeader";
 import PlanForm from "@/views/build/plan/components/PlanForm";
 import { createPlan } from "@/api/plan";
 
 export default {
-  name: 'PlanNew',
+  name: 'PlanCreate',
   components: {
-    BackHeader,
     PlanForm,
   },
   methods: {
@@ -37,7 +35,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.create-plan {
+.plan-create {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
   padding: 5px;

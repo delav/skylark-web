@@ -1,9 +1,10 @@
 <template>
-  <div>analyze</div>
+  <div>variable</div>
 </template>
 
 <script>
 export default {
+  name: 'Variable'
 }
 </script>
 

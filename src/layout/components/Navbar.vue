@@ -82,7 +82,12 @@ export default {
       return navbarRoutes
     },
     activeMenu() {
-      return this.$route.path
+      const route = this.$route
+      const { meta, path } = route
+      if (meta['activeMenu']) {
+        return meta['activeMenu']
+      }
+      return path
     },
     userName() {
       return this.$store.getters.name
@@ -97,13 +102,12 @@ export default {
     },
     hasOneShowingChild(children = []) {
       const showingChildren = children.filter(item => {
-        return !item.hidden;
+        return !item.hidden
       })
-
       if (showingChildren.length === 1) {
         return true
       }
-      return showingChildren.length === 0;
+      return showingChildren.length === 0
     },
     resolvePath(route) {
       if (isExternal(route.path)) {

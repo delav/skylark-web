@@ -45,12 +45,12 @@
         </div>
       </div>
       <div class="tool">
-      <span class="setting-button">
-        <el-button type="info" size="small" @click="envSetting"><el-icon><Setting /></el-icon>变量配置</el-button>
-      </span>
-      <span class="setting-button">
-        <el-button type="info" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
-      </span>
+        <span class="setting-button">
+          <el-button type="info" size="small" @click="envSetting"><el-icon><Setting /></el-icon>变量配置</el-button>
+        </span>
+        <span class="setting-button">
+          <el-button type="info" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
+        </span>
       </div>
     </div>
     <div v-else class="project-hide">
@@ -66,14 +66,6 @@
       </div>
       <div class="bottom-tool">
         <div class="bottom-flex">
-          <el-tooltip
-            popper-class="custom-tooltip"
-            effect="dark"
-            content="变量配置"
-            placement="right"
-          >
-            <el-icon class="tool-icon" @click="envSetting"><Setting /></el-icon>
-          </el-tooltip>
           <el-tooltip
             popper-class="custom-tooltip"
             effect="dark"
@@ -882,8 +874,11 @@ $toolHeight: 40px;
     .tool {
       height: $toolHeight;
       line-height: $toolHeight;
+      display: flex;
+      align-items: center;
+      justify-content: left;
       .setting-button {
-        padding-left: 5px;
+        padding-left: 10px;
         .svg-icon {
           width: 14px;
           height: 14px;
