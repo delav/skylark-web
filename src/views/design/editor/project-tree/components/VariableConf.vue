@@ -1,17 +1,10 @@
 <template>
   <div class="variable-conf">
     <div class="env-head">
-      <el-radio-group v-model="selectEvn" size="small" @change="changeVariableList">
-        <el-radio-button v-for="item in envList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio-button>
-      </el-radio-group>
-      <div class="copy-env">
-        Copy from
-        <el-select style="width: 120px" v-model="selectCopyEnv" placeholder="Select" size="small">
-          <template v-for="item in envList">
-            <el-option :key="item.id" v-if="item.id !==selectEvn" :label="item['name']" :value="item.id"/>
-          </template>
-        </el-select>
-        <el-button style="margin-left: 5px" size="small" type="danger" @click="copyVariables">确定</el-button>
+      <div class="env-radio">
+        <el-radio-group v-model="selectEvn" size="small" @change="changeVariableList">
+          <el-radio-button v-for="item in envList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio-button>
+        </el-radio-group>
       </div>
       <div class="new-button">
         <el-button size="small" type="primary" @click="createVariableAction">新建变量</el-button>
@@ -165,10 +158,24 @@
 
 <script>
 import NODE from "@/constans/node";
-import { fetchVariables, copyVariableByEnv, updateVariable, deleteVariable, createVariable } from "@/api/variable";
+import { fetchVariables, updateVariable, deleteVariable, createVariable } from "@/api/variable";
 
 export default {
   name: 'VariableConf',
+  computed: {
+    projectId() {
+      return this.$store.state.tree.projectId
+    },
+    envList() {
+      return this.$store.state.base.envList
+    },
+    regionList() {
+      return this.$store.state.base.regionList
+    },
+    showRegion() {
+      return this.$store.state.base.showRegion
+    }
+  },
   data() {
     const validateName = (rule, value, callback) => {
       const pattern = /\$\{.*\}/
@@ -183,7 +190,6 @@ export default {
       commonVariables: [],
       regionVariables: [],
       selectEvn: '',
-      selectCopyEnv: '',
       selectRegion: '',
       commonKey: 'common',
       showCommon: false,
@@ -207,20 +213,6 @@ export default {
       },
     }
   },
-  computed: {
-    projectId() {
-      return this.$store.state.tree.projectId
-    },
-    envList() {
-      return this.$store.state.base.envList
-    },
-    regionList() {
-      return this.$store.state.base.regionList
-    },
-    showRegion() {
-      return this.$store.state.base.showRegion
-    }
-  },
   created() {
     const regions = this.$store.state.base.regionList
     this.containNullRegionList.push(...regions)
@@ -240,7 +232,6 @@ export default {
       this.changeVariableList(this.selectEvn)
     },
     changeVariableList(envId) {
-      this.selectCopyEnv = ''
       if (this.projectId === '') return
       let variablesDict = {}
       fetchVariables(this.projectId, NODE.ModuleType.PROJECT, envId).then(response => {
@@ -277,34 +268,6 @@ export default {
     },
     changeRegionList(regionId) {
       this.regionVariables = this.envVariables[regionId]
-    },
-    copyVariables() {
-      const params = {
-        'module_id': this.projectId,
-        'module_type': NODE.ModuleType.PROJECT,
-        'from_env_id': this.selectCopyEnv,
-        'to_env_id': this.selectEvn,
-      }
-      copyVariableByEnv(params).then((response) => {
-        const resList = response.data
-        if (resList.length === 0) return
-        let variablesDict = {}
-        for (let i = 0; i < resList.length; i++) {
-          const regionId = resList[i]['region_id']
-          let regionKey = ''
-          if (!regionId) {
-            regionKey = this.commonKey
-          } else {
-            regionKey = resList[i]['region_id']
-          }
-          if (regionKey in variablesDict) {
-            variablesDict[regionKey].push(resList[i])
-          } else {
-            variablesDict[regionKey] = [resList[i]]
-          }
-          this.changeVariableList(this.selectEvn)
-        }
-      })
     },
     updateCacheVariables(envId, isCommon, index, data, action) {
       if (isCommon) {
@@ -432,12 +395,10 @@ export default {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    .copy-env {
-      flex: 5;
-      text-align: right;
+    .env-radio {
+      text-align: left;
     }
     .new-button {
-      flex: 1;
       text-align: right;
     }
   }

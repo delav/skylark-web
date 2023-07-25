@@ -32,13 +32,13 @@ export const routes = [
           {
             path: '/setting/variable',
             name: 'Variable',
-            component: () => import('@/views/setting/components/Variable'),
+            component: () => import('@/views/setting/variable/index'),
             meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'project-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
           },
           {
-            path: '/setting/notify',
+            path: '/setting/notice',
             name: 'Notify',
-            component: () => import('@/views/setting/components/Notify'),
+            component: () => import('@/views/setting/notice/index'),
             meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'project-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notify' }
           }
         ]

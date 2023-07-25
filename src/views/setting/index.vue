@@ -53,6 +53,9 @@ export default {
       return path
     }
   },
+  created() {
+    this.$store.dispatch('base/getBaseInfo')
+  },
   methods: {
     resolvePath(route) {
       return route.path
@@ -62,6 +65,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$navbarWidth: 200px;
 $menuItemHeight: 40px;
 $menuHeight: 125px;
 $planHeight: 260px;
@@ -71,7 +75,7 @@ $planHeight: 260px;
   height: 100%;
   display: flex;
   .setting-navbar {
-    width: 200px;
+    width: $navbarWidth;
     height: 100%;
     .el-menu--vertical>.el-menu-item {
       height: $menuItemHeight;
@@ -87,6 +91,12 @@ $planHeight: 260px;
     .icon-class {
       margin-right: 5px;
     }
+  }
+  .setting-body {
+    min-height: 600px;
+    min-width: 800px;
+    width: calc(100% - #{$navbarWidth});
+    overflow: auto;
   }
 }
 </style>
