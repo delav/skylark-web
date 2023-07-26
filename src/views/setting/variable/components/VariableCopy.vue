@@ -1,45 +1,69 @@
 <template>
   <div class="variable-copy">
     <div class="copy-header">
-      从
-      <el-select v-model="selectCopyFromEnv" @change="changeFromEnv" placeholder="Select">
-        <el-option
-          v-for="(item, index) in envList"
-          :key="index"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-select v-model="selectCopyFromEnv" @change="changeToEnv" placeholder="Select">
-        <el-option
-          v-for="(item, index) in envList"
-          :key="index"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      复制到
-      <el-select v-model="selectCopyToEnv" placeholder="Select">
-        <el-option
-          v-for="(item, index) in envList"
-          :key="index"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-select v-model="selectCopyFromEnv" @change="changeFromRegion" placeholder="Select">
-        <el-option
-          v-for="(item, index) in envList"
-          :key="index"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
+      <div class="from-header">
+        <span class="desc-text">从</span>
+        <el-select
+          style="width: 310px"
+          v-model="copyParams.from_env_id"
+          @change="changeFromEnv"
+          placeholder="Select"
+        >
+          <el-option
+            v-for="(item, index) in envList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <el-select
+          v-if="showRegion"
+          style="width: 310px;margin-left: 10px"
+          v-model="copyParams.from_region_id"
+          @change="changeFromRegion"
+          placeholder="Select"
+        >
+          <el-option
+            v-for="(item, index) in containNullRegionList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </div>
+      <div class="to-header">
+        <span class="desc-text">复制到</span>
+        <el-select
+          style="width: 310px"
+          v-model="copyParams.to_env_id"
+          placeholder="Select"
+        >
+          <el-option
+            v-for="(item, index) in envList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <el-select
+          style="width: 310px;margin-left: 10px"
+          v-if="showRegion"
+          v-model="copyParams.to_region_id"
+          placeholder="Select"
+        >
+          <el-option
+            v-for="(item, index) in containNullRegionList"
+            :key="index"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </div>
     </div>
-    <div class="copy-content" v-if="selectCopyFromEnv">
+    <div class="copy-content">
       <p class="tip-desc">*勾选需要复制的变量</p>
       <el-table
-        :data="copyVariableList"
+        :data="envVariableList"
         border
         style="width: 100%;"
         @selection-change="selectChangeVariable"
@@ -62,9 +86,9 @@
         </el-table-column>
       </el-table>
     </div>
-    <div>
-      <el-button @click="cancelAction">取消</el-button>
-      <el-button type="primary" @click="confirmAction">确定</el-button>
+    <div class="action-footer">
+      <el-button @click="cancelCopy">取消</el-button>
+      <el-button type="primary" @click="confirmCopy">确定</el-button>
     </div>
   </div>
 </template>
@@ -87,34 +111,45 @@ export default {
     },
   },
   props: {
-    projectId: Number
+    moduleInfo: Object
   },
   data() {
     return {
+      containNullRegionList: [
+        { id: 0, name: 'None', ext_name: 'None' }
+      ],
       copyParams: {
         'from_env_id': '',
         'to_env_id': '',
         'from_region_id': '',
         'to_region_id': ''
       },
-      selectCopyFromEnv: '',
-      selectCopyToEnv: '',
-      copyVariableList: [],
+      envVariableList: [],
+      envVariableCache: '',
       copySelectVariable: []
     }
   },
+  created() {
+    const regions = this.$store.state.base.regionList
+    this.containNullRegionList.push(...regions)
+  },
   methods: {
     changeFromEnv(envId) {
-      fetchVariables(this.projectId, NODE.ModuleType.PROJECT, envId).then(response => {
-        this.copyVariableList = response.data
+      fetchVariables(this.moduleInfo.id, this.moduleInfo.type, envId).then(response => {
+        this.envVariableList = response.data
+        this.envVariableCache = JSON.stringify(this.envVariableList)
       })
     },
-    changeToEnv() {
-    },
     changeFromRegion(regionId) {
-      console.log(regionId)
+      const rawEnvVariableList = JSON.parse(this.envVariableCache)
+      if (regionId === 0) {
+        this.envVariableList = rawEnvVariableList
+        return
+      }
+      this.envVariableList = rawEnvVariableList.filter(
+        (item) => {return item['region_id'] === regionId}
+      )
     },
-    changeToRegion() {},
     getRegionName(regionId) {
       const regionMap = this.$store.state.base.regionMap
       if (!regionId) {
@@ -128,11 +163,10 @@ export default {
     selectAllVariable() {
       this.copySelectVariable = []
     },
-    cancelAction() {
+    cancelCopy() {
       this.$emit('cancelCopyAction')
     },
-    confirmAction() {},
-    copyVariables() {
+    confirmCopy() {
       const params = {
         'module_id': this.projectId,
         'module_type': NODE.ModuleType.PROJECT,
@@ -171,6 +205,39 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.variable-copy {
+  width: 100%;
+  height: 100%;
+  .copy-header {
+    .from-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .to-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .desc-text {
+      margin-left:auto;
+      padding-right: 20px;
+    }
+  }
+  .copy-content {
+    margin-top: 15px;
+    margin-bottom: 18px;
+    max-height: 600px;
+    .tip-desc {
+      color: #f56c6c;
+      margin: 3px 0;
+      font-size: 13px;
+    }
+  }
+  .action-footer {
+    display: flex;
+    justify-content: right;
+  }
+}
 </style>

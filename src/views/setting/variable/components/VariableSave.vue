@@ -4,7 +4,11 @@
       <span class="env-label"><span style="color:#f56c6c;">* </span>环境</span>
       <div class="env-body">
         <div class="env-select">
-          <el-select v-model="postVariableForm.env_id" style="width: 100%">
+          <el-select
+            :disabled="postVariableForm.id!==undefined"
+            v-model="postVariableForm.env_id"
+            style="width: 310px"
+          >
             <el-option
               v-for="(item, index) in envList"
               :key="index"
@@ -14,7 +18,11 @@
           </el-select>
         </div>
         <div class="region-select" v-show="showRegion">
-          <el-select v-model="postVariableForm.region_id" style="width: 100%">
+          <el-select
+            :disabled="postVariableForm.id!==undefined"
+            v-model="postVariableForm.region_id"
+            style="width: 310px"
+          >
             <el-option
               v-for="(item, index) in containNullRegionList"
               :key="index"
@@ -45,13 +53,15 @@
       </el-form>
     </div>
     <div class="action-footer">
-      <el-button @click="cancelVariableAction">取消</el-button>
-      <el-button type="primary" @click="createVariableAction">确定</el-button>
+      <el-button @click="createSave">取消</el-button>
+      <el-button type="primary" @click="confirmSave">确定</el-button>
     </div>
   </div>
 </template>
 
 <script>
+
+import {createVariable, updateVariable} from "@/api/variable";
 
 export default {
   name: 'VariableSave',
@@ -70,20 +80,7 @@ export default {
     },
   },
   props: {
-    variableForm: {
-      type: Object,
-      default() {
-        return {
-          module_id: '',
-          module_type: '',
-          name: '',
-          value: '',
-          remark: '',
-          env_id: '',
-          region_id: '',
-        }
-      }
-    }
+    variableForm: Object
   },
   data() {
     const validateName = (rule, value, callback) => {
@@ -114,15 +111,26 @@ export default {
     this.containNullRegionList.push(...regions)
   },
   methods: {
-    cancelVariableAction() {
+    createSave() {
       this.$emit('cancelAction')
     },
-    createVariableAction() {
+    confirmSave() {
       this.$refs['ruleForm'].validate((valid) => {
         if (!valid) {
           return
         }
-        this.$emit('commitAction', this.postVariableForm)
+        if (this.postVariableForm['id']) {
+          updateVariable(this.postVariableForm['id'], this.postVariableForm).then(() => {
+            this.$emit('commitAction')
+          })
+        } else {
+          if (this.postVariableForm['region_id'] === 0) {
+            delete this.postVariableForm['region_id']
+          }
+          createVariable(this.postVariableForm).then(() => {
+            this.$emit('commitAction')
+          })
+        }
       })
     }
   }
@@ -148,7 +156,7 @@ export default {
       .env-select {
       }
       .region-select {
-        margin-left: 15px;
+        margin-left: 10px;
       }
     }
   }

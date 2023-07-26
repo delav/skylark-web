@@ -136,7 +136,11 @@
         :close-on-click-modal="false"
         :destroy-on-close="true"
       >
-        <variable-save @commitAction="commitSaveVariable" @cancelAction="cancelSaveVariable" />
+        <variable-save
+          :variable-form="variableForm"
+          @commitAction="commitSaveVariable"
+          @cancelAction="cancelSaveVariable"
+        />
       </el-dialog>
     </div>
     <div class="copy-dialog">
@@ -147,7 +151,11 @@
         :close-on-click-modal="false"
         :destroy-on-close="true"
       >
-        <variable-copy @commitAction="commitCopyVariable" @cancelAction="cancelCopyVariable" />
+        <variable-copy
+          :module-info="moduleInfo"
+          @commitAction="commitCopyVariable"
+          @cancelAction="cancelCopyVariable"
+        />
       </el-dialog>
     </div>
   </div>
@@ -157,7 +165,7 @@
 import VariableCopy from "@/views/setting/variable/components/VariableCopy";
 import VariableSave from "@/views/setting/variable/components/VariableSave";
 import NODE from "@/constans/node";
-import { fetchVariables, deleteVariable, updateVariable, createVariable } from "@/api/variable";
+import { fetchVariables, deleteVariable } from "@/api/variable";
 
 export default {
   name: 'Variable',
@@ -193,7 +201,8 @@ export default {
       saveDialogTitle: '',
       showCopyDialog: false,
       searchKey: '',
-      variableForm: {}
+      variableForm: {},
+      moduleInfo: {},
     }
   },
   methods: {
@@ -250,6 +259,10 @@ export default {
         this.$message.warning('请先选择项目')
         return
       }
+      this.moduleInfo = {
+        id: this.selectProjectId,
+        type: NODE.ModuleType.PROJECT
+      }
       this.showCopyDialog = true
     },
     createVariableAction() {
@@ -277,19 +290,9 @@ export default {
       this.saveDialogTitle = '更新变量'
       this.showSaveDialog = true
     },
-    commitSaveVariable(newVariableForm) {
-      if (newVariableForm['region_id'] === 0) {
-        delete newVariableForm['region_id']
-      }
-      if (newVariableForm['id']) {
-        updateVariable(newVariableForm['id'], newVariableForm).then(() => {
-          this.changeVariableList(this.selectEvnId)
-        })
-      } else {
-        createVariable(newVariableForm).then(() => {
-          this.changeVariableList(this.selectEvnId)
-        })
-      }
+    commitSaveVariable() {
+      this.showSaveDialog = false
+      this.changeVariableList(this.selectEvnId)
     },
     cancelSaveVariable() {
       this.showSaveDialog = false
@@ -329,6 +332,9 @@ export default {
   .variable-body {
     .card-header {
       display: flex;
+      align-content: flex-start;
+      .env-radio {
+      }
       .variable-search {
         margin-left: auto;
         width: 300px;
@@ -337,17 +343,7 @@ export default {
       .operate-button {
         margin-left: auto;
         text-align: right;
-      }
-    }
-  }
-  .copy-dialog {
-    .copy-content {
-      margin-top: 15px;
-      max-height: 600px;
-      .tip-desc {
-        color: #f56c6c;
-        margin: 3px 0;
-        font-size: 13px;
+        min-width: 200px;
       }
     }
   }
