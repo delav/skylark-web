@@ -1,13 +1,19 @@
 <template>
   <div class="plan-create">
-    <div class="head">
-      创建计划
-    </div>
-    <div class="body">
-      <plan-form
-        @confirmAction="createBuildPlan"
-        @confirmAndBuildAction="createAndBuildPlan"
-      />
+    <div class="content">
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header">
+            <span>创建计划</span>
+          </div>
+        </template>
+        <div class="card-body">
+          <plan-form
+            @confirmAction="createBuildPlan"
+            @confirmAndBuildAction="createAndBuildPlan"
+          />
+        </div>
+      </el-card>
     </div>
   </div>
 </template>
@@ -36,9 +42,16 @@ export default {
 
 <style lang="scss" scoped>
 .plan-create {
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
+  width: 100%;
+  height: 100%;
   padding: 5px;
-  max-width: 800px;
+  .content {
+    height: 100%;
+    min-height: 600px;
+    min-width: 500px;
+    .box-card {
+      height: 100%;
+    }
+  }
 }
 </style>

@@ -28,7 +28,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="执行地区" prop="regions">
+        <el-form-item label="执行地区" prop="regions" v-if="showRegion">
           <el-select
             style="width: 100%"
             v-model="formData.region_list"

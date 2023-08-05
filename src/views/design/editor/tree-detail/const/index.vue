@@ -6,7 +6,7 @@
           <span>环境：</span>
           <el-select class="head-selector" v-model="fileEnv" placeholder="env">
             <el-option
-              v-for="(item, index) in containNullEnvList"
+              v-for="(item, index) in allEnvList"
               :key="index"
               :label="item['name']"
               :value="item.id"
@@ -17,7 +17,7 @@
           <span>地区：</span>
           <el-select class="head-selector" v-model="fileRegion" placeholder="region">
             <el-option
-              v-for="(item, index) in containNullRegionList"
+              v-for="(item, index) in allRegionList"
               :key="index"
               :label="item['name']"
               :value="item.id"
@@ -45,12 +45,6 @@ export default {
   name: 'Const',
   data() {
     return {
-      containNullEnvList: [
-        { id: 0, name: 'ALL' }
-      ],
-      containNullRegionList: [
-        { id: 0, name: 'ALL' }
-      ],
       fileEnv: 0,
       fileRegion: 0,
       fileText: '',
@@ -58,6 +52,12 @@ export default {
     }
   },
   computed: {
+    allEnvList() {
+      return this.$store.state.base.containAllEnvList
+    },
+    allRegionList() {
+      return this.$store.state.base.containAllRegionList
+    },
     showRegion() {
       return this.$store.state.base.showRegion
     }
@@ -73,12 +73,6 @@ export default {
       },
       immediate: true
     }
-  },
-  created() {
-    const envs = this.$store.state.base.envList
-    this.containNullEnvList.push(...envs)
-    const regions = this.$store.state.base.regionList
-    this.containNullRegionList.push(...regions)
   },
   methods: {
     editFileContent() {

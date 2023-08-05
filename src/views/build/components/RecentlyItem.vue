@@ -4,10 +4,11 @@
       <text-tooltip
         class="title-text"
         ref-name="itemText"
+        font-size="14px"
         :content="itemData['desc'].toString()"
         @click="getRecentlyPlanDetail"
       />
-      <p class="time-tip">构建时间：{{itemData['create_at']}}</p>
+      <p class="time-tip">构建开始时间：{{itemData['create_at']}}</p>
     </div>
     <div class="item-tip">
       <span class="running-text" v-if="itemData['status'] === 0">Running</span>
@@ -41,8 +42,8 @@ $itemHeight: 48px;
   height: $itemHeight;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #000;
-  padding-left: 5px;
+  border-bottom: 1px solid #dcdfe6;
+  padding-left: 10px;
   .item-title {
     width: calc(100% - 60px);
     .title-text {
@@ -61,9 +62,9 @@ $itemHeight: 48px;
   }
   .item-tip {
     width: 50px;
-    margin-right: 5px;
+    margin-right: 10px;
     line-height: $itemHeight;
-    font-size: 13px;
+    font-size: 12px;
     .running-text {
       color: #409eff;
     }

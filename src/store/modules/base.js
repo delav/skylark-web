@@ -14,6 +14,9 @@ const getBaseState = () => {
     envMap: {},
     regionMap: {},
     showRegion: false,
+    containAllProjectList: [],
+    containAllEnvList: [],
+    containAllRegionList: [],
   }
 }
 
@@ -46,6 +49,15 @@ const mutations = {
   },
   SET_REGION_MAP: (state, regionDict) => {
     state.regionMap = regionDict
+  },
+  SET_ALL_PROJECT_LIST: (state, array) => {
+    state.containAllProjectList = array
+  },
+  SET_ALL_ENV_LIST: (state, array) => {
+    state.containAllEnvList = array
+  },
+  SET_ALL_REGION_LIST: (state, array) => {
+    state.containAllRegionList = array
   }
 }
 
@@ -54,12 +66,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       fetchProjectList().then(response => {
         const projectArr = response.data
+        const allItemList = [
+          {id: 0, name: 'ALL'}
+        ]
         commit('SET_PROJECT_LIST', projectArr)
         let _map = {}
         for (let i = 0; i < projectArr.length; i++) {
           _map[projectArr[i]['id']] = projectArr[i]['name']
+          allItemList.push(projectArr[i])
         }
         commit('SET_PROJECT_MAP', _map)
+        commit('SET_ALL_PROJECT_LIST', allItemList)
         resolve(projectArr)
       }).catch(error => {
         reject(error)
@@ -70,12 +87,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       fetchEnvs().then(response => {
         const envArr = response.data
+        const allItemList = [
+          {id: 0, name: 'ALL'}
+        ]
         commit('SET_ENV_LIST', envArr)
         let _map = {}
         for (let i = 0; i < envArr.length; i++) {
           _map[envArr[i]['id']] = envArr[i]['name']
+          allItemList.push(envArr[i])
         }
         commit('SET_ENV_MAP', _map)
+        commit('SET_ALL_ENV_LIST', allItemList)
         resolve(envArr)
       }).catch(error => {
         reject(error)
@@ -86,12 +108,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       fetchRegions().then(response => {
         const regionArr = response.data
+        const allItemList = [
+          {id: 0, name: 'ALL'}
+        ]
         commit('SET_REGION_LIST', regionArr)
         let _map = {}
         for (let i = 0; i < regionArr.length; i++) {
           _map[regionArr[i]['id']] = regionArr[i]['name']
+          allItemList.push(regionArr[i])
         }
         commit('SET_REGION_MAP', _map)
+        commit('SET_ALL_REGION_LIST', allItemList)
         if (regionArr.length !== 0) {
           commit('SET_SHOW_REGION', true)
         }

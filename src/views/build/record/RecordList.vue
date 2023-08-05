@@ -2,12 +2,12 @@
   <div class="record-list">
     <div class="operate-header">
       <el-select
-        v-model="searchForm.project_id"
+        v-model="selectProjectId"
         placeholder="Select"
         @change="getRecordsByProject"
       >
         <el-option
-          v-for="item in projectList"
+          v-for="item in allProjectList"
           :key="item.id"
           :label="item.name"
           :value="item.id"
@@ -16,15 +16,23 @@
     </div>
     <div class="item-body">
       <el-table :data="recordList" border style="width: 100%">
-        <el-table-column fixed prop="desc" label="描述" min-width="15%" show-overflow-tooltip />
-        <el-table-column prop="plan_id" label="关联计划" min-width="10%" />
-        <el-table-column prop="status" label="状态" min-width="10%">
+        <el-table-column fixed prop="desc" label="描述" min-width="15%" show-overflow-tooltip>
+          <template #default="scope">
+            <el-link @click="routeToRecordDetail" :underline="false">{{ scope.row.desc }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="plan_id" label="关联计划" min-width="10%">
+          <template #default="scope">
+            <el-link @click="routeToPlanDetail" :underline="false">{{ scope.row.plan_id }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" width="100px">
           <template #default="scope">
             <span v-if="scope.row.status===0">运行中</span>
             <span v-if="scope.row.status===1">已完成</span>
           </template>
         </el-table-column>
-        <el-table-column prop="envs" label="环境" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="envs" label="执行环境" min-width="10%" show-overflow-tooltip >
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.envs.split(',')"
@@ -37,7 +45,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="regions" label="地区" min-width="10%" show-overflow-tooltip v-if="showRegion">
+        <el-table-column prop="regions" label="执行地区" min-width="10%" show-overflow-tooltip v-if="showRegion">
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.regions.split(',')"
@@ -52,9 +60,9 @@
         </el-table-column>
         <el-table-column prop="create_by" label="创建用户" min-width="10%" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="create_at" label="创建时间" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="create_at" label="创建时间" width="180px" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="periodic" label="定时任务" min-width="10%">
+        <el-table-column prop="periodic" label="定时任务" width="90px">
           <template #default="scope">
             <span v-if="scope.row.periodic">是</span>
             <span v-else>否</span>
@@ -65,6 +73,7 @@
         background
         layout="prev, pager, next"
         :total="total"
+        :page-size="pageSize"
         @current-change="changePage"
       />
     </div>
@@ -78,22 +87,15 @@ export default {
   name: 'PlanList',
   data() {
     return {
+      projectList: [],
       recordList: [],
       total: 0,
-      pageSize: 10,
-      searchForm: {
-        project_id: 0,
-      },
+      pageSize: 12,
+      selectProjectId: 0,
       showBuild: false,
     }
   },
   computed: {
-    projectList() {
-      const rawList = this.$store.state.base.projectList
-      const allOption = {id: 0, name: '所有'}
-      rawList.unshift(allOption)
-      return rawList
-    },
     showRegion() {
       return this.$store.state.base.showRegion
     },
@@ -102,6 +104,9 @@ export default {
     },
     regionMap() {
       return this.$store.state.base.regionMap
+    },
+    allProjectList() {
+      return this.$store.state.base.containAllProjectList
     }
   },
   created() {
@@ -116,11 +121,10 @@ export default {
       })
     },
     changePage(pageVal) {
-      const selectProject = this.searchForm.project_id
-      if (selectProject === 0) {
+      if (this.selectProjectId === 0) {
         this.getRecordList(pageVal)
       } else {
-        this.getRecordList(pageVal, selectProject)
+        this.getRecordList(pageVal, this.selectProjectId)
       }
     },
     getRecordsByProject(projectId) {
@@ -129,6 +133,12 @@ export default {
       } else {
         this.getRecordList(1, projectId)
       }
+    },
+    routeToRecordDetail(recordId) {
+      this.$router.push(`/build/record/detail/${recordId}`)
+    },
+    routeToPlanDetail(planId) {
+      this.$router.push(`/build/plan/detail/${planId}`)
     }
   }
 }
@@ -138,9 +148,11 @@ export default {
 .record-list {
   width: 100%;
   height: 100%;
+  padding: 5px;
   .operate-header {
     width: 100%;
-    height: 100px;
+    height: 50px;
+    display: flex;
   }
 }
 </style>

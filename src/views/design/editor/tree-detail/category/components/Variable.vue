@@ -202,9 +202,13 @@ export default {
       })
     },
     delVariable(row, index) {
-      this.$messageBox.alert('删除可能会导致使用到该变量的用例执行失败，是否继续?', '删除变量', {
-        cancelButtonText: '取消',
-        confirmButtonText: '确定',
+      this.$messageBox.confirm(
+        '删除可能会导致使用到该变量的用例执行失败，是否继续?',
+        '删除变量',
+        {
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          type: 'warning',
       }).then( () => {
         deleteVariable(row.id).then(() => {
           this.variableList.splice(index, 1)

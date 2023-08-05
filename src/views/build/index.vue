@@ -4,7 +4,8 @@
       <div class="menu-list">
         <el-menu :default-active="activeMenu" style="height: 100%" router>
           <el-menu-item v-for="(route, i) in settingRoutes" :key="i" :index="resolvePath(route)">
-            {{ route.meta.title }}
+            <svg-icon class="icon-class" :icon-class="route.meta.icon" ></svg-icon>
+            <span>{{ route.meta.title }}</span>
           </el-menu-item>
         </el-menu>
       </div>
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+import SvgIcon from "@/components/SvgIcon";
 import InstantlyItem from "@/views/build/components/InstantlyItem";
 import RecentlyItem from "@/views/build/components/RecentlyItem";
 import { fetchRecords } from "@/api/record";
@@ -40,6 +42,7 @@ import { fetchInstantlyPlans } from "@/api/plan";
 export default {
   name: 'Build',
   components: {
+    SvgIcon,
     InstantlyItem,
     RecentlyItem,
   },
@@ -93,12 +96,12 @@ export default {
       return route.path
     },
     getRecentlyRecordList() {
-      fetchRecords(1, 15).then(response => {
+      fetchRecords(1, 10).then(response => {
         this.recentlyRecordList = response.data.data
       })
     },
     getInstantlyPlanList() {
-      fetchInstantlyPlans(5).then(response => {
+      fetchInstantlyPlans(10).then(response => {
         this.instantlyPlanList = response.data
       })
     }
@@ -108,7 +111,7 @@ export default {
 
 <style lang="scss" scoped>
 $menuItemHeight: 40px;
-$menuHeight: 125px;
+$menuHeight: 130px;
 $planHeight: 260px;
 
 .build {
@@ -132,14 +135,19 @@ $planHeight: 260px;
       .el-menu-item.is-active {
         color: #6681FA; background-color: #EAEEFF;
       }
+      .icon-class {
+        margin: 0 5px;
+        font-size: 16px;
+      }
     }
     .instantly {
-      height: $planHeight;
+      height: calc(50% - #{$menuHeight}/2);
+      border-right: solid 1px #dcdfe6;
       .instantly-desc {
         height: 24px;
         margin: 0;
         padding-left: 5px;
-        background-color: #7a869a;
+        background-color: #dcdfe6;
         font-size: 14px;
         span {
           line-height: 24px;
@@ -148,17 +156,18 @@ $planHeight: 260px;
       .instantly-list {
         height: calc(100% - 24px - 10px);
         overflow-y: auto;
-        border-top: 1px solid #000;
+        border-top: 1px solid #dcdfe6;
       }
     }
     .recently {
-      margin-top: 15px;
-      height: calc(100% - #{$menuHeight} - #{$planHeight} - 15px);
+      padding-top: 15px;
+      height: calc(50% - #{$menuHeight}/2);
+      border-right: solid 1px #dcdfe6;
       .recently-desc {
         height: 24px;
         margin: 0;
         padding-left: 5px;
-        background-color: #7a869a;
+        background-color: #dcdfe6;
         font-size: 14px;
         span {
           line-height: 24px;
@@ -167,7 +176,7 @@ $planHeight: 260px;
       .recently-list {
         height: calc(100% - 24px);
         overflow-y: auto;
-        border-top: 1px solid #000;
+        border-top: 1px solid #dcdfe6;
         padding-bottom: 5px;
       }
     }

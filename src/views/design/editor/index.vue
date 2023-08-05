@@ -76,7 +76,7 @@ export default {
         height: 30px;
         position: relative;
         top: 48%;
-        transform: translateX(-38%);
+        transform: translateX(-37%);
         transition: opacity 0.3s ease 0s, transform 0.3s ease 0s;
       }
     }

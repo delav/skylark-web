@@ -74,7 +74,7 @@
                 <template #default="scope">
                   <el-button-group>
                     <el-button size="small" type="warning" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="delVariable(scope.row, scope.$index, true)">删除</el-button>
+                    <el-button size="small" type="danger" @click="delVariableAction(scope.row, scope.$index, true)">删除</el-button>
                   </el-button-group>
                 </template>
               </el-table-column>
@@ -118,7 +118,7 @@
                   <template #default="scope">
                     <el-button-group>
                       <el-button size="small" type="warning" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">编辑</el-button>
-                      <el-button size="small" type="danger" @click="delVariable(scope.row)">删除</el-button>
+                      <el-button size="small" type="danger" @click="delVariableAction(scope.row)">删除</el-button>
                     </el-button-group>
                   </template>
                 </el-table-column>
@@ -145,7 +145,7 @@
     </div>
     <div class="copy-dialog">
       <el-dialog
-        width="750px"
+        width="650px"
         v-model="showCopyDialog"
         title="复制变量"
         :close-on-click-modal="false"
@@ -297,9 +297,15 @@ export default {
     cancelSaveVariable() {
       this.showSaveDialog = false
     },
-    commitCopyVariable() {},
-    cancelCopyVariable() {},
-    delVariable(row) {
+    commitCopyVariable(envId) {
+      this.selectEvnId = envId
+      this.showCopyDialog = false
+      this.changeVariableList(this.selectEvnId)
+    },
+    cancelCopyVariable() {
+      this.showCopyDialog = false
+    },
+    delVariableAction(row) {
       this.$messageBox.alert('删除可能会导致使用到该变量的用例执行失败，是否继续?', '删除变量', {
         cancelButtonText: '取消',
         confirmButtonText: '确定',
@@ -319,7 +325,7 @@ export default {
   height: 100%;
   padding: 5px;
   .project-list {
-    padding: 10px 0;
+    padding: 18px 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
     margin-bottom: 10px;
     border-radius: 4px;

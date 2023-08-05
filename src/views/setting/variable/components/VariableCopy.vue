@@ -24,7 +24,7 @@
           placeholder="Select"
         >
           <el-option
-            v-for="(item, index) in containNullRegionList"
+            v-for="(item, index) in allEnvList"
             :key="index"
             :label="item.name"
             :value="item.id"
@@ -52,7 +52,7 @@
           placeholder="Select"
         >
           <el-option
-            v-for="(item, index) in containNullRegionList"
+            v-for="(item, index) in allEnvList"
             :key="index"
             :label="item.name"
             :value="item.id"
@@ -94,8 +94,7 @@
 </template>
 
 <script>
-import {copyVariableByEnv, fetchVariables} from "@/api/variable";
-import NODE from "@/constans/node";
+import { copyVariableByEnv, fetchVariables } from "@/api/variable";
 
 export default {
   name: 'VariableCopy',
@@ -109,15 +108,15 @@ export default {
     showRegion() {
       return this.$store.state.base.showRegion
     },
+    allEnvList() {
+      return this.$store.state.base.containAllEnvList
+    },
   },
   props: {
     moduleInfo: Object
   },
   data() {
     return {
-      containNullRegionList: [
-        { id: 0, name: 'None', ext_name: 'None' }
-      ],
       copyParams: {
         'from_env_id': '',
         'to_env_id': '',
@@ -126,12 +125,8 @@ export default {
       },
       envVariableList: [],
       envVariableCache: '',
-      copySelectVariable: []
+      selectVariables: []
     }
-  },
-  created() {
-    const regions = this.$store.state.base.regionList
-    this.containNullRegionList.push(...regions)
   },
   methods: {
     changeFromEnv(envId) {
@@ -158,47 +153,24 @@ export default {
       return regionMap[regionId]
     },
     selectChangeVariable(selectList) {
-      this.copySelectVariable = selectList
+      this.selectVariables = selectList
     },
     selectAllVariable() {
-      this.copySelectVariable = []
+      this.selectVariables = []
     },
     cancelCopy() {
       this.$emit('cancelCopyAction')
     },
     confirmCopy() {
-      const params = {
-        'module_id': this.projectId,
-        'module_type': NODE.ModuleType.PROJECT,
-        'from_env_id': this.selectCopyEnv,
-        'to_env_id': this.selectEvn,
-      }
-      if (this.copySelectVariable.length !== 0) {
+      if (this.selectVariables.length !== 0) {
         let variableIds = []
-        for (let i = 0; i < this.copySelectVariable.length; i++) {
-          variableIds.push(this.copySelectVariable[i]['id'])
+        for (let i = 0; i < this.selectVariables.length; i++) {
+          variableIds.push(this.selectVariables[i]['id'])
         }
-        params['variable_id_list'] = variableIds
+        this.copyParams['variable_id_list'] = variableIds
       }
-      copyVariableByEnv(params).then((response) => {
-        const resList = response.data
-        if (resList.length === 0) return
-        let variablesDict = {}
-        for (let i = 0; i < resList.length; i++) {
-          const regionId = resList[i]['region_id']
-          let regionKey = ''
-          if (!regionId) {
-            regionKey = this.commonKey
-          } else {
-            regionKey = resList[i]['region_id']
-          }
-          if (regionKey in variablesDict) {
-            variablesDict[regionKey].push(resList[i])
-          } else {
-            variablesDict[regionKey] = [resList[i]]
-          }
-          this.changeVariableList(this.selectEvn)
-        }
+      copyVariableByEnv(this.copyParams).then(() => {
+        this.$emit('commitAction', this.copyParams.to_env_id)
       })
     },
   }

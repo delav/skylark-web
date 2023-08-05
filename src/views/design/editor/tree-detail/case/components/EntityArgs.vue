@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 // import SvgIcon from "@/components/SvgIcon";
 import KEYWORD from "@/constans/keyword";
 import { deepCopy } from "@/utils/dcopy";
@@ -122,7 +123,9 @@ import { getKeywordUid } from "@/utils/keyword";
 
 export default {
   name: 'EntityArgs',
-  // components: {SvgIcon},
+  components: {
+    draggable
+  },
   data() {
     return {
       entitySplitSep: '#@#',

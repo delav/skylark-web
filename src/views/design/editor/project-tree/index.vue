@@ -102,28 +102,16 @@
         </el-dialog>
       </div>
       <div class="env-dialog">
-        <el-drawer
+        <el-dialog
+          width="75%"
           v-model="showEnvDialog"
-          title="环境变量配置"
-          direction="ltr"
-          size="80%"
-          destroy-on-close
+          title="环境变量"
+          :close-on-click-modal="false"
         >
           <div class="env-content">
             <variable-conf />
           </div>
-        </el-drawer>
-<!--        <el-dialog-->
-<!--          width="75%"-->
-<!--          v-model="showEnvDialog"-->
-<!--          title="环境变量配置"-->
-<!--          :close-on-click-modal="false"-->
-<!--          destroy-on-close-->
-<!--        >-->
-<!--          <div class="env-content">-->
-<!--            <variable-conf />-->
-<!--          </div>-->
-<!--        </el-dialog>-->
+        </el-dialog>
       </div>
       <div class="new-dialog">
         <el-dialog
@@ -131,7 +119,6 @@
           v-model="showNewDialog"
           title="新建项目"
           :close-on-click-modal="false"
-          destroy-on-close
         >
           <div class="new-content">
             <new-project
@@ -797,6 +784,8 @@ export default {
       this.showNewDialog = false
     },
     successNewProject(projectInfo) {
+      console.log(projectInfo)
+      console.log(this.$store.state.base.projectList)
       this.projectId = projectInfo['id']
       this.changeProject(projectInfo['id'], projectInfo['name'])
     }

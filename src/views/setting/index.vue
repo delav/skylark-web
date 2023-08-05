@@ -56,6 +56,9 @@ export default {
   created() {
     this.$store.dispatch('base/getBaseInfo')
   },
+  unmounted() {
+    this.$store.commit('base/RESET_STATE')
+  },
   methods: {
     resolvePath(route) {
       return route.path
@@ -66,7 +69,7 @@ export default {
 
 <style lang="scss" scoped>
 $navbarWidth: 200px;
-$menuItemHeight: 40px;
+$menuItemHeight: 48px;
 $menuHeight: 125px;
 $planHeight: 260px;
 

@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { getPlanDetail } from "@/api/plan";
 
 export default {
   name: 'PlanDetail',
@@ -18,15 +19,12 @@ export default {
       formData: {}
     }
   },
-  watch: {
-    '$store.state.plan.changeFlag': {
-      handler() {
-        this.formData = this.$store.state.plan.planData
-      },
-      immediate: true
-    },
-  },
   methods: {
+    getPlanDetailByPlanId() {
+      getPlanDetail(1).then(response => {
+        this.formData = response.data
+      })
+    }
   }
 }
 </script>

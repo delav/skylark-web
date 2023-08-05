@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import variables from "@/styles/variables.module.scss";
 import axios from "axios";
 import KeywordItem from "@/views/design/editor/keyword-list/components/KeywordItem";
@@ -69,6 +70,7 @@ import { getKeywordUid } from "@/utils/keyword";
 export default {
   name: 'KeywordList',
   components: {
+    draggable,
     KeywordItem,
   },
   data() {

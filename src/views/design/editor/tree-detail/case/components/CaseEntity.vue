@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import { guid } from "@/utils/other";
 import { deepCopy } from "@/utils/dcopy";
 import { setCursorStyle } from "@/utils/hover";
@@ -34,6 +35,7 @@ import EntityItem from "@/views/design/editor/tree-detail/case/components/Entity
 export default {
   name: 'CaseEntity',
   components: {
+    draggable,
     EntityItem,
   },
   data() {

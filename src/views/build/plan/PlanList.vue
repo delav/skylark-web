@@ -1,22 +1,26 @@
 <template>
   <div class="plan-list">
     <div class="operate-header">
-      <el-select
-        v-model="searchForm.project_id"
-        placeholder="Select"
-        @change="getPlansByProject"
-      >
-        <el-option
-          v-for="item in projectList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-button type="primary" @click="newPlan">新建计划</el-button>
+      <div class="search-section">
+        <el-select
+          v-model="selectProjectId"
+          placeholder="选择项目"
+          @change="getPlansByProject"
+        >
+          <el-option
+            v-for="item in allProjectList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </div>
+      <div class="new-button">
+        <el-button type="primary" @click="newPlan">新建计划</el-button>
+      </div>
     </div>
     <div class="item-body">
-      <el-table :data="planList" border style="width: 100%">
+      <el-table :data="planList" border stripe style="width: 100%">
         <el-table-column fixed prop="title" label="计划名称" min-width="15%" show-overflow-tooltip />
         <el-table-column prop="project_name" label="项目" min-width="10%" show-overflow-tooltip />
         <el-table-column prop="branch" label="分支" min-width="10%" show-overflow-tooltip  />
@@ -46,12 +50,12 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="total_case" label="用例总数" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="total_case" label="用例总数" width="90" show-overflow-tooltip >
           <template #default="scope">
             <span>{{scope.row.total_case}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="periodic_switch" label="定时开关" min-width="10%" show-overflow-tooltip>
+        <el-table-column prop="periodic_switch" label="定时开关" width="90" show-overflow-tooltip>
           <template #default="scope">
             <span v-if="scope.row.periodic_switch">开启</span>
             <span v-else>关闭</span>
@@ -62,14 +66,23 @@
             <span>{{scope.row.periodic_expr}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="230">
+        <el-table-column fixed="right" label="操作" width="150">
+<!--          <template #header>-->
+<!--            <el-button style="height: 28px" type="primary" @click="newPlan">新建计划</el-button>-->
+<!--          </template>-->
           <template #default="scope">
-            <el-button style="margin-right: 15px" type="primary" size="small" @click="preBuild(scope.row)">
-              <el-icon :size="20"><CaretRight /></el-icon>
+            <el-button
+              style="margin-right: 10px;width: 20px;height: 20px"
+              type="primary"
+              size="small"
+              @click="preBuild(scope.row)"
+              circle
+            >
+              <el-icon :size="18"><CaretRight /></el-icon>
             </el-button>
             <el-button-group>
-              <el-button type="warning" size="small" @click="editPlan(scope.row)" link>编辑</el-button>
-              <el-button type="primary" size="small" @click="getPlanDetail(scope.row)" link>详情</el-button>
+              <el-button type="warning" size="small" @click="editPlan(scope.row.id)" link>编辑</el-button>
+              <el-button type="primary" size="small" @click="getPlanDetail(scope.row.id)" link>详情</el-button>
               <el-button type="danger" size="small" @click="deletePlan(scope.row)" link>删除</el-button>
             </el-button-group>
           </template>
@@ -79,6 +92,7 @@
         background
         layout="prev, pager, next"
         :total="total"
+        :page-size="pageSize"
         @current-change="changePage"
       />
     </div>
@@ -99,7 +113,6 @@
 </template>
 
 <script>
-import PAGE from "@/constans/build";
 import InstantBuild from "@/views/build/plan/components/InstantBuild";
 import { guid } from "@/utils/other";
 import { fetchPlans, deletePlan } from "@/api/plan";
@@ -113,20 +126,12 @@ export default {
     return {
       planList: [],
       total: 0,
-      pageSize: 10,
-      searchForm: {
-        project_id: 0,
-      },
+      pageSize: 12,
+      selectProjectId: 0,
       showBuild: false,
     }
   },
   computed: {
-    projectList() {
-      const rawList = this.$store.state.base.projectList
-      const allOption = {id: 0, name: '所有'}
-      rawList.unshift(allOption)
-      return rawList
-    },
     showRegion() {
       return this.$store.state.base.showRegion
     },
@@ -135,6 +140,9 @@ export default {
     },
     regionMap() {
       return this.$store.state.base.regionMap
+    },
+    allProjectList() {
+      return this.$store.state.base.containAllProjectList
     }
   },
   created() {
@@ -148,18 +156,17 @@ export default {
         this.total = result.total
       })
     },
+    getPlansByProject(projectId) {
+      this.getPlanList(1, projectId)
+    },
     newPlan() {
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.CREATEPLAN)
+      this.$router.push('/build/plan/create')
     },
-    editPlan(planData) {
-      this.$store.commit('plan/SET_PLAN_DATA', planData)
-      this.$store.commit('plan/SET_CHANGE_FLAG', guid())
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.EDITPLAN)
+    editPlan(planId) {
+      this.$router.push(`/build/plan/edit/${planId}`)
     },
-    getPlanDetail(planData) {
-      this.$store.commit('plan/SET_PLAN_DATA', planData)
-      this.$store.commit('plan/SET_CHANGE_FLAG', guid())
-      this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.PLANDETAIL)
+    getPlanDetail(planId) {
+      this.$router.push(`/build/plan/detail/${planId}`)
     },
     deletePlan(planData) {
       let warnInfo = `将删除计划【${planData.title}】，是否继续？`
@@ -191,19 +198,10 @@ export default {
       this.$message.success('构建请求已发送')
     },
     changePage(pageVal) {
-      const selectProject = this.searchForm.project_id
-      if (selectProject === 0) {
-        this.getPlanList(1)
+      if (this.selectProjectId === 0) {
+        this.getPlanList(pageVal)
       } else {
-        this.getPlanList(1, selectProject)
-      }
-      this.getPlanList(pageVal)
-    },
-    getPlansByProject(projectId) {
-      if (projectId === 0) {
-        this.getPlanList(1)
-      } else {
-        this.getPlanList(1, projectId)
+        this.getPlanList(pageVal, this.selectProjectId)
       }
     }
   }
@@ -214,9 +212,18 @@ export default {
 .plan-list {
   width: 100%;
   height: 100%;
+  padding: 5px;
   .operate-header {
     width: 100%;
-    height: 100px;
+    height: 50px;
+    display: flex;
+    //align-items: center;
+    //justify-content: center;
+    .search-section {
+    }
+    .new-button {
+      margin-left: auto;
+    }
   }
 }
 </style>

@@ -30,3 +30,10 @@ export function register(data) {
     data: data
   })
 }
+
+export function getUserEmails() {
+  return request({
+    url: 'user/register',
+    method: 'get',
+  })
+}

@@ -35,14 +35,6 @@ export function deletePlan(planId) {
   })
 }
 
-export function getPlansByProject(projectId) {
-  return request({
-    url: `/build/plan`,
-    method: 'get',
-    params: { project: projectId }
-  })
-}
-
 export function getPlanDetail(planId) {
   return request({
     url: `/build/plan/${planId}`,
@@ -53,7 +45,7 @@ export function getPlanDetail(planId) {
 
 export function fetchInstantlyPlans(size) {
   return request({
-    url: `/build/plan/instantly`,
+    url: `/build/plan/get_instantly_plan_list`,
     method: 'get',
     params: { limit: size }
   })

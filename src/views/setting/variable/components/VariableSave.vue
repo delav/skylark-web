@@ -7,12 +7,12 @@
           <el-select
             :disabled="postVariableForm.id!==undefined"
             v-model="postVariableForm.env_id"
-            style="width: 310px"
+            style="width: 260px"
           >
             <el-option
               v-for="(item, index) in envList"
               :key="index"
-              :label="item['name']"
+              :label="item.name"
               :value="item.id"
             />
           </el-select>
@@ -21,12 +21,12 @@
           <el-select
             :disabled="postVariableForm.id!==undefined"
             v-model="postVariableForm.region_id"
-            style="width: 310px"
+            style="width: 260px"
           >
             <el-option
-              v-for="(item, index) in containNullRegionList"
+              v-for="(item, index) in allRegionList"
               :key="index"
-              :label="item['name']"
+              :label="item.name"
               :value="item.id"
             />
           </el-select>
@@ -72,8 +72,11 @@ export default {
     envList() {
       return this.$store.state.base.envList
     },
-    regionList() {
-      return this.$store.state.base.regionList
+    allEnvList() {
+      return this.$store.state.base.containAllEnvList
+    },
+    allRegionList() {
+      return this.$store.state.base.containAllRegionList
     },
     showRegion() {
       return this.$store.state.base.showRegion
@@ -92,9 +95,6 @@ export default {
       }
     }
     return {
-      containNullRegionList: [
-        { id: 0, name: 'None', ext_name: 'None' }
-      ],
       fieldRules: {
         name: [
           { required: true, validator: validateName, trigger: 'blur' },
@@ -105,10 +105,6 @@ export default {
       },
       postVariableForm: this.variableForm,
     }
-  },
-  created() {
-    const regions = this.$store.state.base.regionList
-    this.containNullRegionList.push(...regions)
   },
   methods: {
     createSave() {

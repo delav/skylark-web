@@ -4,6 +4,7 @@
       <text-tooltip
         class="title-text"
         ref-name="itemText"
+        font-size="14px"
         :content="itemData['title']"
         @click="getInstantlyPlanDetail"
       />
@@ -39,8 +40,8 @@ $itemHeight: 48px;
   height: $itemHeight;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #000;
-  padding-left: 5px;
+  border-bottom: 1px solid #dcdfe6;
+  padding-left: 10px;
   .item-title {
     width: 100%;
     .title-text {

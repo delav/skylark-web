@@ -83,10 +83,16 @@ export const routes = [
             meta: { navbar: true, title: i18n.global.t('BuildNavBar._record'), icon: 'record', activeMenu: '/build', secondActiveMenu: '/build/record/list' }
           },
           {
+            path: '/build/quick/start',
+            name: 'QuickBuild',
+            component: () => import('@/views/build/components/QuickBuild'),
+            meta: { navbar: true, title: i18n.global.t('BuildNavBar._quick'), icon: 'quick-build', activeMenu: '/build', secondActiveMenu: '/build/quick/start' }
+          },
+          {
             path: '/build/plan/create',
             name: 'PlanCreate',
             component: () => import('@/views/build/plan/PlanCreate'),
-            meta: { navbar: true, title: i18n.global.t('BuildNavBar._quick'), icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/create' }
+            meta: { activeMenu: '/build', secondActiveMenu: '/build/plan/create' }
           },
           {
             path: '/build/plan/detail/:id',
@@ -95,7 +101,7 @@ export const routes = [
             meta: { activeMenu: '/build', secondActiveMenu: '/build/plan/detail' }
           },
           {
-            path: '/build/plan/edit/id',
+            path: '/build/plan/edit/:id',
             name: 'PlanEdit',
             component: () => import('@/views/build/plan/PlanEdit'),
             meta: { activeMenu: '/build', secondActiveMenu: '/build/plan/edit' }
