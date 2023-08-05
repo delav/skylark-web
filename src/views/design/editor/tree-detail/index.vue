@@ -2,7 +2,8 @@
   <div class="tree-detail">
     <empty v-if="isEmpty"></empty>
     <case v-else-if="isCase"></case>
-    <category v-else-if="isCategory"></category>
+    <suite v-else-if="isSuite"></suite>
+    <dir v-else-if="isDir"></dir>
     <const v-else-if="isConst"></const>
     <file v-else-if="isFile"></file>
   </div>
@@ -11,7 +12,8 @@
 <script>
 import Empty from "@/views/design/editor/tree-detail/empty";
 import Case from "@/views/design/editor/tree-detail/case";
-import Category from "@/views/design/editor/tree-detail/category";
+import Suite from "@/views/design/editor/tree-detail/suite";
+import Dir from "@/views/design/editor/tree-detail/dir";
 import Const from "@/views/design/editor/tree-detail/const";
 import File from "@/views/design/editor/tree-detail/file";
 import NODE from "@/constans/node";
@@ -21,7 +23,8 @@ export default {
   components: {
     Empty,
     Case,
-    Category,
+    Suite,
+    Dir,
     Const,
     File,
   },
@@ -32,10 +35,11 @@ export default {
     isCase() {
       return this.$store.state.tree.detailType === NODE.DetailType.CASE
     },
-    isCategory() {
-      const type = this.$store.state.tree.detailType
-      const category = [NODE.DetailType.ROOT, NODE.DetailType.DIR, NODE.DetailType.SUITE]
-      return category.indexOf(type) !== -1
+    isSuite() {
+      return this.$store.state.tree.detailType === NODE.DetailType.SUITE
+    },
+    isDir() {
+      return this.$store.state.tree.detailType === NODE.DetailType.DIR
     },
     isConst() {
       return this.$store.state.tree.detailType === NODE.DetailType.CONST

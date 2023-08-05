@@ -11,8 +11,8 @@
           :content="personalDesc"
           placement="top-start"
         >
-        <el-icon style="vertical-align: -15%;cursor: pointer;margin-left: 3px" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
-      </el-tooltip>
+          <el-icon style="vertical-align: -15%;cursor: pointer;margin-left: 3px" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+        </el-tooltip>
       </span>
       <span class="switch-item">
           <el-switch

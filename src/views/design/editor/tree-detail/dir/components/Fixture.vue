@@ -17,25 +17,68 @@
       </el-alert>
     </div>
     <div class="fixture-body">
-      <el-form ref="form" :model="fixtureObject" label-width="80px">
-        <el-form-item label="套件前置:">
+      <div class="fixture-item">
+        <p class="item-desc">套件前置
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="fixtureTip.suite_setup_tip"
+            placement="top-start"
+          >
+            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+          </el-tooltip>
+        </p>
+        <p class="item-value">
           <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_setup']"></el-input>
-        </el-form-item>
-        <el-form-item label="套件后置:">
+        </p>
+      </div>
+      <div class="fixture-item">
+        <p class="item-desc">套件后置
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="fixtureTip.suite_teardown_tip"
+            placement="top-start"
+          >
+            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+          </el-tooltip></p>
+        <p class="item-value">
           <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_teardown']"></el-input>
-        </el-form-item>
-        <el-form-item label="用例前置:">
+        </p>
+      </div>
+      <div class="fixture-item">
+        <p class="item-desc">用例前置
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="fixtureTip.test_setup_tip"
+            placement="top-start"
+          >
+            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+          </el-tooltip></p>
+        <p class="item-value">
           <el-input :disabled="inputDisabled" v-model="fixtureObject['test_setup']"></el-input>
-        </el-form-item>
-        <el-form-item label="用例后置:">
+        </p>
+      </div>
+      <div class="fixture-item">
+        <p class="item-desc">用例后置
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="fixtureTip.test_teardown_tip"
+            placement="top-start"
+          >
+            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+          </el-tooltip></p>
+        <p class="item-value">
           <el-input :disabled="inputDisabled" v-model="fixtureObject['test_teardown']"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button v-if="inputDisabled" type="primary" @click="editCateInfo">编辑</el-button>
-          <el-button v-else type="primary" @click="cancelCateInfo">取消</el-button>
-          <el-button type="primary" @click="saveSetupTeardown">保存</el-button>
-        </el-form-item>
-      </el-form>
+        </p>
+      </div>
+    </div>
+    <div class="fixture-footer">
+      <el-button v-if="inputDisabled" type="primary" @click="editCateInfo">编辑</el-button>
+      <el-button v-else type="primary" @click="cancelCateInfo">取消</el-button>
+      <el-button style="margin-left: 20px" type="primary" @click="saveSetupTeardown">保存</el-button>
     </div>
   </div>
 </template>
@@ -59,6 +102,12 @@ export default {
     return {
       cateDocument: '',
       rawCateDocument: '',
+      fixtureTip: {
+        'suite_setup_tip': '运行测试套件之前执行，可用于准备数据',
+        'suite_teardown_tip': '运行测试套件之后执行，可用于数据清理和复原',
+        'test_setup_tip': '测试套件下的每个测试用例运行之前执行，可用于每个用例重复相同的操作步骤',
+        'test_teardown_tip': '测试套件下的每个测试用例运行之后执行，可用于每个用例重复数据清理和复原'
+      },
       fixtureObject: {
         'suite_setup': '',
         'suite_teardown': '',
@@ -165,9 +214,30 @@ export default {
 <style lang="scss" scoped>
 .fixture {
   .fixture-alter {
-    margin: 5px 0 20px 0;
+    margin-top: 10px;
   }
   .fixture-body {
+    .fixture-item {
+      margin-top: 15px;
+      .item-desc {
+        margin: 0 0 4px 0;
+        font-size: 14px;
+        color: #6b778c;
+        .icon-style {
+          vertical-align: -10%;
+          cursor: pointer;
+        }
+      }
+      .item-value {
+        margin: 0;
+      }
+    }
+  }
+  .fixture-footer {
+    margin-top: 25px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: right;
   }
 }
 :deep(.el-input.is-disabled) {

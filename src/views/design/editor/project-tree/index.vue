@@ -80,7 +80,7 @@
     <div class="dialog">
       <div class="node-dialog">
         <el-dialog
-          width="40%"
+          width="600px"
           v-model="showNodeDialog"
           :title="nodeDialogTitle"
           :close-on-click-modal="false"

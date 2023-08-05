@@ -44,7 +44,7 @@
     </div>
     <div class="create-dialog">
       <el-dialog
-        width="50%"
+        width="600px"
         v-model="showNewVarDialog"
         title="新建变量"
         :close-on-click-modal="false"
@@ -54,7 +54,7 @@
             ref="ruleForm"
             :model="variableForm"
             :rules="fieldRules"
-            label-width="120px"
+            label-width="80px"
             status-icon
           >
             <el-form-item label="变量名" prop="name">
@@ -103,8 +103,11 @@ export default {
       },
       fieldRules: {
         name: [
-          { required: true, validator: validateName, trigger: 'blur' },
+          { required: true, validator: validateName, trigger: 'blur', message: '变量名不能为空' },
         ],
+        value: [
+          { required: true, trigger: 'blur', message: '变量值不能为空' }
+        ]
       }
     }
   },
