@@ -2,7 +2,7 @@
   <div class="text-tooltip">
     <el-tooltip
       effect="dark"
-      :hide-after="50"
+      :hide-after="5"
       :disabled="isShowTooltip"
       :content="content"
       :placement="placement"

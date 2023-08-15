@@ -1,10 +1,10 @@
 const Navbar = {
   _language: 'English',
   _home: 'Home',
-  _setting: 'Project setting',
-  _design: 'Design case',
-  _build: 'Build plan',
-  _statistics: 'Data statistics',
+  _design: 'Design Case',
+  _build: 'Build Plan',
+  _setting: 'Setting Manager',
+  _statistics: 'Data Statistics',
 }
 
 const Maps = {

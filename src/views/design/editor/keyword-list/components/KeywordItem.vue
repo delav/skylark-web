@@ -17,7 +17,7 @@
         effect="dark"
         :content="keywordData['desc']"
       >
-        <el-icon size="16px" color="#bfcbd9" style="vertical-align: -20%"><QuestionFilled /></el-icon>
+        <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
       </el-tooltip>
     </div>
   </div>
@@ -56,8 +56,10 @@ $itemHeight: 50px;
     line-height: $itemHeight;
   }
   .item-tip {
+    color: #303133;
+    font-size: 16px;
     line-height: $itemHeight;
-    vertical-align: -10%;
+    vertical-align: -5%;
   }
 }
 </style>

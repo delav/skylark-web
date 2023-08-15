@@ -33,9 +33,9 @@
         </el-form-item>
         <p class="label-desc" style="margin-top: 30px">Password</p>
         <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
           <el-input
             :key="passwordType"
             ref="password"
@@ -48,8 +48,8 @@
             @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
         </el-form-item>
         <div class="forgot-password">
           <el-button type="primary" link>Forgot password?</el-button>
@@ -190,14 +190,14 @@ export default {
       }
       .login-button {
         width: 100%;
-        height: 48px;
+        height: 45px;
       }
     }
   }
 }
 :deep(.el-input) {
   display: inline-block;
-  height: 48px;
+  height: 45px;
   width: 85%;
   .el-input__wrapper {
     background: transparent;
@@ -208,8 +208,8 @@ export default {
       border: 0;
       -webkit-appearance: none;
       border-radius: 0;
-      padding: 12px 5px 12px 15px;
-      height: 48px;
+      padding: 10px 5px 10px 12px;
+      height: 45px;
       font-size: 14px;
     }
   }

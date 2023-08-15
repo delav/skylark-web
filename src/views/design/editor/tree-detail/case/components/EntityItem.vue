@@ -25,12 +25,15 @@
     </div>
     <div class="item-tip">
       <el-tooltip
+        :hide-after="5"
         popper-class="custom-tooltip"
         placement="top-start"
         effect="dark"
         :content="getKeywordAttr('desc', entityData['keyword_id'], entityData['keyword_type'])"
       >
-        <el-icon size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+        <span>
+          <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
+        </span>
       </el-tooltip>
     </div>
   </div>
@@ -110,6 +113,8 @@ export default {
     top: 0;
     left: 0;
     position: absolute;
+    color: #999595;
+    font-size: 14px;
   }
 }
 </style>

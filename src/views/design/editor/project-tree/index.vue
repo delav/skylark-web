@@ -1,6 +1,6 @@
 <template>
   <div class="project-tree">
-    <div v-if="!hideTree" class="project-show">
+    <div v-show="!hideTree" class="project-show">
       <div class="head">
         <el-select
           class="project-selector"
@@ -53,7 +53,7 @@
         </span>
       </div>
     </div>
-    <div v-else class="project-hide">
+    <div v-show="hideTree" class="project-hide">
       <div class="top-tool">
         <el-tooltip
           popper-class="custom-tooltip"
@@ -72,7 +72,15 @@
             content="新建项目"
             placement="right"
           >
-            <el-icon class="tool-icon" @click="showNewDialog=true"><Plus /></el-icon>
+            <el-icon class="tool-icon" @click="showNewDialog=true"><FolderAdd /></el-icon>
+          </el-tooltip>
+          <el-tooltip
+            popper-class="custom-tooltip"
+            effect="dark"
+            content="变量配置"
+            placement="right"
+          >
+            <el-icon class="tool-icon" @click="showEnvDialog=true"><Setting /></el-icon>
           </el-tooltip>
         </div>
       </div>
@@ -517,7 +525,7 @@ export default {
       } else if (this.nodeParams.desc === NODE.NodeDesc.SUITE) {
         // create suite
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
-          const params = {'name': newNodeName, 'suite_dir_id': node.mid, 'category': node.type}
+          const params = {'name': newNodeName, 'suite_dir_id': node.mid, 'project_id': this.projectId, 'category': node.type}
           createSuite(params).then(response => {
             if (node.open) {
               // const suiteNode = handlerNode(response.data, node.id, NODE.NodeDesc.SUITE)
@@ -539,7 +547,7 @@ export default {
       } else if (this.nodeParams.desc === NODE.NodeDesc.CASE) {
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create case
-          const params = {'name': newNodeName, 'test_suite_id': node.mid, 'category': node.type}
+          const params = {'name': newNodeName, 'test_suite_id': node.mid, 'project_id': this.projectId, 'category': node.type}
           createCase(params).then(response => {
             if (node.open) {
               // const caseNode = handlerNode(response.data, node.id, NODE.NodeDesc.CASE)
@@ -887,10 +895,10 @@ $toolHeight: 40px;
         flex-direction: column-reverse;
         align-items: center;
         justify-content: center;
-        padding-left: 4px;
+        padding-left: 2px;
         .tool-icon {
-          margin-bottom: 15px;
-          font-size: 25px;
+          margin-bottom: 12px;
+          font-size: 28px;
           color: $foldIconColor;
           cursor: pointer;
           font-weight: bold;

@@ -19,33 +19,6 @@ export const routes = [
     ]
   },
   {
-    path: '/setting',
-    name: 'Setting',
-    component: Layout,
-    meta: { navbar: true, title: i18n.global.t('Navbar._setting') },
-    children: [
-      {
-        path: '',
-        redirect: '/setting/variable',
-        component: () => import('@/views/setting/index'),
-        children: [
-          {
-            path: '/setting/variable',
-            name: 'Variable',
-            component: () => import('@/views/setting/variable/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'project-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
-          },
-          {
-            path: '/setting/notice',
-            name: 'Notify',
-            component: () => import('@/views/setting/notice/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'project-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notify' }
-          }
-        ]
-      },
-    ]
-  },
-  {
     path: '/design',
     name: 'Design',
     component: Layout,
@@ -112,6 +85,33 @@ export const routes = [
             component: () => import('@/views/build/record/RecordDetail'),
             meta: { activeMenu: '/build', secondActiveMenu: '/build/record/detail' }
           },
+        ]
+      },
+    ]
+  },
+  {
+    path: '/setting',
+    name: 'Setting',
+    component: Layout,
+    meta: { navbar: true, title: i18n.global.t('Navbar._setting') },
+    children: [
+      {
+        path: '',
+        redirect: '/setting/variable',
+        component: () => import('@/views/setting/index'),
+        children: [
+          {
+            path: '/setting/variable',
+            name: 'Variable',
+            component: () => import('@/views/setting/variable/index'),
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'project-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
+          },
+          {
+            path: '/setting/notice',
+            name: 'Notify',
+            component: () => import('@/views/setting/notice/index'),
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'project-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notify' }
+          }
         ]
       },
     ]

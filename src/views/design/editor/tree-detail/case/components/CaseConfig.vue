@@ -54,7 +54,7 @@
                 :reserve-keyword="false"
                 @change="addCaseTag"
                 @remove-tag="deleteCaseTag"
-                placeholder="Choose tags"
+                placeholder="选择标签"
               >
                 <el-option
                   v-for="(item, index) in tagList"
@@ -257,14 +257,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 @import "src/styles/element/collapse.scss";
+
 .case-config {
   width: 100%;
   .collapse-title {
     .title-pri {
+      color: $mainColor;
       font-size: 15px;
-      width: 80px;
-      margin-right: 30px;
+      margin-right: 15px;
     }
     .title-tag {
       margin-left: 5px;

@@ -2,46 +2,42 @@
   <div class="action">
     <div class="env-setting">
       <div class="env-list">
-        <span class="env-text">环境:</span>
-        <el-select
-          style="width: 80px"
-          v-model="executeEnv"
-          @change="changeEnv"
-          size="small"
-          placeholder=" "
-          :popper-append-to-body="false"
-        >
-          <el-option
-            v-for="item in envList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          >
-            <span style="float: left">{{ item.name }}</span>
-<!--            <span style="float: right;color: #909399FF;font-size: 13px;">{{ item.desc }}</span>-->
-          </el-option>
-        </el-select>
+        <span class="env-text">环境：</span>
+        <el-dropdown @command="changeEnv" class="set-dropdown">
+          <span class="set-name">
+            {{ envName }}<el-icon :size="12" class="el-icon--right"><ArrowDown /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="(item, index) in envList"
+                :command="item"
+                :key="index"
+              >
+                {{ item.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
       <div class="region-list" v-show="showRegion">
-        <span class="region-text">地区:</span>
-        <el-select
-          style="width: 80px"
-          v-model="executeRegion"
-          @change="changeRegion"
-          size="small"
-          placeholder=" "
-          :popper-append-to-body="false"
-        >
-          <el-option
-            v-for="item in regionList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          >
-            <span style="float: left">{{ item.name }}</span>
-<!--            <span style="float: right;color: #909399FF;font-size: 13px;">{{ item.desc }}</span>-->
-          </el-option>
-        </el-select>
+        <span class="region-text">地区：</span>
+        <el-dropdown @command="changeRegion" class="set-dropdown">
+          <span class="set-name">
+            {{ regionName }}<el-icon :size="12" class="el-icon--right"><ArrowDown /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="(item, index) in regionList"
+                :command="item"
+                :key="index"
+              >
+                {{ item.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
     <div class="action-content">
@@ -92,8 +88,8 @@ export default {
   },
   data() {
     return {
-      executeEnv: '',
-      executeRegion: '',
+      envName: '',
+      regionName: '',
       hadRunCases: {},
       runFinish: false,
       showPushDialog:false,
@@ -165,23 +161,25 @@ export default {
     },
     setDefaultEnv() {
       const envs = this.$store.state.base.envList
-      if (envs.length !== 0) {
-        this.executeEnv = envs[0].id
+      if (envs.length === 0) {
+        return
       }
-      this.changeEnv(this.executeEnv)
+      this.changeEnv(envs[0])
     },
     setDefaultRegion() {
       const regions = this.$store.state.base.regionList
-      if (regions.length !== 0) {
-        this.executeRegion = regions[0].id
+      if (regions.length === 0) {
+        return
       }
-      this.changeRegion(this.executeRegion)
+      this.changeRegion(regions[0])
     },
-    changeEnv(val) {
-      this.$store.commit('action/SET_CURRENT_ENV', val)
+    changeEnv(item) {
+      this.envName = item.name
+      this.$store.commit('action/SET_CURRENT_ENV', item.id)
     },
-    changeRegion(val) {
-      this.$store.commit('action/SET_CURRENT_REGION', val)
+    changeRegion(item) {
+      this.regionName = item.name
+      this.$store.commit('action/SET_CURRENT_REGION', item.id)
     },
     changeNodeColor(treeObj, mid, color) {
       let node = treeObj.getNodesByFilter(function (node) {
@@ -342,6 +340,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
+$textColor: #6b778c;
 
 .action {
   height: $toolbarHeight;
@@ -355,18 +354,28 @@ export default {
     padding-top: -1px;
     line-height: $toolbarHeight;
     .env-list {
+      min-width: 120px;
       .env-text {
         font-size: 14px;
-        color: #6b778c;
-        padding-right: 10px;
+        color: $textColor;
       }
     }
     .region-list {
-      margin-left: 10px;
+      margin-left: 25px;
+      min-width: 120px;
       .region-text {
         font-size: 14px;
-        color: #6b778c;
-        padding-right: 10px;
+        color: $textColor;
+      }
+    }
+    .set-dropdown {
+      line-height: $toolbarHeight;
+      cursor: pointer;
+      .set-name {
+        color: $mainColor;
+        .el-icon {
+          color: $textColor;
+        }
       }
     }
   }
@@ -377,31 +386,6 @@ export default {
     text-align: center;
     .icon-list {
       display: inline-block;
-    }
-  }
-}
-.action .env-setting {
-  :deep(.el-select) {
-    display: inline-block;
-    .el-select__caret {
-      font-size: 16px;
-    }
-    .el-input__wrapper {
-      padding: 0;
-      box-shadow: none;
-      border-radius: 0;
-      .el-input__inner {
-        font-size: 14px;
-        background: $toolbarBg;
-        color: $mainColor;
-      }
-      .el-input__suffix {
-        display: none;
-        background: $toolbarBg;
-      }
-    }
-    .el-input--suffix.is-focus{
-      box-shadow: none;
     }
   }
 }

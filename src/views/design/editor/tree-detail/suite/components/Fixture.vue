@@ -30,7 +30,7 @@
                 :content="fixtureTip.suite_setup_tip"
                 placement="top-start"
               >
-                <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+                <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
               </el-tooltip>
             </p>
             <p class="item-value">
@@ -45,7 +45,7 @@
                 :content="fixtureTip.suite_teardown_tip"
                 placement="top-start"
               >
-                <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+                <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
               </el-tooltip></p>
             <p class="item-value">
               <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_teardown']"></el-input>
@@ -59,7 +59,7 @@
                 :content="fixtureTip.test_setup_tip"
                 placement="top-start"
               >
-                <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+                <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
               </el-tooltip></p>
             <p class="item-value">
               <el-input :disabled="inputDisabled" v-model="fixtureObject['test_setup']"></el-input>
@@ -73,7 +73,7 @@
                 :content="fixtureTip.test_teardown_tip"
                 placement="top-start"
               >
-                <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+                <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
               </el-tooltip></p>
             <p class="item-value">
               <el-input :disabled="inputDisabled" v-model="fixtureObject['test_teardown']"></el-input>
@@ -228,6 +228,8 @@ export default {
     margin-top: 5px;
     .collapse-title {
       padding-left: 5px;
+      color: #606266;
+      font-size: 14px;
     }
     .fixture-item {
       margin-top: 10px;
@@ -252,7 +254,7 @@ export default {
     justify-content: right;
   }
 }
-:deep(.el-input.is-disabled) {
+:deep(.el-input, .el-input.is-disabled) {
   cursor: auto;
   .el-input__inner {
     cursor: auto;
@@ -262,10 +264,13 @@ export default {
   cursor: auto;
   .el-textarea__inner {
     cursor: auto;
+    background-color: #f4f5f7;
   }
 }
 :deep(.el-collapse-item__header) {
-  background-color: #ebeef5;
+  background-color: #f4f5f7;
   border-radius: 2px;
+  box-shadow: 0 0 0 1px #dcdfe6;
+  border-bottom: 0;
 }
 </style>

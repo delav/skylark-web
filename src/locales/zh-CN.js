@@ -1,9 +1,9 @@
 const Navbar = {
   _language: '中文',
   _home: '首页',
-  _setting: '项目配置',
   _design: '用例设计',
-  _build: '构建计划',
+  _build: '执行计划',
+  _setting: '配置管理',
   _statistics: '数据分析',
 }
 

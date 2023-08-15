@@ -5,20 +5,21 @@
     </div>
     <div class="entity-input" v-if="inputType!==getArgType('none')">
       <div class="input-title">
-        <span class="title-desc">
-          <span class="input-icon" @click="expandInputArg=!expandInputArg">
-            <el-icon v-if="expandInputArg"><CirclePlusFilled /></el-icon>
-            <el-icon v-else><RemoveFilled /></el-icon>
+        <span class="title-desc" @click="expandInputArg=!expandInputArg">
+          <span class="input-icon">
+            <el-icon v-if="expandInputArg"><CaretBottom /></el-icon>
+            <el-icon v-else><CaretRight /></el-icon>
           </span>
           <span class="input-text">输入参数</span>
         </span>
         <el-button
           class="input-button"
           v-if="inputType===getArgType('list')||inputType===getArgType('dict')"
-          type="success" size="small"
+          size="small"
           @click="addInputArg"
+          plain
         >
-          添加<el-icon><Plus /></el-icon>
+          <el-icon><Plus /></el-icon>添加
         </el-button>
       </div>
       <div v-if="expandInputArg" class="input-content">
@@ -53,8 +54,8 @@
           >
             <template #item="{ index }">
               <p class="dynamic-argument">
-                <span class="argument-name">args{{index+1}}:</span>
-                <el-icon class="mover" color="#909399" title="移动"><Rank /></el-icon>
+                <span class="argument-name">arg{{index+1}}:</span>
+                <el-icon class="mover" color="#909399"><Rank /></el-icon>
                 <el-input
                   class="argument-value"
                   type="text"
@@ -76,10 +77,10 @@
       </div>
     </div>
     <div class="entity-output" v-if="outputType!==getArgType('none')">
-      <div class="output-title">
-        <span class="output-icon" @click="expandOutputArg=!expandOutputArg">
-          <el-icon v-if="expandOutputArg"><CirclePlusFilled /></el-icon>
-          <el-icon v-else><RemoveFilled /></el-icon>
+      <div class="output-title" @click="expandOutputArg=!expandOutputArg">
+        <span class="output-icon">
+          <el-icon v-if="expandOutputArg"><CaretBottom /></el-icon>
+          <el-icon v-else><CaretRight /></el-icon>
         </span>
         <span class="output-text">输出参数</span>
       </div>
@@ -283,8 +284,9 @@ $labelWidth: 80px;
   .entity-desc {
     height: 60px;
     p {
-      font-size: 14px;
+      font-size: 13px;
       margin: 0;
+      color: #6b778c;
     }
   }
   .entity-input {
@@ -296,11 +298,11 @@ $labelWidth: 80px;
         cursor: pointer;
         color: $mainColor;
         .input-icon {
-          font-size: 16px;
+          font-size: 18px;
           vertical-align: -15%;
         }
         .input-text {
-          font-size: 15px;
+          font-size: 14px;
         }
       }
       .input-button {
@@ -343,6 +345,7 @@ $labelWidth: 80px;
           line-height: 32px;
         }
         .mover {
+          color: $mainColor;
           margin-left: $labelWidth;
           position: absolute;
           width: 16px;
@@ -372,11 +375,11 @@ $labelWidth: 80px;
       cursor: pointer;
       color: $mainColor;
       .output-icon {
-        font-size: 16px;
+        font-size: 18px;
         vertical-align: -15%;
       }
       .output-text {
-        font-size: 15px;
+        font-size: 14px;
       }
     }
     .output-content {
@@ -403,6 +406,14 @@ $labelWidth: 80px;
           font-size: 16px;
         }
       }
+    }
+  }
+}
+:deep(.el-input) {
+  .el-input__wrapper {
+    border-radius: 0;
+    input {
+      border-radius: 0;
     }
   }
 }
