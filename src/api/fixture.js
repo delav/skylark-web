@@ -1,6 +1,6 @@
 import request from "@/http/request";
 
-export function postSetupTeardown(data) {
+export function saveSetupTeardown(data) {
   return request({
     url: '/setup_teardown',
     method: 'post',

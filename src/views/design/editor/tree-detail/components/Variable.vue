@@ -32,12 +32,12 @@
             <el-button size="small" type="primary" @click="showVarDialog">新建变量</el-button>
           </template>
           <template #default="scope">
-            <el-button-group>
-              <el-button size="small" type="warning" v-if="!scope.row.edit" @click="editVariable(scope.row)">编辑</el-button>
-              <el-button size="small" type="primary" v-else @click="cancelEdit(scope.row, scope.$index)">取消</el-button>
-              <el-button size="small" type="success" @click="saveVariable(scope.row)">保存</el-button>
-              <el-button size="small" type="danger" @click="delVariable(scope.row, scope.$index)">删除</el-button>
-            </el-button-group>
+            <el-link type="warning" style="font-size: 13px" :underline="false" @click="editVariable(scope.row, scope.$index)">
+              <el-icon><Edit /></el-icon>编辑
+            </el-link>
+            <el-link type="danger" style="margin-left: 8px; font-size: 13px" :underline="false" @click="delVariable(scope.row, scope.$index)">
+              <el-icon><Delete /></el-icon>删除
+            </el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -48,6 +48,7 @@
         v-model="showNewVarDialog"
         title="新建变量"
         :close-on-click-modal="false"
+        :destroy-on-close="true"
       >
         <div class="form-content">
           <el-form
@@ -83,6 +84,18 @@ import { createVariable, updateVariable, deleteVariable } from "@/api/variable";
 
 export default {
   name: 'Variable',
+  props: {
+    variables: Array
+  },
+  watch: {
+    variables: {
+      handler(val) {
+        this.variableList = val
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   data() {
     const validateName = (rule, value, callback) => {
       const pattern = /\$\{.*\}/
@@ -95,32 +108,21 @@ export default {
     return {
       variableList: [],
       showNewVarDialog: false,
-      editRow: {},
       variableForm: {
         name: '',
         value: '',
         remark: ''
       },
+      editIndex: null,
       fieldRules: {
         name: [
-          { required: true, validator: validateName, trigger: 'blur', message: '变量名不能为空' },
+          { required: true, validator: validateName, trigger: 'blur' },
         ],
         value: [
           { required: true, trigger: 'blur', message: '变量值不能为空' }
         ]
       }
     }
-  },
-  watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const detailType = this.$store.state.tree.detailType
-        if (detailType !== NODE.DetailType.SUITE) return
-        const cateInfo = this.$store.state.tree.selectedNode.meta
-        this.variableList = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
-      },
-      immediate: true
-    },
   },
   methods: {
     getModuleInfo() {
@@ -138,7 +140,7 @@ export default {
     },
     closeVarDialog() {
       this.showNewVarDialog = false
-      this.variableForm = {}
+      this.variableForm = this.$options.data().variableForm
     },
     variableNameExist (name) {
       let isExist = false
@@ -150,59 +152,10 @@ export default {
       }
       return isExist
     },
-    updateZTreeNode(extraDataKey, extraDataValue) {
-      const selectedNode = this.$store.state.tree.selectedNode
-      selectedNode.meta['extra_data'][extraDataKey] = extraDataValue
-      this.$store.commit('tree/SET_SELECT_NODE', selectedNode)
-      const treeId = this.$store.state.tree.treeId
-      const treeObj = $.fn.zTree.getZTreeObj(treeId)
-      treeObj.updateNode(selectedNode)
-    },
-    commitVariable() {
-      this.$refs['ruleForm'].validate((valid) => {
-        if (!valid) {
-          return
-        }
-        if (this.variableNameExist(this.variableForm['name'])) {
-          this.$message.warning('该变量名已存在')
-          return
-        }
-        const moduleInfo = this.getModuleInfo()
-        const createData = {
-          'name': this.variableForm['name'],
-          'value': this.variableForm['value'],
-          'remark': this.variableForm['remark'],
-          'module_id':  moduleInfo.id,
-          'module_type':  moduleInfo.type
-        }
-        createVariable(createData).then(response => {
-          this.variableList.push(response.data)
-          this.variableForm = {}
-          this.showNewVarDialog = false
-          this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
-        })
-      })
-    },
-    editVariable(row) {
-      this.editRow = JSON.stringify(row)
-      row.edit = true
-    },
-    cancelEdit(row, index) {
-      if (row.edit === false) return
-      row.edit = false
-      this.variableList.splice(index, 1, JSON.parse(this.editRow))
-    },
-    saveVariable(row) {
-      if (row.edit === false) return
-      const pattern = /\$\{.*\}/
-      if (!row.name.match(pattern))  {
-        this.$message.error('变量名格式: ${xxx}')
-        return
-      }
-      updateVariable(row.id, row).then(() => {
-        row.edit = false
-        this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
-      })
+    editVariable(row, index) {
+      this.editIndex = index
+      this.variableForm = row
+      this.showNewVarDialog = true
     },
     delVariable(row, index) {
       this.$messageBox.confirm(
@@ -212,12 +165,57 @@ export default {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning',
-      }).then( () => {
+        }).then( () => {
         deleteVariable(row.id).then(() => {
           this.variableList.splice(index, 1)
-          this.updateZTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
+          this.updateTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
         })
       })
+    },
+    commitVariable() {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        const moduleInfo = this.getModuleInfo()
+        const commitData = {
+          'name': this.variableForm['name'],
+          'value': this.variableForm['value'],
+          'remark': this.variableForm['remark'],
+          'module_id':  moduleInfo.id,
+          'module_type':  moduleInfo.type
+        }
+        if (this.variableForm.id !== undefined) {
+          updateVariable(this.variableForm.id, commitData).then((response) => {
+            this.variableForm = this.$options.data().variableForm
+            this.showNewVarDialog = false
+            if (this.editIndex !== null) {
+              this.variableList.splice(this.editIndex, 1, response.data)
+            }
+            this.editIndex = this.$options.data().editIndex
+            this.updateTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
+          })
+        } else {
+          if (this.variableNameExist(this.variableForm['name'])) {
+            this.$message.warning('该变量名已存在')
+            return
+          }
+          createVariable(commitData).then(response => {
+            this.variableList.push(response.data)
+            this.variableForm = this.$options.data().variableForm
+            this.showNewVarDialog = false
+            this.updateTreeNode(NODE.ExtraDataKey.VARIABLE, this.variableList)
+          })
+        }
+      })
+    },
+    updateTreeNode(extraDataKey, extraDataValue) {
+      const selectedNode = this.$store.state.tree.selectedNode
+      selectedNode.meta['extra_data'][extraDataKey] = extraDataValue
+      const treeId = this.$store.state.tree.treeId
+      const treeObj = $.fn.zTree.getZTreeObj(treeId)
+      treeObj.updateNode(selectedNode)
+      this.$store.commit('tree/SET_SELECT_NODE', selectedNode)
     },
   }
 }

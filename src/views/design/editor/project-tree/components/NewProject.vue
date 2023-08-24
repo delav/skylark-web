@@ -75,7 +75,7 @@ export default {
   created() {
   },
   methods: {
-    async createNewProject() {
+    createNewProject() {
       let createData = {}
       if (this.newProjectName === '') {
         this.$message.warning('项目名称不能为空')
@@ -96,12 +96,12 @@ export default {
         text: '创建项目中，请稍后...',
         background: 'rgba(0, 0, 0, 0.8)',
       })
-      const response = await createProject(createData).catch(() => {
+      createProject(createData).then(response => {
+        loading.close()
+        this.$emit('successAction', response.data)
+      }).catch(() => {
         loading.close()
       })
-      await this.$store.dispatch('base/getProjects')
-      this.$emit('successAction', response.data)
-      loading.close()
     },
   }
 }

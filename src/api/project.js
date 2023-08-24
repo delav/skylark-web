@@ -22,3 +22,10 @@ export function createProject(data) {
     data: data
   })
 }
+
+export function fetchProjectTree() {
+  return request({
+    url: '/project/tree',
+    method: 'get',
+  })
+}

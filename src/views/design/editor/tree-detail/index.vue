@@ -1,32 +1,26 @@
 <template>
   <div class="tree-detail">
-    <empty v-if="isEmpty"></empty>
-    <case v-else-if="isCase"></case>
-    <suite v-else-if="isSuite"></suite>
-    <dir v-else-if="isDir"></dir>
-    <const v-else-if="isConst"></const>
-    <file v-else-if="isFile"></file>
+    <case v-if="isCase" />
+    <suite v-else-if="isSuite" />
+    <dir v-else-if="isDir" />
+    <empty v-else-if="isEmpty" />
   </div>
 </template>
 
 <script>
-import Empty from "@/views/design/editor/tree-detail/empty";
+import NODE from "@/constans/node";
 import Case from "@/views/design/editor/tree-detail/case";
 import Suite from "@/views/design/editor/tree-detail/suite";
 import Dir from "@/views/design/editor/tree-detail/dir";
-import Const from "@/views/design/editor/tree-detail/const";
-import File from "@/views/design/editor/tree-detail/file";
-import NODE from "@/constans/node";
+import Empty from "@/views/design/editor/tree-detail/empty";
 
 export default {
   name: 'TreeDetail',
   components: {
-    Empty,
     Case,
     Suite,
     Dir,
-    Const,
-    File,
+    Empty,
   },
   computed: {
     isEmpty() {

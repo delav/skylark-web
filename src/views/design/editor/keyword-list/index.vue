@@ -6,7 +6,7 @@
           class="keyword-search"
           v-model="searchInput"
           @change="filterKeyword"
-          placeholder="关键字搜索">
+          placeholder="组件搜索">
         </el-input>
         <el-tooltip
           popper-class="custom-tooltip"

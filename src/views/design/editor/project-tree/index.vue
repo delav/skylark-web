@@ -2,21 +2,15 @@
   <div class="project-tree">
     <div v-show="!hideTree" class="project-show">
       <div class="head">
-        <el-select
-          class="project-selector"
+        <el-cascader
+          ref="projectCascader"
           v-model="projectId"
-          placement="bottom-start"
+          :options="projectTreeList"
+          :props="cascaderSetting"
+          :show-all-levels="false"
+          @change="changeProject"
           placeholder="选择项目"
-          :popper-append-to-body="false"
-        >
-          <el-option
-            v-for="(item, index) in projectList"
-            :key="index"
-            :label="item.name"
-            :value="item.id"
-            @click.native="changeProject(item.id, item.name)"
-          />
-        </el-select>
+        />
         <el-tooltip
           popper-class="custom-tooltip"
           class="tooltip-icon"
@@ -150,7 +144,7 @@ import NodeAction from "@/views/design/editor/project-tree/components/NodeAction
 import UploadFile from "@/views/design/editor/project-tree/components/UploadFile";
 import NODE from "@/constans/node";
 import { ElLoading } from "element-plus";
-import { updateProject } from "@/api/project";
+import { updateProject, fetchProjectTree } from "@/api/project";
 import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite, duplicateSuite } from "@/api/suite";
 import { fetchCaseNode, createCase, updateCase, deleteCase, duplicateCase } from "@/api/case";
@@ -206,7 +200,20 @@ export default {
           onCollapse: this.zTreeOnCollapse,
         },
       },
+      cascaderSetting: {
+        label: 'name',
+        value: 'id',
+        children: 'children',
+        leaf: 'leaf',
+        expandTrigger: 'hover',
+        emitPath: false
+      },
+      projectTreeList: [],
       projectId: '',
+      projectError: {
+        value: false,
+        message: 'Error'
+      },
       zTreeObj: null,
       zTreeNodes: [],
       showEnvDialog: false,
@@ -236,19 +243,34 @@ export default {
     }
   },
   created() {
+    this.getProjectTreeList()
     this.$store.dispatch('scalar/getPriorities')
   },
   methods: {
-    changeProject(pId, name) {
-      fetchBaseDir(pId).then(response => {
+    getProjectTreeList() {
+      fetchProjectTree().then(response => {
+        this.projectTreeList = response.data
+      })
+    },
+    changeProject() {
+      const checkNodes = this.$refs['projectCascader'].getCheckedNodes()
+      const checkProject = checkNodes.pop()['data']
+      this.loadProjectData(checkProject['id'], checkProject['name'])
+    },
+    loadProjectData(projectId, projectName) {
+      fetchBaseDir(projectId).then(response => {
         // this.zTreeNodes = formatBaseNodes(response.data)
         this.zTreeNodes = response.data
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/RELOAD_STATE')
-        this.$store.commit('tree/SET_PROJECT_ID', pId)
-        this.$store.commit('tree/SET_PROJECT_NAME', name)
+        this.$store.commit('tree/SET_PROJECT_ID', projectId)
+        this.$store.commit('tree/SET_PROJECT_NAME', projectName)
+      }).catch(() => {
+        this.zTreeNodes = []
+        this.$store.commit('entity/RELOAD_STATE')
+        this.$store.commit('tree/RELOAD_STATE')
       })
-      this.$store.dispatch('scalar/getProjectTags', pId)
+      this.$store.dispatch('scalar/getProjectTags', projectId)
     },
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
@@ -398,7 +420,7 @@ export default {
           if (treeNode.desc === NODE.NodeDesc.SUITE) {
             this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
           } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-            this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
+            this.changeNodeStore(treeNode, NODE.DetailType.DIR)
           }
           this.$store.commit('entity/RELOAD_STATE')
         }
@@ -408,7 +430,7 @@ export default {
             this.changeNodeStore(treeNode, NODE.DetailType.CONST)
           })
         } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
+          this.changeNodeStore(treeNode, NODE.DetailType.DIR)
         }
         this.$store.commit('entity/RELOAD_STATE')
       } else if (treeNode.type === NODE.NodeCategory.PROJECTFILE) {
@@ -417,7 +439,7 @@ export default {
             this.changeNodeStore(treeNode, NODE.DetailType.FILE)
           })
         } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          this.changeNodeStore(treeNode, NODE.DetailType.EMPTY)
+          this.changeNodeStore(treeNode, NODE.DetailType.DIR)
         }
         this.$store.commit('entity/RELOAD_STATE')
       }
@@ -792,10 +814,11 @@ export default {
       this.showNewDialog = false
     },
     successNewProject(projectInfo) {
-      console.log(projectInfo)
-      console.log(this.$store.state.base.projectList)
-      this.projectId = projectInfo['id']
-      this.changeProject(projectInfo['id'], projectInfo['name'])
+      fetchProjectTree().then(response => {
+        this.projectTreeList = response.data
+        this.projectId = projectInfo['id']
+        this.loadProjectData(projectInfo['id'], projectInfo['name'])
+      })
     }
   }
 }
@@ -815,12 +838,11 @@ $toolHeight: 40px;
       height: $selectorHeight;
       width: 100%;
       padding: 5px 0 0 5px;
-      .project-selector {
-        float: left;
+      display: flex;
+      :deep(.el-cascader) {
         width: calc(100% - #{$foldWidth});
       }
       .tooltip-icon {
-        float: left;
         width: $foldWidth;
       }
     }
