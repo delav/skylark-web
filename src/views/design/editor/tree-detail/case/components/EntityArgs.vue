@@ -40,6 +40,14 @@
               @change="updateCaseEntities"
               v-model="entityArgs['inputValues'][index]">
             </el-input>
+            <el-tooltip
+              popper-class="custom-tooltip"
+              placement="top-start"
+              effect="dark"
+              content="格式化编辑"
+            >
+              <el-icon class="argument-icon" color="#f56c6c" @click="formatEditJson(index)"><Crop /></el-icon>
+            </el-tooltip>
           </p>
         </template>
         <template v-if="inputType===getArgType('list')||inputType===getArgType('dict')">
@@ -112,11 +120,33 @@
         </p>
       </div>
     </div>
+    <div class="dialog-area">
+      <el-dialog
+        width="70%"
+        v-model="showJsonDialog"
+        title="格式化编辑"
+        :close-on-click-modal="false"
+        :destroy-on-close="true"
+      >
+        <div class="editor-content">
+          <json-editor
+            :options="jsonOptions"
+            v-model="jsonValue"
+            :style="{ height: '360px', overflowX: 'hidden', overflowY: 'auto' }"
+          />
+        </div>
+        <template #footer>
+          <el-button @click="cancelEditArgValue">取消</el-button>
+          <el-button type="primary" @click="saveEditArgValue">确定</el-button>
+        </template>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
+import JsonEditor from '@/components/JsonEditor'
 // import SvgIcon from "@/components/SvgIcon";
 import KEYWORD from "@/constans/keyword";
 import { deepCopy } from "@/utils/dcopy";
@@ -125,7 +155,8 @@ import { getKeywordUid } from "@/utils/keyword";
 export default {
   name: 'EntityArgs',
   components: {
-    draggable
+    draggable,
+    JsonEditor
   },
   data() {
     return {
@@ -136,6 +167,20 @@ export default {
       entityArgs: {},
       expandInputArg: true,
       expandOutputArg: true,
+      jsonOptions: {
+        mode: 'code',
+        history: false,
+        search: false,
+        statusBar: false,
+        enableSort: false,
+        enableTransform: false,
+        navigationBar: false,
+      },
+      jsonValue: '',
+      editIndex: 0,
+      showJsonDialog: false,
+      rawJsonValue: '',
+      isJsonString: false
     }
   },
   computed: {
@@ -243,7 +288,7 @@ export default {
         this.entityArgs['outputNames'] = []
         this.entityArgs['outputValues'] = []
       } else if (this.outputType === this.getArgType('single')) {
-        this.entityArgs['outputNames'] = ['Result']
+        this.entityArgs['outputNames'] = ['result']
         this.entityArgs['outputValues'] = [entity['output_args']]
         this.entityArgs['outputDesc'] = [this.getKeywordAttr('output_desc', keyword)]
       }
@@ -267,6 +312,40 @@ export default {
       cInput.select()
       document.execCommand('Copy')
       cInput.remove()
+    },
+    formatEditJson(index) {
+      const inputVal = this.entityArgs['inputValues'][index]
+      if (typeof inputVal == 'string') {
+        try {
+          const obj = JSON.parse(inputVal)
+          if (typeof obj == 'object' && obj) {
+            this.jsonValue = obj
+            this.isJsonString = true
+          } else {
+            this.jsonValue = inputVal
+          }
+        } catch (e) {
+          this.jsonValue = inputVal
+        }
+      } else {
+        this.jsonValue = inputVal
+      }
+      this.editIndex = index
+      this.rawJsonValue = inputVal
+      this.showJsonDialog = true
+    },
+    cancelEditArgValue() {
+      this.entityArgs['inputValues'][this.editIndex] = this.rawJsonValue
+      this.showJsonDialog = false
+    },
+    saveEditArgValue() {
+      if (this.isJsonString) {
+        this.entityArgs['inputValues'][this.editIndex] = JSON.stringify(this.jsonValue)
+      } else {
+        this.entityArgs['inputValues'][this.editIndex] = this.jsonValue
+      }
+      this.showJsonDialog = false
+      this.updateCaseEntities()
     }
   }
 }
@@ -322,12 +401,20 @@ $labelWidth: 80px;
           overflow: hidden;
           text-overflow: ellipsis;
           left: 0;
+          padding-left: 5px;
           position: absolute;
           line-height: 32px;
         }
         .argument-value {
           margin-left: calc(#{$labelWidth} + 20px);
-          width: calc(100% - #{$labelWidth} - 20px);
+          width: calc(100% - #{$labelWidth} - 44px);
+        }
+        .argument-icon {
+          width: 20px;
+          margin: 0 2px 0 2px;
+          cursor: pointer;
+          vertical-align: -20%;
+          font-size: 16px;
         }
       }
       .dynamic-argument {
@@ -341,6 +428,7 @@ $labelWidth: 80px;
           overflow: hidden;
           text-overflow: ellipsis;
           left: 0;
+          padding-left: 5px;
           position: absolute;
           line-height: 32px;
         }
@@ -393,6 +481,7 @@ $labelWidth: 80px;
           left: 0;
           position: absolute;
           line-height: 32px;
+          padding-left: 5px;
         }
         .argument-value {
           margin-left: calc(#{$labelWidth} + 20px);
@@ -406,6 +495,12 @@ $labelWidth: 80px;
           font-size: 16px;
         }
       }
+    }
+  }
+  .dialog-area {
+    .editor-content {
+      max-height: 75%;
+      min-height: 360px;
     }
   }
 }

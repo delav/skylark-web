@@ -1,8 +1,9 @@
 <template>
   <div class="suite-detail">
-    <testsuite v-if="isTestsuite" />
-    <const v-if="isConst" />
-    <file v-if="isFile" />
+    <test-suite v-if="isTestSuite" />
+    <const v-else-if="isConst" />
+    <file v-else-if="isFile" />
+    <keyword-suite v-else-if="isKeywordSuite" />
   </div>
 </template>
 
@@ -10,17 +11,19 @@
 import NODE from "@/constans/node";
 import Const from "@/views/design/editor/tree-detail/suite/components/Const";
 import File from "@/views/design/editor/tree-detail/suite/components/File";
-import Testsuite from '@/views/design/editor/tree-detail/suite/components/Testsuite';
+import KeywordSuite from '@/views/design/editor/tree-detail/suite/components/KeywordSuite';
+import TestSuite from '@/views/design/editor/tree-detail/suite/components/TestSuite';
 
 export default {
   name: 'SuiteDetail',
   components: {
-    Testsuite,
+    TestSuite,
     Const,
     File,
+    KeywordSuite,
   },
   computed: {
-    isTestsuite() {
+    isTestSuite() {
       return this.$store.state.tree.nodeCategory === NODE.NodeCategory.TESTCASE
     },
     isConst() {
@@ -28,35 +31,14 @@ export default {
     },
     isFile() {
       return this.$store.state.tree.nodeCategory === NODE.NodeCategory.PROJECTFILE
+    },
+    isKeywordSuite() {
+      return this.$store.state.tree.nodeCategory === NODE.NodeCategory.KEYWORD
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.suite-detail {
-  width: 100%;
-  height: 100%;
-  padding: 5px;
-  overflow-y: auto;
-  .fixture-list {
-    width: 100%;
-    margin-top: 10px;
-    .collapse-title {
-      padding-left: 15px;
-      color: #606266;
-      font-size: 14px;
-    }
-  }
-  .variable-list {
-    width: 100%;
-    margin-top: 10px;
-  }
-}
-:deep(.el-collapse-item__header) {
-  background-color: #f4f5f7;
-  border-radius: 0;
-  box-shadow: 0 0 0 1px #e4e7ed;
-  border-bottom: 0;
-}
+
 </style>

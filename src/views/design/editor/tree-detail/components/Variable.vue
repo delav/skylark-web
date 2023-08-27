@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="175" align="center">
           <template #header>
-            <el-button size="small" type="primary" @click="showVarDialog">新建变量</el-button>
+            <el-button size="small" @click="showVarDialog" plain>新建变量</el-button>
           </template>
           <template #default="scope">
             <el-link type="warning" style="font-size: 13px" :underline="false" @click="editVariable(scope.row, scope.$index)">

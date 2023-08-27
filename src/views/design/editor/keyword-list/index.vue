@@ -59,9 +59,9 @@
 </template>
 
 <script>
-import draggable from "vuedraggable";
-import variables from "@/styles/variables.module.scss";
 import axios from "axios";
+import variables from "@/styles/variables.module.scss";
+import draggable from "vuedraggable";
 import KeywordItem from "@/views/design/editor/keyword-list/components/KeywordItem";
 import { getLibKeyword, getUserKeyword } from "@/api/keyword";
 import { guid } from "@/utils/other";

@@ -1,5 +1,5 @@
 <template>
-  <div class="suite-detail">
+  <div class="test-suite">
     <div class="document">
       <document :cate-document="cateDocument"/>
     </div>
@@ -26,7 +26,7 @@ import Fixture from "@/views/design/editor/tree-detail/components/Fixture";
 import Variable from '@/views/design/editor/tree-detail/components/Variable';
 
 export default {
-  name: 'SuiteDetail',
+  name: 'TestSuite',
   components: {
     Document,
     Fixture,
@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.suite-detail {
+.test-suite {
   width: 100%;
   height: 100%;
   padding: 5px;

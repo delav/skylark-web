@@ -1,14 +1,18 @@
-import router from './router'
-import store from './store'
-import NProgress from 'nprogress'
-import { ElMessage } from 'element-plus'
+import router from "./router";
+import store from "./store";
+import NProgress from "nprogress";
+import { ElMessage } from "element-plus";
 import { NotAuthUrl } from "@/utils/auth";
-import 'nprogress/nprogress.css'
-import { getToken, notAuth } from '@/utils/auth'
+import { getToken, notAuth } from "@/utils/auth";
+import { isMobile } from "@/utils/other";
+import "nprogress/nprogress.css";
 
 NProgress.configure({ showSpinner: false })
 
 router.beforeEach(async(to, from, next) => {
+  if (isMobile()) {
+    next({ path: '/404' })
+  }
   // start progress bar
   NProgress.start()
 
