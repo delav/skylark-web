@@ -16,8 +16,8 @@
         border
         style="width: 100%"
         :row-style="{height: '0'}"
-        :cell-style="{padding: '3px'}"
-        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px' }"
+        :cell-style="{padding: '3px', color: '#666', fontSize:'13px'}"
+        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px', fontWeight: 500, fontSize:'13px' }"
       >
         <el-table-column fixed prop="name" label="变量名" width="180" sortable>
           <template #default="scope">
@@ -44,10 +44,10 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="125" align="center">
           <template #default="scope">
-            <el-link type="warning" style="font-size: 13px" :underline="false" @click="editVariableAction(scope.row)">
+            <el-link type="warning" style="font-size: 12px" :underline="false" @click="editVariableAction(scope.row)">
               <el-icon><Edit /></el-icon>编辑
             </el-link>
-            <el-link type="danger" style="margin-left: 8px; font-size: 13px" :underline="false" @click="delVariableAction(scope.row.id, scope.$index)">
+            <el-link type="danger" style="margin-left: 8px; font-size: 12px" :underline="false" @click="delVariableAction(scope.row.id, scope.$index)">
               <el-icon><Delete /></el-icon>删除
             </el-link>
           </template>
@@ -102,7 +102,7 @@ export default {
       variableForm: {},
     }
   },
-  created() {
+  mounted() {
     this.getEnvVariables()
   },
   methods: {

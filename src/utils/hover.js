@@ -3,7 +3,9 @@
 export function addSvgHover(idPrefix, tId, className, title=null, callback) {
   const selector = $('#' + tId + '_a')
   const iconId = idPrefix + tId
-  if (document.getElementById(iconId)) return
+  if (document.getElementById(iconId)) {
+    return
+  }
   let nodeIcon = formatString('<span class="{0}" id="{1}"></span>', className, iconId)
   if (title) {
     nodeIcon = formatString('<span class="{0}" id="{1}" title="{2}"></span>', className, iconId, title)

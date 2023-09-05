@@ -4,7 +4,6 @@ import user from "@/store/modules/user";
 import base from "@/store/modules/base";
 import tree from "@/store/modules/design/tree";
 import entity from "@/store/modules/design/entity";
-import file from "@/store/modules/design/file";
 import keyword from "@/store/modules/design/keyword";
 import action from "@/store/modules/design/action";
 import plan from "@/store/modules/build/plan";
@@ -17,7 +16,6 @@ const store = createStore({
       base,
       tree,
       entity,
-      file,
       keyword,
       action,
       plan,

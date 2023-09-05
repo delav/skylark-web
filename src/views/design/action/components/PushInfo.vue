@@ -69,7 +69,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.getVersionList()
     this.versionForm.project = this.$store.state.tree.projectName
   },

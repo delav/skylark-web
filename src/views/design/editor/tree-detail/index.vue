@@ -3,7 +3,7 @@
     <case v-if="isCase" />
     <suite v-else-if="isSuite" />
     <dir v-else-if="isDir" />
-    <empty v-else-if="isEmpty" />
+    <empty else />
   </div>
 </template>
 
@@ -23,9 +23,6 @@ export default {
     Empty,
   },
   computed: {
-    isEmpty() {
-      return this.$store.state.tree.detailType === NODE.DetailType.EMPTY
-    },
     isCase() {
       return this.$store.state.tree.detailType === NODE.DetailType.CASE
     },
@@ -34,12 +31,6 @@ export default {
     },
     isDir() {
       return this.$store.state.tree.detailType === NODE.DetailType.DIR
-    },
-    isConst() {
-      return this.$store.state.tree.detailType === NODE.DetailType.CONST
-    },
-    isFile() {
-      return this.$store.state.tree.detailType === NODE.DetailType.FILE
     }
   },
   methods: {

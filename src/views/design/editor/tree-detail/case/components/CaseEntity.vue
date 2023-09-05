@@ -63,7 +63,7 @@ export default {
       deep: true,
     }
   },
-  created() {
+  mounted() {
     this.addKeyboardEvent()
   },
   unmounted() {
@@ -178,7 +178,7 @@ export default {
       float: left;
       width: $entityGridWidth;
       height: $entityGridHeight;
-      border: 1px dashed #D3D3D3;
+      border: 1px dashed #d3d3d3;
       //border-bottom: 2px dashed #D3D3D3;
       text-align: center;
       line-height: calc(#{$entityGridHeight} - 2px);
@@ -189,7 +189,7 @@ export default {
         right: -15px;
         top: 0;
         font-size: 30px;
-        color: #D3D3D3;
+        color: #d3d3d3;
       }
       &:last-child i:last-child{
         font-size: 0
@@ -209,9 +209,9 @@ export default {
   }
 }
 .custom-ghost {
-  background-color: #deebff;
+  background-color: #e4e7ed;
 }
 .custom-drag {
-  background-color: #cfcfcf;
+  background-color: #ebeef5;
 }
 </style>

@@ -96,12 +96,12 @@ export default {
       return route.path
     },
     getRecentlyRecordList() {
-      fetchRecords(1, 10).then(response => {
+      fetchRecords(1, 15).then(response => {
         this.recentlyRecordList = response.data.data
       })
     },
     getInstantlyPlanList() {
-      fetchInstantlyPlans(10).then(response => {
+      fetchInstantlyPlans(5).then(response => {
         this.instantlyPlanList = response.data
       })
     }
@@ -110,6 +110,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 $menuItemHeight: 40px;
 $menuHeight: 130px;
 $planHeight: 260px;
@@ -133,7 +134,8 @@ $planHeight: 260px;
         line-height: $menuItemHeight;
       }
       .el-menu-item.is-active {
-        color: #6681FA; background-color: #EAEEFF;
+        color: $mainColor;
+        background-color: #EAEEFF;
       }
       .icon-class {
         margin: 0 5px;

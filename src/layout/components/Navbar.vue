@@ -10,45 +10,48 @@
         </el-menu-item>
       </el-menu>
     </div>
-    <div class="language">
-      <el-dropdown :command="changeLanguage">
+    <div class="info">
+      <div class="language">
+        <el-dropdown :command="changeLanguage">
         <span class="el-dropdown-link">
           {{ $t('Navbar._language') }}
           <el-icon class="el-icon--right">
             <ArrowDown />
           </el-icon>
         </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item @click.native="changeLanguage('CN')">
-              <span>中文</span>
-            </el-dropdown-item>
-            <el-dropdown-item @click.native="changeLanguage('US')">
-              <span>English</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-    <div class="profile">
-      <el-dropdown>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click.native="changeLanguage('CN')">
+                <span>中文</span>
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="changeLanguage('US')">
+                <span>English</span>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+      <div class="divider"></div>
+      <div class="profile">
+        <el-dropdown>
         <span class="el-dropdown-link">
           {{ userName }}
           <el-icon class="el-icon--right">
             <ArrowDown />
           </el-icon>
         </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item icon="Setting">
-              设置
-            </el-dropdown-item>
-            <el-dropdown-item divided @click.native="logout" icon="Right">
-              退出
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item icon="Setting">
+                设置
+              </el-dropdown-item>
+              <el-dropdown-item divided @click.native="logout" icon="Right">
+                退出
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
     </div>
   </div>
 </template>
@@ -96,7 +99,9 @@ export default {
   methods: {
     changeLanguage(val) {
       console.log('切换语言')
-      if (this.$i18n.locale === val) return
+      if (this.$i18n.locale === val) {
+        return
+      }
       this.$i18n.locale = val
       this.$root.$i18n.locale = val
     },

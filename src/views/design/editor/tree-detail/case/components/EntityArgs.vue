@@ -69,6 +69,9 @@
                   type="text"
                   @change="updateCaseEntities"
                   v-model="entityArgs['inputValues'][index]">
+                  <template #suffix>
+                    <el-icon class="el-input__icon" style="cursor: pointer" @click="formatEditJson(index)"><Crop /></el-icon>
+                  </template>
                 </el-input>
                 <el-tooltip
                   popper-class="custom-tooltip"
@@ -358,11 +361,12 @@ $labelWidth: 80px;
 .entity-args {
   width: 100%;
   height: 100%;
-  padding: 5px 0 5px 0;
+  padding: 5px 0;
   overflow-y: auto;
   .entity-desc {
     height: 60px;
     p {
+      padding: 0 5px;
       font-size: 13px;
       margin: 0;
       color: #6b778c;
@@ -507,6 +511,7 @@ $labelWidth: 80px;
 :deep(.el-input) {
   .el-input__wrapper {
     border-radius: 0;
+    padding: 1px 6px 1px 10px;
     input {
       border-radius: 0;
     }

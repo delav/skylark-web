@@ -56,7 +56,7 @@ $itemHeight: 50px;
     line-height: $itemHeight;
   }
   .item-tip {
-    color: #303133;
+    color: #606266;
     font-size: 16px;
     line-height: $itemHeight;
     vertical-align: -5%;

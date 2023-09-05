@@ -40,6 +40,18 @@ export default {
       return this.$store.state.tree.nodeCategory === NODE.NodeCategory.KEYWORD
     }
   },
+  watch: {
+    '$store.state.tree.currentNodeId': {
+      handler() {
+        const nodeInfo = this.$store.state.tree.selectedNode
+        if (JSON.stringify(nodeInfo) === '{}') {
+          return
+        }
+        this.$store.dispatch('entity/getEntities', nodeInfo['meta']['id'])
+      },
+      immediate: true
+    },
+  },
   mounted() {
     dragHController('infos', 'args', 'resize-y')
   },

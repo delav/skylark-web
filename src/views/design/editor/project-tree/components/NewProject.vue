@@ -72,7 +72,7 @@ export default {
       return this.$store.state.base.projectList
     },
   },
-  created() {
+  mounted() {
   },
   methods: {
     createNewProject() {

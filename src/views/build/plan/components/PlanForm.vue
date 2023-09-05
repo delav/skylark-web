@@ -194,7 +194,10 @@ export default {
       return this.$store.state.base.showRegion
     }
   },
-  created() {
+  mounted() {
+  },
+  unmounted() {
+    this.$options.data()
   },
   methods: {
     changeProject(project) {

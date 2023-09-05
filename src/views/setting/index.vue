@@ -53,7 +53,7 @@ export default {
       return path
     }
   },
-  created() {
+  mounted() {
     this.$store.dispatch('base/getBaseInfo')
   },
   unmounted() {

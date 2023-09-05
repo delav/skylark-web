@@ -77,7 +77,7 @@ export default {
     .collapse-title {
       padding-left: 15px;
       color: #606266;
-      font-size: 14px;
+      font-size: 13px;
     }
   }
   .variable-list {

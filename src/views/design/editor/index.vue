@@ -51,12 +51,12 @@ export default {
     float: left;
     .project {
       height: 100%;
-      width: 30%;
+      width: $treeDefaultWidth;
       float: left;
     }
     .detail {
       height: 100%;
-      width: calc(70% - #{$leftResizeWidth});
+      width: calc(100% - #{$treeDefaultWidth} - #{$leftResizeWidth});
       float: left;
       overflow: hidden;
     }

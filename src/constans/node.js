@@ -25,13 +25,10 @@ const ActionType = {
 }
 
 const DetailType = {
-  EMPTY: 0,
   CASE: 1,
   SUITE: 2,
   DIR: 3,
   ROOT: 4,
-  CONST: 5,
-  FILE: 6,
 }
 
 const ModuleType = {

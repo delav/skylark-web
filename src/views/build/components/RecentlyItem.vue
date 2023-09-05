@@ -62,7 +62,7 @@ $itemHeight: 48px;
   }
   .item-tip {
     width: 50px;
-    margin-right: 10px;
+    margin-right: 5px;
     line-height: $itemHeight;
     font-size: 12px;
     .running-text {

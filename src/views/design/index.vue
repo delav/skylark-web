@@ -15,7 +15,7 @@ export default {
     Action,
     Editor
   },
-  created() {
+  mounted() {
     this.$store.dispatch('base/getBaseInfo')
   },
   unmounted() {

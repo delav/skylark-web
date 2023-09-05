@@ -40,10 +40,10 @@
       </div>
       <div class="tool">
         <span class="setting-button">
-          <el-button type="info" size="small" @click="envSetting"><el-icon><Setting /></el-icon>变量配置</el-button>
+          <el-button type="primary" size="small" @click="envSetting"><el-icon><Setting /></el-icon>变量配置</el-button>
         </span>
         <span class="setting-button">
-          <el-button type="info" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
+          <el-button type="primary" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
         </span>
       </div>
     </div>
@@ -242,7 +242,7 @@ export default {
       ]
     }
   },
-  created() {
+  mounted() {
     this.getProjectTreeList()
     this.$store.dispatch('scalar/getPriorities')
   },
@@ -398,53 +398,16 @@ export default {
     zTreeOnClick(event, treeId, treeNode) {
       const selectNodeId = this.$store.state.tree.currentNodeId
       if (treeNode.id === selectNodeId) return
-      if (treeNode.type === NODE.NodeCategory.TESTCASE) {
-        if (treeNode.desc === NODE.NodeDesc.CASE) {
-          this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
-            this.changeNodeStore(treeNode, NODE.DetailType.CASE)
-          })
-        } else {
-          if (treeNode.desc === NODE.NodeDesc.SUITE) {
-            this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
-          } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-            this.changeNodeStore(treeNode, NODE.DetailType.DIR)
-          }
-          this.$store.commit('entity/RELOAD_STATE')
-        }
-      } else if (treeNode.type === NODE.NodeCategory.KEYWORD) {
-        if (treeNode.desc === NODE.NodeDesc.CASE) {
-          this.$store.dispatch('entity/getEntities', treeNode.mid).then(() => {
-            this.changeNodeStore(treeNode, NODE.DetailType.CASE)
-          })
-        } else {
-          if (treeNode.desc === NODE.NodeDesc.SUITE) {
-            this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
-          } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-            this.changeNodeStore(treeNode, NODE.DetailType.DIR)
-          }
-          this.$store.commit('entity/RELOAD_STATE')
-        }
-      } else if (treeNode.type === NODE.NodeCategory.VARIABLE) {
-        if (treeNode.desc === NODE.NodeDesc.SUITE) {
-          this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
-            this.changeNodeStore(treeNode, NODE.DetailType.CONST)
-          })
-        } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          this.changeNodeStore(treeNode, NODE.DetailType.DIR)
-        }
-        this.$store.commit('entity/RELOAD_STATE')
-      } else if (treeNode.type === NODE.NodeCategory.PROJECTFILE) {
-        if (treeNode.desc === NODE.NodeDesc.SUITE) {
-          this.$store.dispatch('file/getFileContent', treeNode.mid).then(() => {
-            this.changeNodeStore(treeNode, NODE.DetailType.FILE)
-          })
-        } else if (treeNode.desc === NODE.NodeDesc.DIR) {
-          this.changeNodeStore(treeNode, NODE.DetailType.DIR)
-        }
-        this.$store.commit('entity/RELOAD_STATE')
+      if (treeNode.desc === NODE.NodeDesc.CASE) {
+        this.changeNodeStore(treeNode, NODE.DetailType.CASE)
+        return
+      } else if (treeNode.desc === NODE.NodeDesc.SUITE) {
+        this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
+      } else if (treeNode.desc === NODE.NodeDesc.DIR) {
+        this.changeNodeStore(treeNode, NODE.DetailType.DIR)
       }
+      this.$store.commit('entity/RELOAD_STATE')
     },
-    saveEnvVariables() {},
     showTreeMenu(x, y) {
       x = x + 15
       y = y + 15
@@ -917,13 +880,14 @@ $toolHeight: 40px;
         flex-direction: column-reverse;
         align-items: center;
         justify-content: center;
-        padding-left: 2px;
+        padding-left: 5px;
         .tool-icon {
           margin-bottom: 12px;
-          font-size: 28px;
+          font-size: 22px;
           color: $foldIconColor;
           cursor: pointer;
           font-weight: bold;
+          text-align: center;
           :hover {
             color: $foldIconHoverColor;
           }

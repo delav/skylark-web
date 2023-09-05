@@ -8,9 +8,9 @@ export function login(data) {
   })
 }
 
-export function getInfo(userId) {
+export function getInfo() {
   return request({
-    url: `/user/info/${userId}`,
+    url: `/user/info/1`,
     method: 'get'
   })
 }

@@ -296,7 +296,7 @@ $foldExpandIconSize: 32px;
   width: calc(#{$entityGridWidth} - 4px);
   height: calc(#{$entityGridHeight} - 4px);
   display: inline-block;
-  background-color: #9a6e3a;
+  background-color: #D3D3D3;
   cursor: move;
   overflow: hidden;
   position: relative;
@@ -338,6 +338,7 @@ $foldExpandIconSize: 32px;
   }
   .el-collapse-item__content {
     padding-bottom: 0;
+    color: #606266;
   }
 }
 </style>

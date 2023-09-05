@@ -142,14 +142,18 @@ export default {
     initCaseData() {
       Object.assign(this.$data, this.$options.data())
       const nodeInfo = this.$store.state.tree.selectedNode
-      if (JSON.stringify(nodeInfo) === '{}') return
+      if (JSON.stringify(nodeInfo) === '{}') {
+        return
+      }
       this.caseInfo = nodeInfo['meta']
       this.handlerTimeout(this.caseInfo.timeout)
       this.handlerPriority(this.caseInfo.priority_id)
       this.handlerTags(this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG])
     },
     handlerTags(itemTags) {
-      if (!itemTags) return
+      if (!itemTags) {
+        return
+      }
       const tagNames = []
       for (let i = 0; i < itemTags.length; i++) {
         tagNames.push(itemTags[i].name)
@@ -158,9 +162,13 @@ export default {
       this.cacheSelect = JSON.stringify(this.selectTags)
     },
     handlerTimeout(timeoutStr) {
-      if (!timeoutStr) return
+      if (!timeoutStr) {
+        return
+      }
       const numUnit = timeoutStr.split(' ')
-      if (numUnit.length !== 2) return
+      if (numUnit.length !== 2) {
+        return
+      }
       this.timeNum = numUnit[0]
       this.timeUnit = numUnit[1]
     },
@@ -214,7 +222,9 @@ export default {
     deleteCaseTag(tagName) {
       const caseTagList = this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG]
       const tagItem = caseTagList.find(item => item.name === tagName)
-      if (tagItem === undefined) return
+      if (tagItem === undefined) {
+        return
+      }
       const tagId = tagItem.id
       deleteTag(tagId).then(() => {
         this.cacheSelect = JSON.stringify(this.selectTags)

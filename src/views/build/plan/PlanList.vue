@@ -20,8 +20,15 @@
       </div>
     </div>
     <div class="item-body">
-      <el-table :data="planList" border stripe style="width: 100%">
-        <el-table-column fixed prop="title" label="计划名称" min-width="15%" show-overflow-tooltip />
+      <el-table
+        :data="planList"
+        :header-cell-style="{fontSize:'13px'}"
+        :cell-style="{color: '#666', fontSize:'13px'}"
+        border
+        stripe
+        style="width: 100%;font-size: 14px">
+        <el-table-column prop="id" label="编号" width="70" />
+        <el-table-column prop="title" label="计划名称" min-width="15%" show-overflow-tooltip />
         <el-table-column prop="project_name" label="项目" min-width="10%" show-overflow-tooltip />
         <el-table-column prop="branch" label="分支" min-width="10%" show-overflow-tooltip  />
         <el-table-column prop="env_id" label="环境" min-width="10%" show-overflow-tooltip >
@@ -89,6 +96,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        small
         background
         layout="prev, pager, next"
         :total="total"
@@ -145,7 +153,7 @@ export default {
       return this.$store.state.base.containAllProjectList
     }
   },
-  created() {
+  mounted() {
     this.getPlanList(1)
   },
   methods: {

@@ -15,18 +15,24 @@
       </el-select>
     </div>
     <div class="item-body">
-      <el-table :data="recordList" border style="width: 100%">
-        <el-table-column fixed prop="desc" label="描述" min-width="15%" show-overflow-tooltip>
+      <el-table
+        :data="recordList"
+        :header-cell-style="{fontSize:'13px'}"
+        :cell-style="{color: '#666', fontSize:'13px'}"
+        border
+        style="width: 100%">
+        <el-table-column prop="id" label="编号" width="70" />
+        <el-table-column prop="desc" label="描述" min-width="15%" show-overflow-tooltip>
           <template #default="scope">
             <el-link @click="routeToRecordDetail" :underline="false">{{ scope.row.desc }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="plan_id" label="关联计划" min-width="10%">
+        <el-table-column prop="plan_id" label="计划编号" min-width="10%">
           <template #default="scope">
             <el-link @click="routeToPlanDetail" :underline="false">{{ scope.row.plan_id }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="100px">
+        <el-table-column prop="status" label="构建状态" width="100">
           <template #default="scope">
             <span v-if="scope.row.status===0">运行中</span>
             <span v-if="scope.row.status===1">已完成</span>
@@ -58,11 +64,11 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="create_by" label="创建用户" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="create_by" label="执行用户" min-width="10%" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="create_at" label="创建时间" width="180px" show-overflow-tooltip >
+        <el-table-column prop="create_at" label="执行时间" width="180" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="periodic" label="定时任务" width="90px">
+        <el-table-column prop="periodic" label="定时任务" width="90">
           <template #default="scope">
             <span v-if="scope.row.periodic">是</span>
             <span v-else>否</span>
@@ -70,6 +76,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        small
         background
         layout="prev, pager, next"
         :total="total"
@@ -109,7 +116,7 @@ export default {
       return this.$store.state.base.containAllProjectList
     }
   },
-  created() {
+  mounted() {
     this.getRecordList(1)
   },
   methods: {

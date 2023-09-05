@@ -65,10 +65,9 @@ const actions = {
     })
   },
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      const uid = state.info.id
-      getInfo(uid).then(response => {
+      getInfo().then(response => {
         const data = response.data
         commit('SET_NAME', data.username)
         const extraData = {

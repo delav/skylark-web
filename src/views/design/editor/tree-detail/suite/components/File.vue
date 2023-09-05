@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import {fetchFileContent} from "@/api/file";
+
 export default {
   name: 'File',
   data() {
@@ -11,16 +13,27 @@ export default {
     }
   },
   watch: {
-    '$store.state.file.syncFileFlag': {
+    '$store.state.tree.currentNodeId': {
       handler() {
-        this.content = this.$store.state.file.fileContent
+        const nodeInfo = this.$store.state.tree.selectedNode
+        if (JSON.stringify(nodeInfo) === '{}') {
+          return
+        }
+        this.getFileContent(nodeInfo['meta']['id'])
       },
       immediate: true
-    }
+    },
   },
+  methods: {
+    getFileContent(suiteId) {
+      fetchFileContent(suiteId).then(response => {
+        this.content = response.data.file_text
+      })
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

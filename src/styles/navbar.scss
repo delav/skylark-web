@@ -9,10 +9,11 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    background-color: $menuBg;
     .navbar {
       width: 100%;
-      height: 100%;
+      height: calc(100% - 7px);
+      background-color: $menuBg;
+      box-shadow: 0 0 7px 0 #cccfd4;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -29,7 +30,7 @@
       }
       .router {
         height: 100%;
-        width: calc(100% - #{$logoWidth} - #{$languageWidth} - #{$profileWidth});
+        width: calc(100% - #{$logoWidth} - #{$infoWidth});
         .menu {
           height: 100%;
           border: none;
@@ -37,7 +38,7 @@
           .el-menu-item {
             color: $menuText;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             &:hover {
               color: $menuHoverText;
               background-color: $menuHoverBg;
@@ -50,24 +51,29 @@
           }
         }
       }
-      .language {
-        width: $languageWidth;
-        .el-dropdown-link {
-          cursor: pointer;
-          color: #ffffff;
-          display: flex;
-          align-items: center;
+      .info {
+        height: 100%;
+        width: $infoWidth;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .divider {
+          margin: 0 8px;
+          width: 1px;
+          height: 16px;
+          border-left: 1px solid #dcdfe6;
         }
-      }
-      .profile {
-        width: $profileWidth;
-        text-align: right;
-        margin-right: 15px;
-        .el-dropdown-link {
-          cursor: pointer;
-          color: #ffffff;
-          display: flex;
-          align-items: center;
+        .language {
+          .el-dropdown-link {
+            cursor: pointer;
+          }
+        }
+        .profile {
+          margin-right: 15px;
+          .el-dropdown-link {
+            cursor: pointer;
+          }
         }
       }
     }

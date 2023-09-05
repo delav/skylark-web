@@ -33,9 +33,12 @@ export default {
       createPlan(planData).then(() => {
         this.$store.commit('plan/SET_PLAN_PAGE', PAGE.PageType.LIST)
         this.$message.success('创建计划成功')
+        this.$router.push('/build/plan/list')
       })
     },
-    createAndBuildPlan() {}
+    createAndBuildPlan() {
+      this.$router.push('/build/plan/list')
+    }
   }
 }
 </script>

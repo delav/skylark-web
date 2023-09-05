@@ -2,16 +2,15 @@
 // main color
 $mainColor: #00acc1;
 // navbar
-$menuBg: #00acc1;
-$menuText: #fff;
-$menuActiveBg: #091e4214;
-$menuActiveText: #08ee64;
-$menuHoverBg: #3f6f9f;
-$menuHoverText: #08ee64;
-$logoWidth: 100px;
-$languageWidth: 80px;
-$profileWidth: 150px;
-$navbarHeight: 45px;
+$menuBg: #fff;
+$menuText: #a8a8a8;
+$menuActiveBg: #fff;
+$menuActiveText: #00acc1;
+$menuHoverBg: #fff;
+$menuHoverText: #555a64;
+$navbarHeight: 56px;
+$logoWidth: 120px;
+$infoWidth: 300px;
 // body
 $bodyBg: #fff;
 $bodyText: #5e6c84;
@@ -27,9 +26,9 @@ $unavailableIconColor: #909399;
 $resizeBg: #f4f5f7;
 $resizeHoverBg: #e6eaee;
 $leftResizeWidth: 5px;
-$rightResizeWidth: 5px;
+$rightResizeWidth: 1px;
 // tree with
-$treeDefaultWidth: 25%;
+$treeDefaultWidth: 350px;
 // fold with
 $foldWidth: 32px;
 $foldIconColor: #b2b3b7;

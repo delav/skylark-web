@@ -69,7 +69,7 @@ export default {
     entityStyle(entityItem) {
       const selectedEntities = this.$store.state.entity.selectedEntities
       if (selectedEntities.findIndex((item) => item['uuid'] === entityItem['uuid']) !== -1) {
-        return 'background: #dfe1e5'
+        return 'background: #dfe1e5; color:#00acc1'
       }
     }
   }

@@ -32,6 +32,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.keyword-suite {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  overflow-y: auto;
+}
 </style>

@@ -108,7 +108,7 @@ export default {
       return this.$store.state.base.showRegion
     },
   },
-  created() {
+  mounted() {
   },
   methods: {
     createInstantBuild () {
@@ -118,6 +118,7 @@ export default {
         }
         buildInstantTest(this.formData).then(response => {
           console.log(response.data)
+          this.router.push('/build/record/list')
         })
       })
     }
