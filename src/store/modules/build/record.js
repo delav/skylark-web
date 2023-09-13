@@ -1,7 +1,8 @@
+import { fetchRecords } from "@/api/record";
+
 const getRecordState = () => {
   return {
-    changeFlag: '',
-    recordData: {},
+    recentlyRecords: []
   }
 }
 
@@ -11,15 +12,22 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getRecordState())
   },
-  SET_CHANGE_FLAG: (state, flag) => {
-    state.changeFlag = flag
-  },
-  SET_RECORD_DATA: (state, data) => {
-    state.recordData = data
+  SET_RECENTLY_RECORDS: (state, recordArr) => {
+    state.recentlyRecords = recordArr
   }
 }
 
 const actions = {
+  getRecentlyRecordList({ commit }) {
+    return new Promise((resolve, reject) => {
+      fetchRecords(1,10).then(response => {
+        commit('SET_RECENTLY_RECORDS', response.data.data)
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
 }
 
 export default {

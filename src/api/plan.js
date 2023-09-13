@@ -16,11 +16,9 @@ export function updatePlan(planId, data) {
   })
 }
 
-export function fetchPlans(page, size, project=null) {
-  let params = { page: page, size: size }
-  if (project !== null) {
-    params.project = project
-  }
+export function fetchPlans(page, size, queryParams) {
+  let pageParams = { page: page, size: size }
+  const params = Object.assign({}, pageParams, queryParams)
   return request({
     url: '/build/plan',
     method: 'get',

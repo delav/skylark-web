@@ -56,9 +56,6 @@ export default {
   mounted() {
     this.$store.dispatch('base/getBaseInfo')
   },
-  unmounted() {
-    this.$store.commit('base/RESET_STATE')
-  },
   methods: {
     resolvePath(route) {
       return route.path

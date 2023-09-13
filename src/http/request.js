@@ -58,8 +58,9 @@ service.interceptors.response.use(
       status = false
       if (res.code === 40100) {
         // to re-login
-        router.push({ path: NotAuthUrl.Login }).then(() => {})
-        store.dispatch('user/resetToken').then(() => {})
+        store.dispatch('user/resetToken')
+        router.push({ path: NotAuthUrl.Login })
+        return
       }
       let timeout = setTimeout(() => {
         status = true

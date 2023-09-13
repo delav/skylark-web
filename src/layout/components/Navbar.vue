@@ -11,6 +11,32 @@
       </el-menu>
     </div>
     <div class="info">
+      <div class="handbook">
+        <el-link type="primary" :underline="false"><el-icon><Document /></el-icon>用户手册</el-link>
+      </div>
+      <div class="divider"></div>
+      <div class="feedback">
+        <el-link type="primary" :underline="false"><el-icon><EditPen /></el-icon>意见反馈</el-link>
+      </div>
+      <div class="divider"></div>
+      <div class="notice">
+        <el-badge :value="noticeMsgNum" :hidden="!noticeMsgNum" :max="9" class="item">
+          <el-popover
+            placement="top-start"
+            title="Title"
+            :width="200"
+            trigger="hover"
+            content="this is content, this is content, this is content"
+          >
+            <template #reference>
+              <el-link :underline="false">
+                <el-icon :size="18"><Bell /></el-icon>
+              </el-link>
+            </template>
+          </el-popover>
+        </el-badge>
+      </div>
+      <div class="divider"></div>
       <div class="language">
         <el-dropdown :command="changeLanguage">
         <span class="el-dropdown-link">
@@ -70,7 +96,8 @@ export default {
       lang: {
         'CN': '中文',
         'US': 'English',
-      }
+      },
+      noticeMsgNum: 2
     }
   },
   computed: {
@@ -132,5 +159,9 @@ export default {
 </script>
 
 <style scoped>
-
+:deep(.el-badge) {
+  border-radius: 12px;
+  font-size: 8px;
+  padding: 4px;
+}
 </style>

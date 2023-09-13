@@ -11,9 +11,9 @@
     overflow: hidden;
     .navbar {
       width: 100%;
-      height: calc(100% - 7px);
+      height: calc(100% - 8px);
       background-color: $menuBg;
-      box-shadow: 0 0 7px 0 #cccfd4;
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -58,6 +58,15 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        .handbook {
+        }
+        .feedback {
+        }
+        .notice {
+          padding: 0 8px;
+          .item {
+          }
+        }
         .divider {
           margin: 0 8px;
           width: 1px;

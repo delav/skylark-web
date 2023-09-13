@@ -1,11 +1,12 @@
 <template>
   <div class="plan-list">
     <div class="operate-header">
-      <div class="search-section">
+      <div class="header-item project-filter">
+        <span>项目：</span>
         <el-select
-          v-model="selectProjectId"
-          placeholder="选择项目"
-          @change="getPlansByProject"
+          v-model="queryParams.project_id"
+          placeholder="Select"
+          @change="filterPlans"
         >
           <el-option
             v-for="item in allProjectList"
@@ -15,7 +16,22 @@
           />
         </el-select>
       </div>
-      <div class="new-button">
+      <div class="header-item user-filter">
+        <span>创建用户：</span>
+        <el-select
+          v-model="queryParams.create_by"
+          placeholder="Select"
+          @change="filterPlans"
+        >
+          <el-option
+            v-for="item in userList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </div>
+      <div class="header-item new-button">
         <el-button type="primary" @click="newPlan">新建计划</el-button>
       </div>
     </div>
@@ -90,7 +106,17 @@
             <el-button-group>
               <el-button type="warning" size="small" @click="editPlan(scope.row.id)" link>编辑</el-button>
               <el-button type="primary" size="small" @click="getPlanDetail(scope.row.id)" link>详情</el-button>
-              <el-button type="danger" size="small" @click="deletePlan(scope.row)" link>删除</el-button>
+              <el-popconfirm
+                confirm-button-text="Yes"
+                cancel-button-text="No"
+                icon-color="#626AEF"
+                title="确认删除该计划？"
+                @confirm="deletePlan(scope.row)"
+              >
+                <template #reference>
+                  <el-button type="danger" size="small" link>删除</el-button>
+                </template>
+              </el-popconfirm>
             </el-button-group>
           </template>
         </el-table-column>
@@ -135,8 +161,11 @@ export default {
       planList: [],
       total: 0,
       pageSize: 12,
-      selectProjectId: 0,
       showBuild: false,
+      queryParams: {
+        project_id: 0,
+        create_by: ''
+      }
     }
   },
   computed: {
@@ -151,21 +180,27 @@ export default {
     },
     allProjectList() {
       return this.$store.state.base.containAllProjectList
+    },
+    userList() {
+      return this.$store.state.base.userList
     }
   },
   mounted() {
-    this.getPlanList(1)
+    this.getPlanList(1, {})
   },
   methods: {
-    getPlanList(page, projectId=null) {
-      fetchPlans(page, this.pageSize, projectId).then(response => {
+    getPlanList(page, params) {
+      const validParams = Object.keys(params)
+        .filter((key) => params[key] !== 0 && params[key] !== '' && params[key] !== null && params[key] !== undefined)
+        .reduce((acc, key) => ({ ...acc, [key]: params[key] }), {})
+      fetchPlans(page, this.pageSize, validParams).then(response => {
         const result = response.data
         this.planList = result.data
         this.total = result.total
       })
     },
-    getPlansByProject(projectId) {
-      this.getPlanList(1, projectId)
+    filterPlans() {
+      this.getPlanList(1, this.queryParams)
     },
     newPlan() {
       this.$router.push('/build/plan/create')
@@ -177,20 +212,9 @@ export default {
       this.$router.push(`/build/plan/detail/${planId}`)
     },
     deletePlan(planData) {
-      let warnInfo = `将删除计划【${planData.title}】，是否继续？`
-      this.$messageBox.confirm(
-        warnInfo,
-        '警告',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      ).then(() => {
-        deletePlan(planData.id).then(() => {
-          this.getPlanList(1)
-        })
-      }).catch(() => {})
+      deletePlan(planData.id).then(() => {
+        this.getPlanList(1, this.queryParams)
+      })
     },
     preBuild(planData) {
       this.$store.commit('plan/SET_PLAN_DATA', planData)
@@ -206,11 +230,7 @@ export default {
       this.$message.success('构建请求已发送')
     },
     changePage(pageVal) {
-      if (this.selectProjectId === 0) {
-        this.getPlanList(pageVal)
-      } else {
-        this.getPlanList(pageVal, this.selectProjectId)
-      }
+      this.getPlanList(pageVal, this.queryParams)
     }
   }
 }
@@ -221,13 +241,23 @@ export default {
   width: 100%;
   height: 100%;
   padding: 5px;
+  overflow: auto;
   .operate-header {
     width: 100%;
-    height: 50px;
     display: flex;
-    //align-items: center;
-    //justify-content: center;
-    .search-section {
+    flex-flow: row wrap;
+    .header-item {
+      padding-bottom: 10px;
+      padding-right: 15px;
+    }
+    .project-filter {
+
+    }
+    .user-filter {
+
+    }
+    .time-filter {
+
     }
     .new-button {
       margin-left: auto;

@@ -22,8 +22,6 @@ export default {
     this.$store.commit('action/RESET_STATE')
     this.$store.commit('tree/RESET_STATE')
     this.$store.commit('entity/RESET_STATE')
-    this.$store.commit('file/RESET_STATE')
-    this.$store.commit('base/RESET_STATE')
   }
 }
 </script>

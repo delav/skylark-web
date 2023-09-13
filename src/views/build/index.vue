@@ -10,20 +10,14 @@
         </el-menu>
       </div>
       <div class="instantly">
-        <p class="instantly-desc">
-          <span>即将构建</span>
-        </p>
-        <div class="instantly-list">
-          <instantly-item v-for="(item, index) in instantlyPlanList" :key="index" :item-data="item" />
-        </div>
+        <keep-alive>
+          <instantly-list />
+        </keep-alive>
       </div>
       <div class="recently">
-        <p class="recently-desc">
-          <span>最近构建</span>
-        </p>
-        <div class="recently-list">
-          <recently-item v-for="(item, index) in recentlyRecordList" :key="index" :item-data="item" />
-        </div>
+        <keep-alive>
+          <recently-list />
+        </keep-alive>
       </div>
     </div>
     <div class="page-route">
@@ -34,17 +28,15 @@
 
 <script>
 import SvgIcon from "@/components/SvgIcon";
-import InstantlyItem from "@/views/build/components/InstantlyItem";
-import RecentlyItem from "@/views/build/components/RecentlyItem";
-import { fetchRecords } from "@/api/record";
-import { fetchInstantlyPlans } from "@/api/plan";
+import InstantlyList from "@/views/build/components/InstantlyList";
+import RecentlyList from "@/views/build/components/RecentlyList";
 
 export default {
   name: 'Build',
   components: {
     SvgIcon,
-    InstantlyItem,
-    RecentlyItem,
+    InstantlyList,
+    RecentlyList,
   },
   computed: {
     key() {
@@ -85,25 +77,10 @@ export default {
   },
   created() {
     this.$store.dispatch('base/getBaseInfo')
-    this.getRecentlyRecordList()
-    this.getInstantlyPlanList()
-  },
-  unmounted() {
-    this.$store.commit('base/RESET_STATE')
   },
   methods: {
     resolvePath(route) {
       return route.path
-    },
-    getRecentlyRecordList() {
-      fetchRecords(1, 15).then(response => {
-        this.recentlyRecordList = response.data.data
-      })
-    },
-    getInstantlyPlanList() {
-      fetchInstantlyPlans(5).then(response => {
-        this.instantlyPlanList = response.data
-      })
     }
   }
 }
@@ -135,7 +112,7 @@ $planHeight: 260px;
       }
       .el-menu-item.is-active {
         color: $mainColor;
-        background-color: #EAEEFF;
+        background-color: #e0f3f6;
       }
       .icon-class {
         margin: 0 5px;
@@ -145,42 +122,10 @@ $planHeight: 260px;
     .instantly {
       height: calc(50% - #{$menuHeight}/2);
       border-right: solid 1px #dcdfe6;
-      .instantly-desc {
-        height: 24px;
-        margin: 0;
-        padding-left: 5px;
-        background-color: #dcdfe6;
-        font-size: 14px;
-        span {
-          line-height: 24px;
-        }
-      }
-      .instantly-list {
-        height: calc(100% - 24px - 10px);
-        overflow-y: auto;
-        border-top: 1px solid #dcdfe6;
-      }
     }
     .recently {
-      padding-top: 15px;
       height: calc(50% - #{$menuHeight}/2);
       border-right: solid 1px #dcdfe6;
-      .recently-desc {
-        height: 24px;
-        margin: 0;
-        padding-left: 5px;
-        background-color: #dcdfe6;
-        font-size: 14px;
-        span {
-          line-height: 24px;
-        }
-      }
-      .recently-list {
-        height: calc(100% - 24px);
-        overflow-y: auto;
-        border-top: 1px solid #dcdfe6;
-        padding-bottom: 5px;
-      }
     }
   }
   .page-route {

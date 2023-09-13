@@ -346,6 +346,8 @@ $textColor: #6b778c;
   height: $toolbarHeight;
   background-color: $toolbarBg;
   display: flex;
+  //border-top: 1px solid $toolbarBg;
+  //border-bottom: 1px solid $toolbarBg;
   .env-setting {
     display: flex;
     width: 300px;

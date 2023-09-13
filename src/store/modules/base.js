@@ -122,13 +122,16 @@ const actions = {
         if (regionArr.length !== 0) {
           commit('SET_SHOW_REGION', true)
         }
-        resolve(response.data)
+        resolve(regionArr)
       }).catch(error => {
         reject(error)
       })
     })
   },
   getBaseInfo({ dispatch, commit }) {
+    if (state.baseLoaded) {
+      return
+    }
     axios.all([
       dispatch('getProjects'),
       dispatch('getEnvironments'),

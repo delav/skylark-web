@@ -1,0 +1,116 @@
+<template>
+  <div class="instantly-content">
+    <p class="instantly-header">
+      <span class="desc">即将构建</span>
+      <span class="refresh">
+        <el-icon @click="refreshInstantlyPlanList" :size="20" style="margin-top: 5px"><RefreshLeft /></el-icon>
+      </span>
+    </p>
+    <div class="instantly-list">
+      <div class="instantly-item" v-for="item in instantlyPlanList" :key="item.id">
+        <div class="item-title">
+          <text-tooltip
+            class="title-text"
+            ref-name="itemText"
+            font-size="14px"
+            :content="item['title']"
+            @click="getInstantlyPlanDetail"
+          />
+          <p class="time-tip">下一次构建时间：{{item['periodic']['next_time']}}</p>
+        </div>
+        <div class="item-tip">
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import TextTooltip from "@/components/TextTooltip";
+
+export default {
+  name: 'InstantList',
+  components: {
+    TextTooltip
+  },
+  watch: {
+    '$store.state.plan.instantlyPlans': {
+      handler() {
+        this.instantlyPlanList = this.$store.state.plan.instantlyPlans
+      },
+      deep: true,
+    }
+  },
+  data() {
+    return {
+      instantlyPlanList: [],
+    }
+  },
+  created() {
+    this.$store.dispatch('plan/getInstantlyPlanList')
+  },
+  methods: {
+    refreshInstantlyPlanList() {
+      this.$store.dispatch('plan/getInstantlyPlanList')
+    },
+    getInstantlyPlanDetail() {}
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+$itemHeight: 48px;
+
+.instantly-content {
+  height: 100%;
+  border-right: solid 1px #dcdfe6;
+  .instantly-header {
+    height: 24px;
+    margin: 0;
+    padding-left: 5px;
+    background-color: #dcdfe6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .desc {
+      font-size: 13px;
+    }
+    .refresh {
+      margin-left: auto;
+      cursor: pointer;
+      color: #409eff;
+    }
+  }
+  .instantly-list {
+    height: calc(100% - 24px - 10px);
+    overflow-y: auto;
+    border-top: 1px solid #dcdfe6;
+    .instantly-item {
+      width: 100%;
+      height: $itemHeight;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #dcdfe6;
+      padding-left: 10px;
+      .item-title {
+        width: 100%;
+        .title-text {
+          padding-top: 5px;
+          color: #0052cc;
+          cursor: pointer;
+          :hover {
+            color: #9a6e3a;
+          }
+        }
+        .time-tip {
+          margin: 5px 0 0 0;
+          font-size: 12px;
+          color: #a3a7af;
+        }
+      }
+      .item-tip {
+      }
+    }
+  }
+}
+</style>

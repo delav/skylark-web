@@ -1,10 +1,10 @@
 import request from "@/http/request";
 
 
-export function fetchHistories(recordId) {
+export function getHistoryReport(historyId, reportType) {
   return request({
-    url: '/build/history',
+    url: '/build/history/get_report',
     method: 'get',
-    params: { record: recordId }
+    params: { id: historyId, type: reportType }
   })
 }

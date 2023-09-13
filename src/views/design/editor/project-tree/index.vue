@@ -488,7 +488,7 @@ export default {
       if (this.nodeParams.desc === NODE.NodeDesc.DIR) {
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create dir
-          const params = {'name': newNodeName, 'parent_dir_id': node.mid, 'project_id': this.projectId, 'category': node.type}
+          const params = {'name': newNodeName, 'parent_dir_id': node.mid, 'project_id': this.projectId}
           createDir(params).then(response => {
             if (node.open) {
               // const dirNode = handlerNode(response.data, node.id, NODE.NodeDesc.DIR)
@@ -510,7 +510,7 @@ export default {
       } else if (this.nodeParams.desc === NODE.NodeDesc.SUITE) {
         // create suite
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
-          const params = {'name': newNodeName, 'suite_dir_id': node.mid, 'project_id': this.projectId, 'category': node.type}
+          const params = {'name': newNodeName, 'suite_dir_id': node.mid, 'project_id': this.projectId}
           createSuite(params).then(response => {
             if (node.open) {
               // const suiteNode = handlerNode(response.data, node.id, NODE.NodeDesc.SUITE)
@@ -532,7 +532,7 @@ export default {
       } else if (this.nodeParams.desc === NODE.NodeDesc.CASE) {
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           // create case
-          const params = {'name': newNodeName, 'test_suite_id': node.mid, 'project_id': this.projectId, 'category': node.type}
+          const params = {'name': newNodeName, 'test_suite_id': node.mid, 'project_id': this.projectId}
           createCase(params).then(response => {
             if (node.open) {
               // const caseNode = handlerNode(response.data, node.id, NODE.NodeDesc.CASE)
@@ -565,12 +565,7 @@ export default {
         node = node.getParentNode()
       }
       nodeList.push(this.$store.state.tree.projectName)
-      let fullPath = ''
-      for (let i = nodeList.length-1; i >= 0; i--) {
-        fullPath = fullPath + '/' + nodeList[i]
-      }
       formData.append('dir_id', dirId)
-      formData.append('path', fullPath)
       files.forEach(file => {
         formData.append('file', file)
       })
