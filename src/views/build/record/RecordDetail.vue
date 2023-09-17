@@ -7,7 +7,11 @@
       <div class="card-body">
         <div class="detail">
           <el-descriptions>
-            <el-descriptions-item label="关联计划：">{{recordDetailData['plan']['title']}}</el-descriptions-item>
+            <el-descriptions-item label="关联计划ID：">
+              <template #default="scope">
+                <el-link @click="routeToPlanDetail(scope.row.plan_id)">{{recordDetailData['plan_id']}}</el-link>
+              </template>
+            </el-descriptions-item>
             <el-descriptions-item label="创建时间：">{{recordDetailData['create_at']}}</el-descriptions-item>
             <el-descriptions-item label="执行用户：">{{recordDetailData['create_by']}}</el-descriptions-item>
             <el-descriptions-item label="执行环境：">
@@ -32,8 +36,8 @@
                 {{ regionMap[id] }}
               </el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="关联项目：">{{recordDetailData['plan']['project_name']}}</el-descriptions-item>
-            <el-descriptions-item label="项目分支：">{{recordDetailData['plan']['branch']}}</el-descriptions-item>
+            <el-descriptions-item label="关联项目：">{{projectMap[recordDetailData['project_id']]}}</el-descriptions-item>
+            <el-descriptions-item label="项目分支：">{{recordDetailData['branch']}}</el-descriptions-item>
           </el-descriptions>
         </div>
         <div class="related-history">
@@ -107,10 +111,13 @@ export default {
   name: 'RecordDetail',
   data() {
     return {
-      recordDetailData: {'plan': {}, 'history': []}
+      recordDetailData: {}
     }
   },
   computed: {
+    projectMap() {
+      return this.$store.state.base.projectMap
+    },
     envMap() {
       return this.$store.state.base.envMap
     },
@@ -131,8 +138,8 @@ export default {
         this.recordDetailData = response.data
       })
     },
-    routeToRecordDetail(recordId) {
-      this.$router.push(`/build/record/detail/${recordId}`)
+    routeToPlanDetail(planId) {
+      this.$router.push(`/build/plan/detail/${planId}`)
     },
     getReportFile(historyId, reportType) {
       getHistoryReport(historyId, reportType).then(response => {

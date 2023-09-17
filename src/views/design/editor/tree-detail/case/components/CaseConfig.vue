@@ -268,7 +268,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
-@import "src/styles/element/collapse.scss";
 
 .case-config {
   width: 100%;

@@ -12,39 +12,60 @@
     </div>
     <div class="info">
       <div class="handbook">
-        <el-link type="primary" :underline="false"><el-icon><Document /></el-icon>用户手册</el-link>
+        <el-link :underline="false">
+          使用手册<el-icon style="margin-left: 3px"><Document /></el-icon>
+        </el-link>
       </div>
       <div class="divider"></div>
       <div class="feedback">
-        <el-link type="primary" :underline="false"><el-icon><EditPen /></el-icon>意见反馈</el-link>
+        <el-link :underline="false" @click="feedbackShow=true">
+          意见反馈<el-icon style="margin-left: 3px"><EditPen /></el-icon>
+        </el-link>
       </div>
       <div class="divider"></div>
       <div class="notice">
-        <el-badge :value="noticeMsgNum" :hidden="!noticeMsgNum" :max="9" class="item">
+        <el-badge
+          :value="noticeList.length"
+          :hidden="hideBadge"
+          :max="9"
+        >
           <el-popover
-            placement="top-start"
-            title="Title"
-            :width="200"
+            placement="bottom"
+            :width="250"
+            title="通知"
             trigger="hover"
-            content="this is content, this is content, this is content"
           >
             <template #reference>
               <el-link :underline="false">
                 <el-icon :size="18"><Bell /></el-icon>
               </el-link>
             </template>
+            <template #default>
+              <div class="notice-list">
+                <p v-if="noticeList.length===0"
+                   class="notice-blank">
+                  暂无通知消息
+                </p>
+                <p v-else
+                   class="notice-item"
+                   v-for="(item, index) in noticeList"
+                   :key="index"
+                   @click="showNoticeContent(item)"
+                >
+                  {{item.title}}
+                </p>
+              </div>
+            </template>
           </el-popover>
         </el-badge>
       </div>
       <div class="divider"></div>
       <div class="language">
-        <el-dropdown :command="changeLanguage">
-        <span class="el-dropdown-link">
-          {{ $t('Navbar._language') }}
-          <el-icon class="el-icon--right">
-            <ArrowDown />
-          </el-icon>
-        </span>
+        <el-dropdown trigger="click" :command="changeLanguage">
+          <span>
+            {{ $t('Navbar._language') }}
+            <el-icon><ArrowDown /></el-icon>
+          </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click.native="changeLanguage('CN')">
@@ -60,12 +81,10 @@
       <div class="divider"></div>
       <div class="profile">
         <el-dropdown>
-        <span class="el-dropdown-link">
-          {{ userName }}
-          <el-icon class="el-icon--right">
-            <ArrowDown />
-          </el-icon>
-        </span>
+          <span>
+            {{ userName }}
+            <el-icon><ArrowDown /></el-icon>
+          </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item icon="Setting">
@@ -78,6 +97,77 @@
           </template>
         </el-dropdown>
       </div>
+    </div>
+    <div class="navbar-dialog">
+      <el-dialog
+        class="notice-dialog"
+        width="550px"
+        v-model="noticeShow"
+        :title="noticeItem.title"
+        center
+      >
+        <span>
+          {{noticeItem.content}}
+        </span>
+      </el-dialog>
+      <el-dialog
+        class="feedback-dialog"
+        width="50%"
+        v-model="feedbackShow"
+        title="意见反馈"
+      >
+        <el-form
+          ref="ruleFormRef"
+          :model="feedbackForm"
+          :rules="formRules"
+          label-width="120px"
+        >
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="feedbackForm.title" />
+          </el-form-item>
+          <el-form-item label="模块" prop="module">
+            <el-select v-model="feedbackForm.module" placeholder="选择模块">
+              <el-option
+                v-for="(item, index) in routes"
+                :key="index"
+                :label="item.meta.title"
+                :value="item.meta.title"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <el-input type="textarea" v-model="feedbackForm.content" :rows="5" />
+          </el-form-item>
+          <el-form-item label="图片">
+            <el-upload
+              v-model="fileList"
+              class="upload-demo"
+              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+              accept=".jpg,.png,.jpeg,.gif"
+              :auto-upload="false"
+              :limit="3"
+              :on-change="handleChangeFile"
+              :on-exceed="handleNumberLimit"
+              :before-upload="handleBeforeUpload"
+            >
+              <el-button type="primary">选择图片</el-button>
+              <template #tip>
+                <div class="el-upload__tip">
+                  仅支持上传.jpg, .png, .jpeg, .gif格式文件，文件大小不能超过5M，最多添加3个。
+                </div>
+              </template>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="feedbackShow=false">取消</el-button>
+            <el-button type="primary" @click="feedbackShow=false">
+              提交
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -97,7 +187,26 @@ export default {
         'CN': '中文',
         'US': 'English',
       },
-      noticeMsgNum: 2
+      noticeShow: false,
+      noticeItem: {
+        'title': '',
+        'content': ''
+      },
+      feedbackShow: false,
+      feedbackForm: {
+        'title': '',
+        'module': '',
+        'content': ''
+      },
+      formRules: {
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
+        ],
+        content: [
+          { required: true, message: '请输入内容', trigger: 'blur' },
+        ],
+      },
+      fileList: []
     }
   },
   computed: {
@@ -121,7 +230,17 @@ export default {
     },
     userName() {
       return this.$store.getters.name
-    }
+    },
+    noticeList() {
+      return this.$store.state.base.sysNoticeList
+    },
+    hideBadge() {
+      const notices = this.$store.state.base.sysNoticeList
+      const newNoticeList = notices.filter((item) => {
+        return item.new === true
+      })
+      return newNoticeList.length === 0
+    },
   },
   methods: {
     changeLanguage(val) {
@@ -153,15 +272,54 @@ export default {
     logout() {
       this.$store.dispatch('user/logout')
       return this.$router.push(`${NotAuthUrl.Login}?redirect=${this.$route.fullPath}`)
+    },
+    showNoticeContent(item) {
+      this.noticeItem = item
+      this.noticeShow = true
+    },
+    handleChangeFile(file, fileList) {
+      console.log(fileList)
+      let imgSize = Number(file.size / 1024 / 1024)
+      if (imgSize > 5) {
+        this.$message.warning('文件大小不能超过5MB，请重新上传。')
+      }
+    },
+    handleBeforeUpload(file) {
+      let imgSize = Number(file.size / 1024 / 1024)
+      if (imgSize > 5) {
+        this.$message.warning('文件大小不能超过5MB，请重新上传。')
+        return false
+      }
+    },
+    handleNumberLimit() {
+      this.$message.error('超过可上传的最大文件数量')
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 :deep(.el-badge) {
   border-radius: 12px;
   font-size: 8px;
   padding: 4px;
+}
+// el-popover style must be here
+.notice-list {
+  .notice-blank {
+    color: #8a8a8a;
+    font-size: 13px;
+    text-align: center;
+  }
+  .notice-item {
+    font-size:13px;
+    cursor: pointer;
+    margin: 10px 0 0 0;
+    color: #8a8a8a;
+    border-bottom: 1px solid #e4e3e3;
+    &:hover {
+      color: #00acc1;
+    }
+  }
 }
 </style>

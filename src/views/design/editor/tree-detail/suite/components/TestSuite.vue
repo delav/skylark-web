@@ -87,7 +87,6 @@ export default {
 }
 :deep(.el-collapse) {
   .el-collapse-item__header {
-    background-color: #f4f5f7;
     border-radius: 0;
     box-shadow: 0 0 0 1px #e4e7ed;
     border-bottom: 0;

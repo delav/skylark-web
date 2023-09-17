@@ -2,7 +2,6 @@
 @import "input.scss";
 @import "form.scss";
 @import "pagination.scss";
-@import "selector.scss";
 @import "tooltip.scss";
 
 :root {
@@ -11,7 +10,7 @@
   --el-color-primary-light-5: #8ee5f3;
   --el-color-primary-light-7: #c6e2ff;
   --el-color-primary-light-8: #d9ecff;
-  --el-color-primary-light-9: #ecf5ff;
+  --el-color-primary-light-9: #effbff;
   --el-color-primary-dark-2: #337ecc;
   --el-color-success: #7ad835;
   --el-color-success-light-3: #8cd058;
@@ -43,3 +42,6 @@
   --el-color-error-dark-2: #c45656;
 }
 
+.el-cascader-panel {
+  --el-cascader-node-background-hover: #effbff;
+}

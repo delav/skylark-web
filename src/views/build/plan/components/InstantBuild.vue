@@ -8,8 +8,8 @@
         label-width="130px"
         status-icon
       >
-        <el-form-item label="项目名称" prop="project_name">
-          <el-input v-model="formData.project_name" disabled></el-input>
+        <el-form-item label="项目名称" prop="project_id">
+          <el-input v-model="projectMap[formData['project_id']]" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目分支" prop="branch">
           <el-input v-model="formData.branch" disabled></el-input>
@@ -42,7 +42,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="执行用例" prop="total_case">
+        <el-form-item label="执行用例数" prop="total_case">
           <el-input
             style="float: left;width: 120px"
             v-model="formData.total_case"
@@ -98,6 +98,9 @@ export default {
     },
   },
   computed: {
+    projectMap() {
+      return this.$store.state.base.projectMap
+    },
     envList() {
       return this.$store.state.base.envList
     },
@@ -116,9 +119,14 @@ export default {
         if (!valid) {
           return
         }
-        buildInstantTest(this.formData).then(response => {
-          console.log(response.data)
-          this.router.push('/build/record/list')
+        const buildParams = {
+          'plan_id': this.formData.id,
+          'env_list': this.formData.env_list,
+          'region_list': this.formData.region_list,
+          'action_type': 'start'
+        }
+        buildInstantTest(buildParams).then(() => {
+          this.$router.push('/build/record/list')
         })
       })
     }

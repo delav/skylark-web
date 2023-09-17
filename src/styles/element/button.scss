@@ -1,9 +1,9 @@
 @import "../variables.module.scss";
 //button color
-$buttonBg: #ffffff;
-$buttonText: #00acc1;
-$buttonHoverBg: #00acc1;
-$buttonHoverText: #ffffff;
+$buttonBg: #edeff0;
+$buttonText: #606266;
+$buttonHoverBg: #ffffff;
+$buttonHoverText: #00acc1;
 
 $infoButtonBg: #00acc1;
 $infoButtonText: #ffffff;
@@ -16,23 +16,23 @@ $primaryButtonHoverBg: #ffffff;
 $primaryButtonHoverText: $mainColor;
 
 // custom button style
-//.el-button {
-//  color: $buttonText;
-//  background-color: $buttonBg;
-//  border-color: $buttonText;
-//}
-//.el-button.is-active,
-//.el-button:active {
-//  color: $buttonText;
-//  background: $buttonHoverBg;
-//  border-color: $buttonHoverBg;
-//}
-//.el-button:focus,
-//.el-button:hover {
-//  color: $buttonHoverText;
-//  background: $buttonHoverBg;
-//  border-color: $buttonBg;
-//}
+.el-button {
+  color: $buttonText;
+  background-color: $buttonBg;
+  border-color: $buttonBg;
+}
+.el-button.is-active,
+.el-button:active {
+  color: $buttonText;
+  background: $buttonHoverBg;
+  border-color: $buttonHoverBg;
+}
+.el-button:focus,
+.el-button:hover {
+  color: $buttonHoverText;
+  background: $buttonHoverBg;
+  border-color: $buttonHoverText;
+}
 
 .el-button--info {
   color: $infoButtonText;

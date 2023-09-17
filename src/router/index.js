@@ -3,29 +3,30 @@ import i18n from "@/locales/index";
 import Layout from "@/layout";
 
 export const routes = [
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Layout,
+  //   redirect: '/home',
+  //   meta: { navbar: true, title: i18n.global.t('Navbar._home') },
+  //   children: [
+  //     {
+  //       path: 'home',
+  //       name: 'Home',
+  //       component: () => import('@/views/home/index'),
+  //       meta: { }
+  //     }
+  //   ]
+  // },
   {
     path: '/',
-    name: 'Home',
-    component: Layout,
-    redirect: '/home',
-    meta: { navbar: true, title: i18n.global.t('Navbar._home') },
-    children: [
-      {
-        path: 'home',
-        name: 'Home',
-        component: () => import('@/views/home/index'),
-        meta: { }
-      }
-    ]
-  },
-  {
-    path: '/design',
     name: 'Design',
+    redirect: '/design',
     component: Layout,
     meta: { navbar: true, title: i18n.global.t('Navbar._design') },
     children: [
       {
-        path: 'index',
+        path: 'design',
         name: 'Design',
         component: () => import('@/views/design/index'),
         meta: { }
@@ -104,13 +105,19 @@ export const routes = [
             path: '/setting/variable',
             name: 'Variable',
             component: () => import('@/views/setting/variable/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'project-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'setting-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
           },
           {
             path: '/setting/notice',
-            name: 'Notify',
+            name: 'Notice',
             component: () => import('@/views/setting/notice/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'project-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notify' }
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'setting-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notice' }
+          },
+          {
+            path: '/setting/project',
+            name: 'Project',
+            component: () => import('@/views/setting/project/index'),
+            meta: { navbar: true, title: i18n.global.t('SettingNavBar._project'), icon: 'setting-project', activeMenu: '/setting', secondActiveMenu: '/setting/project' }
           }
         ]
       },

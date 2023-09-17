@@ -64,8 +64,6 @@
         }
         .notice {
           padding: 0 8px;
-          .item {
-          }
         }
         .divider {
           margin: 0 8px;
@@ -74,15 +72,9 @@
           border-left: 1px solid #dcdfe6;
         }
         .language {
-          .el-dropdown-link {
-            cursor: pointer;
-          }
         }
         .profile {
           margin-right: 15px;
-          .el-dropdown-link {
-            cursor: pointer;
-          }
         }
       }
     }

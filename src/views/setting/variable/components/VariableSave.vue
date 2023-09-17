@@ -7,7 +7,7 @@
           <el-select
             :disabled="postVariableForm.id!==undefined"
             v-model="postVariableForm.env_id"
-            style="width: 260px"
+            style="width: 275px"
           >
             <el-option
               v-for="(item, index) in envList"
@@ -21,7 +21,7 @@
           <el-select
             :disabled="postVariableForm.id!==undefined"
             v-model="postVariableForm.region_id"
-            style="width: 260px"
+            style="width: 275px"
           >
             <el-option
               v-for="(item, index) in allRegionList"

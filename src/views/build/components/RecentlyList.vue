@@ -19,8 +19,8 @@
           <p class="time-tip">构建开始时间：{{item['create_at']}}</p>
         </div>
         <div class="item-tip">
-          <span class="running-text" v-if="item['status'] === 0">Running</span>
-          <span class="finish-text" v-else-if="item['status'] === 1">Finish</span>
+          <svg-icon v-if="item['status'] === 0" icon-class="timing" class="run-icon"></svg-icon>
+          <svg-icon v-else-if="item['status'] === 1" icon-class="finish" class="finish-icon"></svg-icon>
         </div>
       </div>
     </div>
@@ -61,6 +61,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 $itemHeight: 48px;
 
 .recently-content {
@@ -79,8 +80,9 @@ $itemHeight: 48px;
     }
     .refresh {
       margin-left: auto;
+      margin-right: 5px;
       cursor: pointer;
-      color: #409eff;
+      color: $mainColor;
     }
   }
   .recently-list {
@@ -99,10 +101,10 @@ $itemHeight: 48px;
         width: calc(100% - 60px);
         .title-text {
           padding-top: 5px;
-          color: #0052cc;
+          color: $mainColor;
           cursor: pointer;
           :hover {
-            color: #9a6e3a;
+            color: #7ae5f3;
           }
         }
         .time-tip {
@@ -112,14 +114,15 @@ $itemHeight: 48px;
         }
       }
       .item-tip {
-        width: 50px;
+        width: 30px;
         margin-right: 10px;
         line-height: $itemHeight;
-        font-size: 12px;
-        .running-text {
-          color: #409eff;
+        .running-icon {
+          font-size: 14px;
+          color: #fa7d03;
         }
-        .finish-text {
+        .finish-icon {
+          font-size: 18px;
           color: #67c23a;
         }
       }

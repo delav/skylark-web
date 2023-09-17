@@ -50,7 +50,9 @@
               border
               stripe
               style="width: 100%"
-              :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px' }"
+              :row-style="{height: '0'}"
+              :cell-style="{padding: '4px'}"
+              :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
             >
               <el-table-column fixed prop="name" label="变量名" width="180" sortable>
                 <template #default="scope">
@@ -72,10 +74,12 @@
               </el-table-column>
               <el-table-column fixed="right" label="操作" width="175" align="center">
                 <template #default="scope">
-                  <el-button-group>
-                    <el-button size="small" type="warning" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="delVariableAction(scope.row, scope.$index, true)">删除</el-button>
-                  </el-button-group>
+                  <el-link type="warning" style="font-size: 13px" :underline="false" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">
+                    <el-icon><Edit /></el-icon>编辑
+                  </el-link>
+                  <el-link type="danger" style="font-size: 13px;margin-left: 10px" :underline="false" @click="delVariableAction(scope.row)">
+                    <el-icon><Delete /></el-icon>删除
+                  </el-link>
                 </template>
               </el-table-column>
             </el-table>
@@ -90,11 +94,12 @@
               <el-table
                 :data="regionVariables"
                 border
+                stripe
                 :show-header="!showCommon"
                 style="width: 100%"
                 :row-style="{height: '0'}"
-                :cell-style="{padding: '3px'}"
-                :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px' }"
+                :cell-style="{padding: '4px'}"
+                :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
               >
                 <el-table-column fixed prop="name" label="变量名" width="180" sortable>
                   <template #default="scope">
@@ -116,10 +121,12 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="175" align="center">
                   <template #default="scope">
-                    <el-button-group>
-                      <el-button size="small" type="warning" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">编辑</el-button>
-                      <el-button size="small" type="danger" @click="delVariableAction(scope.row)">删除</el-button>
-                    </el-button-group>
+                    <el-link type="warning" style="font-size: 13px" :underline="false" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">
+                      <el-icon><Edit /></el-icon>编辑
+                    </el-link>
+                    <el-link type="danger" style="font-size: 13px;margin-left: 10px" :underline="false" @click="delVariableAction(scope.row)">
+                      <el-icon><Delete /></el-icon>删除
+                    </el-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -130,7 +137,7 @@
     </div>
     <div class="create-dialog">
       <el-dialog
-        width="750px"
+        width="680px"
         v-model="showSaveDialog"
         :title="saveDialogTitle"
         :close-on-click-modal="false"
@@ -187,6 +194,18 @@ export default {
       return this.$store.state.base.showRegion
     },
   },
+  watch: {
+    '$store.state.base.projectList': {
+      handler(array) {
+        if (array.length !== 0 && this.selectProjectId === '') {
+          this.selectProjectId = array[0]['id']
+          this.changeProject()
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   data() {
     return {
       selectProjectId: '',
@@ -207,9 +226,14 @@ export default {
   },
   methods: {
     changeProject() {
-      this.selectEvnId = this.envList[0]['id']
-      if (this.showRegion) {
+      if (this.envList.length !== 0) {
+        this.selectEvnId = this.envList[0]['id']
+      }
+      if (this.showRegion && this.regionList.length !== 0) {
         this.selectRegionId = this.regionList[0]['id']
+      }
+      if (!this.selectEvnId) {
+        return
       }
       this.changeVariableList(this.selectEvnId)
     },

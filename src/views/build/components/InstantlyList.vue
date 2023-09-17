@@ -59,6 +59,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 $itemHeight: 48px;
 
 .instantly-content {
@@ -77,8 +78,9 @@ $itemHeight: 48px;
     }
     .refresh {
       margin-left: auto;
+      margin-right: 5px;
       cursor: pointer;
-      color: #409eff;
+      color: $mainColor;
     }
   }
   .instantly-list {
@@ -96,10 +98,10 @@ $itemHeight: 48px;
         width: 100%;
         .title-text {
           padding-top: 5px;
-          color: #0052cc;
+          color: $mainColor;
           cursor: pointer;
           :hover {
-            color: #9a6e3a;
+            color: #7ae5f3;
           }
         }
         .time-tip {
@@ -109,6 +111,10 @@ $itemHeight: 48px;
         }
       }
       .item-tip {
+        width: 60px;
+        margin-right: 10px;
+        line-height: $itemHeight;
+        font-size: 12px;
       }
     }
   }

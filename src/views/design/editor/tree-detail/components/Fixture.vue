@@ -66,7 +66,7 @@
     </div>
     <div class="fixture-footer">
       <el-button v-if="inputDisabled" type="primary" @click="editFixture">编辑</el-button>
-      <el-button v-else type="primary" @click="cancelEdit">取消</el-button>
+      <el-button v-else @click="cancelEdit">取消</el-button>
       <el-button style="margin-left: 20px" type="primary" @click="saveFixture">保存</el-button>
     </div>
   </div>

@@ -200,7 +200,7 @@ export default {
         }
         buildQuickTest(this.formData).then(response => {
           console.log(response.data)
-          this.router.push('/build/record/list')
+          this.$router.push('/build/record/list')
         })
       })
     },

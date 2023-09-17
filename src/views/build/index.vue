@@ -9,15 +9,17 @@
           </el-menu-item>
         </el-menu>
       </div>
-      <div class="instantly">
-        <keep-alive>
-          <instantly-list />
-        </keep-alive>
-      </div>
-      <div class="recently">
-        <keep-alive>
-          <recently-list />
-        </keep-alive>
+      <div class="dynamic-list">
+        <div class="instantly">
+          <keep-alive>
+            <instantly-list />
+          </keep-alive>
+        </div>
+        <div class="recently">
+          <keep-alive>
+            <recently-list />
+          </keep-alive>
+        </div>
       </div>
     </div>
     <div class="page-route">
@@ -119,13 +121,16 @@ $planHeight: 260px;
         font-size: 16px;
       }
     }
-    .instantly {
-      height: calc(50% - #{$menuHeight}/2);
-      border-right: solid 1px #dcdfe6;
-    }
-    .recently {
-      height: calc(50% - #{$menuHeight}/2);
-      border-right: solid 1px #dcdfe6;
+    .dynamic-list {
+      height: calc(100% - #{$menuHeight});
+      .instantly {
+        height: 50%;
+        border-right: solid 1px #dcdfe6;
+      }
+      .recently {
+        height: 50%;
+        border-right: solid 1px #dcdfe6;
+      }
     }
   }
   .page-route {

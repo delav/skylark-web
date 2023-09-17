@@ -56,7 +56,7 @@
     </div>
     <div class="create-dialog">
       <el-dialog
-        width="650px"
+        width="680px"
         v-model="showSaveDialog"
         :title="saveDialogTitle"
         :close-on-click-modal="false"

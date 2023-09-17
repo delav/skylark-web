@@ -841,7 +841,7 @@ $toolHeight: 40px;
               outline: none;
               &:hover {
                 color: $mainColor;
-                background-color: #dfe1e5;
+                background-color: #effbff;
               }
             }
           }

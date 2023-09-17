@@ -2,7 +2,7 @@
   <div class="record-list">
     <div class="operate-header">
       <div class="header-item project-filter">
-        <span>项目：</span>
+        <span class="item-desc">项目：</span>
         <el-select
           v-model="queryParams.project_id"
           placeholder="Select"
@@ -17,7 +17,7 @@
         </el-select>
       </div>
       <div class="header-item user-filter">
-        <span>执行用户：</span>
+        <span class="item-desc">执行用户：</span>
         <el-select
           v-model="queryParams.create_by"
           placeholder="Select"
@@ -32,7 +32,7 @@
         </el-select>
       </div>
       <div class="header-item time-filter">
-        <span>执行时间：</span>
+        <span class="item-desc">执行时间：</span>
         <el-date-picker
           v-model="queryParams.date_range"
           type="daterange"
@@ -51,23 +51,23 @@
         border
         style="width: 100%">
         <el-table-column prop="id" label="编号" width="70" />
-        <el-table-column prop="desc" label="描述" min-width="15%" show-overflow-tooltip>
+        <el-table-column prop="desc" label="描述" show-overflow-tooltip>
           <template #default="scope">
-            <el-link @click="routeToRecordDetail(scope.row.id)" :underline="false">{{ scope.row.desc }}</el-link>
+            <el-link type="primary" @click="routeToRecordDetail(scope.row.id)" :underline="false">{{ scope.row.desc }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="plan_id" label="计划编号" min-width="10%">
+        <el-table-column prop="plan_id" label="计划编号" width="80">
           <template #default="scope">
             <el-link @click="routeToPlanDetail(scope.row.plan_id)" :underline="false">{{ scope.row.plan_id }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="构建状态" width="100">
+        <el-table-column prop="status" label="执行状态" width="90">
           <template #default="scope">
-            <span v-if="scope.row.status===0">运行中</span>
-            <span v-if="scope.row.status===1">已完成</span>
+            <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
+            <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="env_list" label="执行环境" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="env_list" label="执行环境" width="160" min-width="120" show-overflow-tooltip >
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.env_list"
@@ -80,7 +80,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="region_list" label="执行地区" min-width="10%" show-overflow-tooltip v-if="showRegion">
+        <el-table-column prop="region_list" label="执行地区" width="120" min-width="100" show-overflow-tooltip v-if="showRegion">
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.region_list"
@@ -93,14 +93,14 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="create_by" label="执行用户" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="create_by" label="执行用户" width="180" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="create_at" label="执行时间" width="180" show-overflow-tooltip >
+        <el-table-column prop="create_at" label="执行时间" width="170" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="periodic" label="定时任务" width="90">
+        <el-table-column prop="periodic" label="定时执行" width="80" min-width="80">
           <template #default="scope">
-            <span v-if="scope.row.periodic">是</span>
-            <span v-else>否</span>
+            <el-tag size="small" type="success" v-if="scope.row.periodic">是</el-tag>
+            <el-tag size="small" type="danger" v-else>否</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -191,6 +191,10 @@ export default {
     .header-item {
       padding-bottom: 10px;
       padding-right: 15px;
+      .item-desc {
+        color: #666;
+        font-size: 14px;
+      }
     }
     .project-filter {
 

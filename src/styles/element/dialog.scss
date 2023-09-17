@@ -1,5 +1,5 @@
-:deep(.el-dialog) {
-  margin: 15vh auto !important;
+.el-dialog {
+  margin: 12vh auto;
   position: relative;
   .el-dialog__header{
     position: absolute;
@@ -15,7 +15,7 @@
     width: 100%;
     overflow: hidden;
     overflow-y: auto;
-    max-height: 90vh;//最大高度为视口高度的90%
+    max-height: 85vh;
     padding-top: 80px;
     padding-bottom: 100px;
     z-index: 1;

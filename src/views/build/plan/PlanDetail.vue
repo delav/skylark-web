@@ -126,7 +126,7 @@ export default {
   name: 'PlanDetail',
   data() {
     return {
-      planDetailData: {'record': []}
+      planDetailData: {}
     }
   },
   computed: {

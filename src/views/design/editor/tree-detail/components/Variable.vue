@@ -7,27 +7,27 @@
         style="width: 100%"
         :row-style="{height: '0'}"
         :cell-style="{padding: '3px', color: '#666', fontSize:'13px'}"
-        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px', fontWeight: 500, fontSize:'13px' }"
+        :header-cell-style="{ color: '#606266', padding: '5px', fontWeight: 600, fontSize:'13px' }"
       >
-        <el-table-column fixed prop="name" label="变量名" width="180" sortable>
+        <el-table-column fixed prop="name" label="变量名" width="200" sortable>
           <template #default="scope">
             <el-input size="small" v-model="scope.row.name" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="value" label="变量值" min-width="45%" show-overflow-tooltip>
+        <el-table-column prop="value" label="变量值" min-width="150" show-overflow-tooltip>
           <template #default="scope">
             <el-input size="small" v-model="scope.row.value" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="备注" min-width="25%" show-overflow-tooltip>
+        <el-table-column prop="remark" label="备注" width="200" show-overflow-tooltip>
           <template #default="scope">
             <el-input size="small" v-model="scope.row.remark" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.remark}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="175" align="center">
+        <el-table-column fixed="right" label="操作" width="135" align="center">
           <template #header>
             <el-button size="small" @click="showVarDialog" plain>新建变量</el-button>
           </template>
@@ -159,7 +159,7 @@ export default {
     },
     delVariable(row, index) {
       this.$messageBox.confirm(
-        '删除可能会导致使用到该变量的用例执行失败，是否继续?',
+        '删除变量可能会导致使用到该变量的用例执行失败，是否确认删除?',
         '删除变量',
         {
           cancelButtonText: '取消',

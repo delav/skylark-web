@@ -2,7 +2,7 @@
   <div class="plan-list">
     <div class="operate-header">
       <div class="header-item project-filter">
-        <span>项目：</span>
+        <span class="item-desc">项目：</span>
         <el-select
           v-model="queryParams.project_id"
           placeholder="Select"
@@ -17,7 +17,7 @@
         </el-select>
       </div>
       <div class="header-item user-filter">
-        <span>创建用户：</span>
+        <span class="item-desc">创建用户：</span>
         <el-select
           v-model="queryParams.create_by"
           placeholder="Select"
@@ -42,12 +42,16 @@
         :cell-style="{color: '#666', fontSize:'13px'}"
         border
         stripe
-        style="width: 100%;font-size: 14px">
+        style="width: 100%">
         <el-table-column prop="id" label="编号" width="70" />
-        <el-table-column prop="title" label="计划名称" min-width="15%" show-overflow-tooltip />
-        <el-table-column prop="project_name" label="项目" min-width="10%" show-overflow-tooltip />
-        <el-table-column prop="branch" label="分支" min-width="10%" show-overflow-tooltip  />
-        <el-table-column prop="env_id" label="环境" min-width="10%" show-overflow-tooltip >
+        <el-table-column prop="title" label="计划名称" show-overflow-tooltip />
+        <el-table-column prop="project_id" label="项目" width="130" show-overflow-tooltip>
+          <template #default="scope">
+            <span>{{projectMap[scope.row.project_id]}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="branch" label="分支" width="100" show-overflow-tooltip  />
+        <el-table-column prop="env_id" label="环境" width="150" min-width="100" show-overflow-tooltip >
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.env_list"
@@ -60,7 +64,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="region_id" label="地区" min-width="10%" show-overflow-tooltip v-if="showRegion">
+        <el-table-column prop="region_id" label="地区" width="120" min-width="90" show-overflow-tooltip v-if="showRegion">
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.region_list"
@@ -73,23 +77,23 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="total_case" label="用例总数" width="90" show-overflow-tooltip >
+        <el-table-column prop="total_case" label="用例总数" width="80" show-overflow-tooltip >
           <template #default="scope">
             <span>{{scope.row.total_case}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="periodic_switch" label="定时开关" width="90" show-overflow-tooltip>
+        <el-table-column prop="periodic_switch" label="定时开关" width="80" show-overflow-tooltip>
           <template #default="scope">
-            <span v-if="scope.row.periodic_switch">开启</span>
-            <span v-else>关闭</span>
+            <el-tag size="small" type="success" v-if="scope.row.periodic_switch">是</el-tag>
+            <el-tag size="small" type="danger" v-else>否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="periodic_expr" label="定时配置" min-width="10%" show-overflow-tooltip>
+        <el-table-column prop="periodic_expr" label="定时配置" min-width="100" show-overflow-tooltip>
           <template #default="scope">
             <span>{{scope.row.periodic_expr}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column fixed="right" label="操作" width="145">
 <!--          <template #header>-->
 <!--            <el-button style="height: 28px" type="primary" @click="newPlan">新建计划</el-button>-->
 <!--          </template>-->
@@ -109,7 +113,8 @@
               <el-popconfirm
                 confirm-button-text="Yes"
                 cancel-button-text="No"
-                icon-color="#626AEF"
+                :hide-icon="true"
+                :hide-after="50"
                 title="确认删除该计划？"
                 @confirm="deletePlan(scope.row)"
               >
@@ -169,6 +174,9 @@ export default {
     }
   },
   computed: {
+    projectMap() {
+      return this.$store.state.base.projectMap
+    },
     showRegion() {
       return this.$store.state.base.showRegion
     },
@@ -249,6 +257,10 @@ export default {
     .header-item {
       padding-bottom: 10px;
       padding-right: 15px;
+      .item-desc {
+        color: #666;
+        font-size: 14px;
+      }
     }
     .project-filter {
 

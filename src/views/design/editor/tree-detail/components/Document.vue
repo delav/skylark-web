@@ -104,6 +104,7 @@ export default {
     height: 100%;
     .disabled-content {
       height: 100%;
+      border-radius: 4px;
       border: 1px solid #e4e7ed;
       background-color: #f5f7fa;
       .document-text {
@@ -125,7 +126,7 @@ export default {
   cursor: auto;
   .el-textarea__inner {
     cursor: auto;
-    border-radius: 0;
+    border-radius: 4px;
   }
 }
 </style>

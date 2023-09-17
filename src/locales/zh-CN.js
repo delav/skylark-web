@@ -10,6 +10,7 @@ const Navbar = {
 const SettingNavBar = {
   _variable: '变量配置',
   _notice: '通知配置',
+  _project: '项目配置',
 }
 
 const BuildNavBar = {
