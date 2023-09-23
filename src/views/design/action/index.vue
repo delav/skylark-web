@@ -135,6 +135,7 @@ export default {
         this.setDefaultEnv()
         this.setDefaultRegion()
       },
+      immediate: true
     },
   },
   mounted() {

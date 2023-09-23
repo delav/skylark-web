@@ -3,6 +3,7 @@
 @import "form.scss";
 @import "pagination.scss";
 @import "tooltip.scss";
+@import "select.scss";
 
 :root {
   --el-color-primary: #00acc1;
@@ -40,6 +41,13 @@
   --el-color-error-light-8: #fde2e2;
   --el-color-error-light-9: #fef0f0;
   --el-color-error-dark-2: #c45656;
+  --el-color-info: #909399;
+  --el-color-info-light-3: #b1b3b8;
+  --el-color-info-light-5: #c8c9cc;
+  --el-color-info-light-7: #dedfe0;
+  --el-color-info-light-8: #e9e9eb;
+  --el-color-info-light-9: #f4f4f5;
+  --el-color-info-dark-2: #73767a;
 }
 
 .el-cascader-panel {

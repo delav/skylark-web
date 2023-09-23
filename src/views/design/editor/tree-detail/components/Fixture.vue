@@ -6,74 +6,108 @@
 <!--      </el-alert>-->
 <!--    </div>-->
     <div class="fixture-body">
-      <div class="fixture-item">
-        <p class="item-desc">套件前置
+      <div class="fixture-item" v-for="(item, index1) in fixtureHelpShow" :key="index1">
+        <p class="item-desc">{{ item[1] }}
           <el-tooltip
             class="box-item"
             effect="dark"
-            :content="fixtureTip.suite_setup_tip"
+            :content="item[2]"
             placement="top-start"
           >
-            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+            <el-icon class="help-icon" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
           </el-tooltip>
+          <el-icon class="edit-icon" @click="editFixtureItem(index1)"><Edit /></el-icon>
         </p>
         <p class="item-value">
-          <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_setup']"></el-input>
-        </p>
-      </div>
-      <div class="fixture-item">
-        <p class="item-desc">套件后置
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            :content="fixtureTip.suite_teardown_tip"
-            placement="top-start"
+          <el-tag
+            style="margin: 3px 0 0 5px"
+            v-for="(value, index2) in fixtureObject[item[0]]"
+            :key="index2"
           >
-            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
-          </el-tooltip></p>
-        <p class="item-value">
-          <el-input :disabled="inputDisabled" v-model="fixtureObject['suite_teardown']"></el-input>
-        </p>
-      </div>
-      <div class="fixture-item">
-        <p class="item-desc">用例前置
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            :content="fixtureTip.test_setup_tip"
-            placement="top-start"
-          >
-            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
-          </el-tooltip></p>
-        <p class="item-value">
-          <el-input :disabled="inputDisabled" v-model="fixtureObject['test_setup']"></el-input>
-        </p>
-      </div>
-      <div class="fixture-item">
-        <p class="item-desc">用例后置
-          <el-tooltip
-            class="box-item"
-            effect="dark"
-            :content="fixtureTip.test_teardown_tip"
-            placement="top-start"
-          >
-            <el-icon class="icon-style" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
-          </el-tooltip></p>
-        <p class="item-value">
-          <el-input :disabled="inputDisabled" v-model="fixtureObject['test_teardown']"></el-input>
+            {{ value }}
+          </el-tag>
         </p>
       </div>
     </div>
-    <div class="fixture-footer">
-      <el-button v-if="inputDisabled" type="primary" @click="editFixture">编辑</el-button>
-      <el-button v-else @click="cancelEdit">取消</el-button>
-      <el-button style="margin-left: 20px" type="primary" @click="saveFixture">保存</el-button>
+    <div class="fixture-editor">
+      <el-dialog
+        width="50%"
+        v-model="showFixtureEdit"
+        :title="editTitle"
+      >
+        <div class="content">
+          <div class="fixture-keyword">
+            <p class="item" v-for="(value, index) in fixtureKeywords" :key="index">
+              <el-tag
+                @close="removeKeywordFromFixture(index)"
+                closable
+              >
+                {{ value }}
+              </el-tag>
+            </p>
+          </div>
+          <div class="keyword-select">
+            <div class="keyword-item">
+              <el-select
+                style="width: calc(100% - 65px)"
+                v-model="currentKeyword"
+                placement="bottom-start"
+                placeholder="选择组件"
+                :popper-append-to-body="false"
+                filterable
+              >
+                <el-option
+                  v-for="(item, index) in keywordList"
+                  :key="index"
+                  :label="item.ext_name"
+                  :value="item.ext_name"
+                  @click="changeKeyword(item)"
+                />
+              </el-select>
+              <el-button style="margin-left: 5px" @click="addKeywordToFixture">添加</el-button>
+            </div>
+            <div class="keyword-params">
+              <p class="param-desc" v-if="showParams">组件参数
+                <el-button
+                  v-if="showOperateButton"
+                  size="small"
+                  @click="addParam"
+                  plain
+                >
+                  <el-icon><Plus /></el-icon>添加
+                </el-button>
+                <el-button
+                  v-if="showOperateButton"
+                  size="small"
+                  @click="deleteParam"
+                  plain
+                >
+                  <el-icon><Delete /></el-icon>删除
+                </el-button>
+              </p>
+              <p class="param-item" v-for="(value, index) in keywordParams" :key="index">
+                <el-input v-model="keywordParams[index]"></el-input>
+              </p>
+            </div>
+          </div>
+        </div>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="showFixtureEdit=false">取消</el-button>
+            <el-button type="primary" @click="saveFixture">
+              确定
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
 import NODE from "@/constans/node";
+import KEYWORD from "@/constans/keyword";
+import { deepCopy } from "@/utils/dcopy";
 import { saveSetupTeardown} from "@/api/fixture";
 
 export default {
@@ -81,10 +115,22 @@ export default {
   props: {
     cateFixture: Object
   },
+  computed: {
+    keywordList() {
+      const allKeywordList = Object.values(this.$store.state.keyword.keywordObjects)
+      const showKeywords = allKeywordList.filter(item => {
+        return item.category !== KEYWORD.KeywordCategory.RESERVED
+      })
+      return Object.values(showKeywords)
+    },
+  },
   watch: {
     cateFixture: {
       handler(val) {
-        this.fixtureObject = val
+        if (JSON.stringify(val) === '{}') {
+          return
+        }
+        this.handlerFixture(val)
       },
       deep: true,
       immediate: true
@@ -92,15 +138,32 @@ export default {
   },
   data() {
     return {
-      fixtureTip: {
-        'suite_setup_tip': '运行测试套件之前执行，可用于准备数据',
-        'suite_teardown_tip': '运行测试套件之后执行，可用于数据清理和复原',
-        'test_setup_tip': '测试套件下的每个测试用例运行之前执行，可用于每个用例重复相同的操作步骤',
-        'test_teardown_tip': '测试套件下的每个测试用例运行之后执行，可用于每个用例重复数据清理和复原'
+      fixtureJoinSep: '|AND|',
+      fixtureHelpShow: [
+        ['suite_setup', '套件前置', '运行测试套件之前执行，可用于准备数据'],
+        ['suite_teardown', '套件后置', '运行测试套件之前执行，可用于准备数据'],
+        ['test_setup', '用例前置', '运行测试套件之前执行，可用于准备数据'],
+        ['test_teardown', '用例后置', '运行测试套件之前执行，可用于准备数据'],
+      ],
+      fixtureObject: {
+        'suite_setup': [],
+        'suite_teardown': [],
+        'suite_setup_desc': '',
+        'suite_teardown_desc': '',
+        'test_setup': [],
+        'test_teardown': [],
+        'test_setup_desc': '',
+        'test_teardown_desc': ''
       },
-      fixtureObject: {},
       inputDisabled: true,
-      rawFixtureObject: ''
+      showFixtureEdit: false,
+      editTitle: '',
+      editField: '',
+      currentKeyword: '',
+      fixtureKeywords: [],
+      showParams: false,
+      keywordParams: [],
+      showOperateButton: false
     }
   },
   methods: {
@@ -114,28 +177,64 @@ export default {
       }
       return {id: selectedNode.mid, type: moduleType}
     },
-    editFixture() {
-      this.inputDisabled = false
-      this.rawFixtureObject = JSON.stringify(this.fixtureObject)
+    handlerFixture(fixtures) {
+      const newFixtures = deepCopy(fixtures)
+      const handlerFields = ['suite_setup', 'suite_teardown', 'test_setup', 'test_teardown']
+      for (let i = 0; i < handlerFields.length; i++) {
+        const field = handlerFields[i]
+        const value = fixtures[field]
+        if (value === null || value === '' || value === undefined) {
+          newFixtures[field] = []
+        } else if (value.indexOf(this.fixtureJoinSep) !== -1) {
+          newFixtures[field] = value.split(this.fixtureJoinSep)
+        } else {
+          newFixtures[field] = [value]
+        }
+      }
+      this.fixtureObject = newFixtures
     },
-    cancelEdit() {
-      this.inputDisabled = true
-      this.fixtureObject = JSON.parse(this.rawFixtureObject)
+    editFixtureItem(showIndex) {
+      this.editField = this.fixtureHelpShow[showIndex][0]
+      this.editTitle = this.fixtureHelpShow[showIndex][1]
+      this.fixtureKeywords = deepCopy(this.fixtureObject[this.editField])
+      this.showFixtureEdit = true
+    },
+    cancelEditFixtureItem() {
+      this.editField = ''
+      this.showFixtureEdit = false
+    },
+    changeKeyword(keyword) {
+      this.keywordParams = []
+      this.showOperateButton = false
+      if (keyword['input_type'] === KEYWORD.KeywordArgType.NONE) {
+        this.showParams = false
+        return
+      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.SINGLE) {
+        this.keywordParams.push(keyword['input_params'])
+      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.MULTI) {
+        this.keywordParams = keyword['input_params'].split('|')
+      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.LIST
+        || keyword['input_type'] === KEYWORD.KeywordArgType.DICT) {
+        this.keywordParams.push('')
+        this.showOperateButton = true
+      }
+      this.showParams = true
     },
     saveFixture() {
-      const postData = this.fixtureObject
-      if (!Object.prototype.hasOwnProperty.call(postData, 'module_id')) {
-        const moduleInfo = this.getModuleInfo()
-        postData['module_id'] = moduleInfo.id
-        postData['module_type'] = moduleInfo.type
+      if (this.fixtureKeywords.length === 0) {
+        return
       }
+      const valueStr = this.fixtureKeywords.join(this.fixtureJoinSep)
+      const postData = {[this.editField]: valueStr}
+      const moduleInfo = this.getModuleInfo()
+      postData['module_id'] = moduleInfo.id
+      postData['module_type'] = moduleInfo.type
       saveSetupTeardown(postData).then(response => {
-        this.inputDisabled = true
-        this.fixtureObject = response.data
-        this.updateTreeNode(NODE.ExtraDataKey.FIXTURE, this.fixtureObject)
+        this.showFixtureEdit = false
+        this.handlerFixture(response.data)
+        this.updateTreeNode(NODE.ExtraDataKey.FIXTURE, response.data)
       }).catch(error => {
         this.$message.error(error)
-        this.inputDisabled = false
       })
     },
     updateTreeNode(extraDataKey, extraDataValue) {
@@ -146,29 +245,59 @@ export default {
       treeObj.updateNode(selectedNode)
       this.$store.commit('tree/SET_SELECT_NODE', selectedNode)
     },
+    addParam() {
+      this.keywordParams.push('')
+    },
+    deleteParam() {
+      this.keywordParams.pop()
+    },
+    addKeywordToFixture() {
+      const keywordMsg = this.currentKeyword + '|' + this.keywordParams.join('|')
+      this.fixtureKeywords.push(keywordMsg)
+    },
+    removeKeywordFromFixture(index) {
+      this.fixtureKeywords.splice(index, 1)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
+
 .fixture {
   .fixture-alter {
     margin-top: 10px;
   }
   .fixture-body {
+    margin-bottom: 15px;
     .fixture-item {
       margin-top: 12px;
       .item-desc {
         margin: 0 0 4px 0;
         font-size: 14px;
         color: #6b778c;
-        .icon-style {
-          vertical-align: -10%;
+        .help-icon {
           cursor: pointer;
+          vertical-align: -10%;
+        }
+        .edit-icon {
+          margin-left: 15px;
+          font-size: 16px;
+          cursor: pointer;
+          vertical-align: -20%;
+          &:hover {
+            color: $mainColor;
+          }
         }
       }
       .item-value {
         margin: 0;
+        padding: 2px 0 5px 0;
+        min-height: 34px;
+        //border: 1px solid #dcdfe6;
+        box-shadow: 0 0 0 1px #dcdfe6 inset;
+        border-radius: 4px;
       }
     }
   }
@@ -178,17 +307,32 @@ export default {
     align-items: flex-end;
     justify-content: right;
   }
-}
-:deep(.el-input.is-disabled) {
-  cursor: auto;
-  .el-input__inner {
-    cursor: auto;
-  }
-}
-:deep(.el-textarea.is-disabled) {
-  cursor: auto;
-  .el-textarea__inner {
-    cursor: auto;
+  .fixture-editor {
+    .content {
+      .fixture-keyword {
+        padding: 2px 0 5px 0;
+        min-height: 34px;
+        //border: 1px solid #dcdfe6;
+        box-shadow: 0 0 0 1px #dcdfe6 inset;
+        border-radius: 4px;
+        .item {
+          margin: 3px 0 0 5px;
+        }
+      }
+      .keyword-select {
+        margin-top: 10px;
+      }
+      .keyword-params {
+        .param-desc {
+          margin: 10px 0 0 0;
+          font-size: 13px;
+          height: 28px;
+        }
+        .param-item {
+          margin: 0 0 5px 0;
+        }
+      }
+    }
   }
 }
 </style>

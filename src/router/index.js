@@ -140,7 +140,6 @@ export const routes = [
   {
     path: '/user',
     meta: { navbar: false },
-    component: Layout,
     hidden: true,
     children: [
       {

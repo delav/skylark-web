@@ -65,6 +65,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
 $navbarWidth: 200px;
 $menuItemHeight: 48px;
 $menuHeight: 125px;
@@ -86,9 +87,11 @@ $planHeight: 260px;
       line-height: $menuItemHeight;
     }
     .el-menu-item.is-active {
-      color: #6681FA; background-color: #EAEEFF;
+      color: $mainColor;
+      background-color: #effbff;
     }
     .icon-class {
+      font-size: 18px;
       margin-right: 5px;
     }
   }

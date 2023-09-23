@@ -12,7 +12,14 @@ const KeywordArgType = {
   DICT: 4,
 }
 
+const KeywordCategory = {
+  ORDINARY: 0,
+  RESERVED: 1,
+  CUSTOMIZED: 9
+}
+
 export default {
   KeywordType,
   KeywordArgType,
+  KeywordCategory
 }

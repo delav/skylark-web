@@ -34,23 +34,23 @@ $primaryButtonHoverText: $mainColor;
   border-color: $buttonHoverText;
 }
 
-.el-button--info {
-  color: $infoButtonText;
-  background-color: $infoButtonBg;
-  border-color: $infoButtonBg;
-}
-.el-button--info.is-active,
-.el-button--info:active {
-  color: $infoButtonText;
-  background: $infoButtonHoverBg;
-  border-color: $infoButtonHoverBg;
-}
-.el-button--info:focus,
-.el-button--info:hover {
-  color: $infoButtonHoverText;
-  background: $infoButtonHoverBg;
-  border-color: $infoButtonBg;
-}
+//.el-button--info {
+//  color: $infoButtonText;
+//  background-color: $infoButtonBg;
+//  border-color: $infoButtonBg;
+//}
+//.el-button--info.is-active,
+//.el-button--info:active {
+//  color: $infoButtonText;
+//  background: $infoButtonHoverBg;
+//  border-color: $infoButtonHoverBg;
+//}
+//.el-button--info:focus,
+//.el-button--info:hover {
+//  color: $infoButtonHoverText;
+//  background: $infoButtonHoverBg;
+//  border-color: $infoButtonBg;
+//}
 
 .el-button--primary {
   color: $primaryButtonText;

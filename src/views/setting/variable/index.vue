@@ -1,5 +1,5 @@
 <template>
-  <div class="variable-setting">
+  <div class="variable-config">
     <div class="project-list">
       <el-select
         class="project-selector"
@@ -31,10 +31,8 @@
                 style="width: 100%"
                 v-model="searchKey"
                 placeholder="输入关键字搜索"
+                @keyup.enter.native="searchVariable"
               >
-                <template #append>
-                  <el-button><el-icon><Search /></el-icon></el-button>
-                </template>
               </el-input>
             </div>
             <div class="operate-button">
@@ -195,14 +193,13 @@ export default {
     },
   },
   watch: {
-    '$store.state.base.projectList': {
-      handler(array) {
-        if (array.length !== 0 && this.selectProjectId === '') {
-          this.selectProjectId = array[0]['id']
+    '$store.state.base.baseLoaded': {
+      handler() {
+        if (this.projectList.length !== 0 && this.selectProjectId === '') {
+          this.selectProjectId = this.projectList[0]['id']
           this.changeProject()
         }
       },
-      deep: true,
       immediate: true
     }
   },
@@ -338,13 +335,14 @@ export default {
           this.changeVariableList(this.selectEvnId)
         })
       })
-    }
+    },
+    searchVariable() {}
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.variable-setting {
+.variable-config {
   width: 100%;
   height: 100%;
   padding: 5px;

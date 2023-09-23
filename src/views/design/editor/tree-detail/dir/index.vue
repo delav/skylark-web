@@ -28,16 +28,7 @@ export default {
   data() {
     return {
       cateDocument: '',
-      fixtureObject: {
-        'suite_setup': '',
-        'suite_teardown': '',
-        'suite_setup_desc': '',
-        'suite_teardown_desc': '',
-        'test_setup': '',
-        'test_teardown': '',
-        'test_setup_desc': '',
-        'test_teardown_desc': ''
-      },
+      fixtureObject: {},
     }
   },
   watch: {

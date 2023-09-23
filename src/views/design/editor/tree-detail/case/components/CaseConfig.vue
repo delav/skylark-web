@@ -71,6 +71,7 @@
               <el-input
                 @change="saveCaseTimeout"
                 v-model="timeNum"
+                oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"
                 placeholder="Please input"
                 class="input-with-select"
               >
@@ -84,6 +85,19 @@
                     />
                   </el-select>
                 </template>
+              </el-input>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="item-title">执行序号：</span>
+            <div class="item-content">
+              <el-input
+                @change="saveCaseOrder"
+                v-model.number="orderNumber"
+                oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"
+                placeholder="Please input"
+                class="input-with-select"
+              >
               </el-input>
             </div>
           </div>
@@ -112,7 +126,8 @@ export default {
       ],
       timeNum: '',
       timeUnit: '',
-      priorityName: ''
+      priorityName: '',
+      orderNumber: ''
     }
   },
   computed: {
@@ -148,6 +163,7 @@ export default {
       this.caseInfo = nodeInfo['meta']
       this.handlerTimeout(this.caseInfo.timeout)
       this.handlerPriority(this.caseInfo.priority_id)
+      this.handlerOrder(this.caseInfo.order)
       this.handlerTags(this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG])
     },
     handlerTags(itemTags) {
@@ -175,6 +191,11 @@ export default {
     handlerPriority(priorityId) {
       if (priorityId in this.priorityMap) {
         this.priorityName = this.priorityMap[priorityId]
+      }
+    },
+    handlerOrder(orderNumber) {
+      if (orderNumber) {
+        this.orderNumber = orderNumber
       }
     },
     updateTreeNode() {
@@ -208,6 +229,14 @@ export default {
         const timeoutStr = response.data.timeout
         this.caseInfo.timeout = timeoutStr
         this.handlerTimeout(timeoutStr)
+        this.updateTreeNode()
+      })
+    },
+    saveCaseOrder() {
+      const params = {'order': this.orderNumber}
+      updateCase(this.caseInfo.id, params).then((response) => {
+        this.orderNumber = response.data.order
+        this.caseInfo.order = this.orderNumber
         this.updateTreeNode()
       })
     },

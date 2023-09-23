@@ -61,7 +61,7 @@
       </div>
       <div class="divider"></div>
       <div class="language">
-        <el-dropdown trigger="click" :command="changeLanguage">
+        <el-dropdown trigger="hover" :command="changeLanguage">
           <span>
             {{ $t('Navbar._language') }}
             <el-icon><ArrowDown /></el-icon>
@@ -103,12 +103,16 @@
         class="notice-dialog"
         width="550px"
         v-model="noticeShow"
-        :title="noticeItem.title"
         center
       >
-        <span>
-          {{noticeItem.content}}
-        </span>
+        <template #header>
+          <span class="dialog-header">{{noticeItem.title}}</span>
+        </template>
+        <div class="content">
+          <span>
+            {{noticeItem.content}}
+          </span>
+        </div>
       </el-dialog>
       <el-dialog
         class="feedback-dialog"
@@ -182,7 +186,6 @@ export default {
   data() {
     return {
       logo: require('@/assets/logo.png'),
-      avatar: require('@/assets/avatar.gif'),
       lang: {
         'CN': '中文',
         'US': 'English',
@@ -319,6 +322,19 @@ export default {
     border-bottom: 1px solid #e4e3e3;
     &:hover {
       color: #00acc1;
+    }
+  }
+}
+.navbar-dialog {
+  .notice-dialog {
+    .dialog-header {
+      font-size: 15px;
+      font-weight: 600;
+      color: #7d7d7e;
+    }
+    .content {
+      min-height: 150px;
+      font-size: 14px;
     }
   }
 }

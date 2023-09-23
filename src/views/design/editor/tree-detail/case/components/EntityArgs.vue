@@ -46,7 +46,7 @@
               effect="dark"
               content="格式化编辑"
             >
-              <el-icon class="argument-icon" color="#f56c6c" @click="formatEditJson(index)"><Crop /></el-icon>
+              <el-icon class="argument-icon" color="#00acc1" @click="formatEditJson(index)"><Crop /></el-icon>
             </el-tooltip>
           </p>
         </template>
@@ -118,7 +118,7 @@
             effect="dark"
             content="复制"
           >
-            <el-icon class="argument-icon" color="#f56c6c" @click="copyOutputArg(index)"><CopyDocument /></el-icon>
+            <el-icon class="argument-icon" color="#00acc1" @click="copyOutputArg(index)"><CopyDocument /></el-icon>
           </el-tooltip>
         </p>
       </div>
@@ -150,7 +150,6 @@
 <script>
 import draggable from 'vuedraggable'
 import JsonEditor from '@/components/JsonEditor'
-// import SvgIcon from "@/components/SvgIcon";
 import KEYWORD from "@/constans/keyword";
 import { deepCopy } from "@/utils/dcopy";
 import { getKeywordUid } from "@/utils/keyword";
@@ -315,6 +314,11 @@ export default {
       cInput.select()
       document.execCommand('Copy')
       cInput.remove()
+      this.$message({
+        type: 'success',
+        message: '复制成功',
+        duration: 1500
+      })
     },
     formatEditJson(index) {
       const inputVal = this.entityArgs['inputValues'][index]

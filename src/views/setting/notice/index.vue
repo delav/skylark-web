@@ -1,5 +1,5 @@
 <template>
-  <div class="notice">
+  <div class="notice-config">
     <div class="notice-body">
       <el-card>
         <template #header>
@@ -71,7 +71,7 @@
                   inactive-text="关"
                 />
               </el-form-item>
-              <el-form-item label="邮箱地址" prop="rcv_email">
+              <el-form-item label="接收邮箱地址" prop="rcv_email">
                 <el-select
                   style="width: 100%;"
                   v-model="noticeForm.rcv_email"
@@ -112,14 +112,13 @@ export default {
     },
   },
   watch: {
-    '$store.state.base.projectList': {
-      handler(array) {
-        if (array.length !== 0 && this.selectProjectId === '') {
-          this.selectProjectId = array[0]['id']
+    '$store.state.base.baseLoaded': {
+      handler() {
+        if (this.projectList.length !== 0 && this.selectProjectId === '') {
+          this.selectProjectId = this.projectList[0]['id']
           this.changeProject()
         }
       },
-      deep: true,
       immediate: true
     }
   },
@@ -163,7 +162,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.notice {
+.notice-config {
   width: 100%;
   height: 100%;
   padding: 5px;

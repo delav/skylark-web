@@ -19,7 +19,10 @@
           <p class="time-tip">构建开始时间：{{item['create_at']}}</p>
         </div>
         <div class="item-tip">
-          <svg-icon v-if="item['status'] === 0" icon-class="timing" class="run-icon"></svg-icon>
+          <span v-if="item['status'] === 0">
+            <el-image style="width: 20px; height: 20px" :src="loadingUrl" />
+          </span>
+<!--          <svg-icon v-if="item['status'] === 0" icon-class="timing" class="run-icon"></svg-icon>-->
           <svg-icon v-else-if="item['status'] === 1" icon-class="finish" class="finish-icon"></svg-icon>
         </div>
       </div>
@@ -45,6 +48,7 @@ export default {
   },
   data() {
     return {
+      loadingUrl: require('@/assets/loading.gif'),
       recentlyRecordList: [],
     }
   },

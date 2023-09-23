@@ -784,7 +784,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
-//@import "src/styles/element/dialog.scss";
 $selectorHeight: 40px;
 $toolHeight: 40px;
 
