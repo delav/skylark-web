@@ -28,7 +28,7 @@ export default {
     },
     modeList: {
       type: Array,
-      default: () => ['tree', 'code', 'form', 'text', 'view'],
+      default: () => ['code', 'text'],
     },
     // en, es zh-CN, pt-BR, tr, ja, fr-FR, de, ru, ko
     language: {
@@ -39,7 +39,8 @@ export default {
   data() {
     return {
       json: this.modelValue,
-      expandedModes: ['tree', 'view', 'form'],
+      // expandedModes: ['tree', 'view', 'form'],
+      expandedModes: [],
       isFullScreen: false,
       showFullScreen: false,
     };

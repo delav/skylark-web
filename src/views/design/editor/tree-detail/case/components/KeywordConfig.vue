@@ -10,11 +10,11 @@
             <span class="item-title">组件说明</span>
             <div class="item-content">
               <el-input
-                @blur="updateCaseKeyword"
-                v-model="keywordInfo.document"
+                @blur="updateCaseKeyword('document')"
+                v-model="extraData.document"
                 :autosize="{ minRows: 2, maxRows: 4 }"
                 type="textarea"
-                placeholder="Please input"
+                placeholder=""
               />
             </div>
           </div>
@@ -22,9 +22,9 @@
             <span class="item-title">输入参数：</span>
             <div class="item-content">
               <el-input
-                @blur="updateCaseKeyword"
-                v-model="keywordInfo.inputs"
-                placeholder="Please input"
+                @blur="updateCaseKeyword('inputs')"
+                v-model="extraData.inputs"
+                placeholder=""
               />
             </div>
           </div>
@@ -32,9 +32,9 @@
             <span class="item-title">输出参数：</span>
             <div class="item-content">
               <el-input
-                @blur="updateCaseKeyword"
-                v-model="keywordInfo.outputs"
-                placeholder="Please input"
+                @blur="updateCaseKeyword('outputs')"
+                v-model="extraData.outputs"
+                placeholder=""
               />
             </div>
           </div>
@@ -45,67 +45,32 @@
 </template>
 
 <script>
-import NODE from "@/constans/node";
-import { updateCase } from "@/api/case";
 
 export default {
   name: 'KeywordConfig',
+  props: {
+    keywordExtra: Object,
+  },
   data() {
     return {
-      keywordInfo: {
-        document: '',
-        inputs: '',
-        outputs: '',
-      }
+      extraData: this.keywordExtra
     }
   },
   watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const category = this.$store.state.tree.nodeCategory
-        const detailType = this.$store.state.tree.detailType
-        if (detailType === NODE.DetailType.CASE && category === NODE.NodeCategory.KEYWORD) {
-          this.initKeywordData()
-        }
+    keywordExtra: {
+      handler(val) {
+        this.extraData = val
       },
-      immediate: true
-    },
+      deep: true,
+      immediate: true,
+    }
   },
   methods: {
-    initKeywordData() {
-      const nodeInfo = this.$store.state.tree.selectedNode
-      if (JSON.stringify(nodeInfo) === '{}') return
-      this.keywordInfo = nodeInfo['meta']
-    },
-    updateTreeNode() {
-      const treeId = this.$store.state.tree.treeId
-      const treeObj = $.fn.zTree.getZTreeObj(treeId)
-      const caseNode = this.$store.state.tree.selectedNode
-      caseNode['meta'] = this.keywordInfo
-      treeObj.updateNode(caseNode)
-      this.$store.commit('tree/SET_SELECT_NODE', caseNode)
-    },
-    updateCaseKeyword() {
-      const nodeInfo = this.$store.state.tree.selectedNode
-      const oldData = nodeInfo['meta']
+    updateCaseKeyword(field) {
       const params = {
-        'document': this.keywordInfo.document,
-        'inputs': this.keywordInfo.inputs,
-        'outputs': this.keywordInfo.outputs
+        [field]: this.extraData[field]
       }
-      console.log(oldData)
-      console.log(params)
-      if (oldData.document === params.document
-        && oldData.inputs === params.inputs
-        && oldData.outputs === params.outputs) {
-        return
-      }
-      updateCase(this.keywordInfo.id, params).then((response) => {
-        this.keywordInfo.document = response.data.document
-        this.keywordInfo.inputs = response.data.inputs
-        this.keywordInfo.outputs = response.data.outputs
-        this.updateTreeNode()
-      })
+      this.$emit('update', params)
     },
   }
 }

@@ -400,13 +400,11 @@ export default {
       if (treeNode.id === selectNodeId) return
       if (treeNode.desc === NODE.NodeDesc.CASE) {
         this.changeNodeStore(treeNode, NODE.DetailType.CASE)
-        return
       } else if (treeNode.desc === NODE.NodeDesc.SUITE) {
         this.changeNodeStore(treeNode, NODE.DetailType.SUITE)
       } else if (treeNode.desc === NODE.NodeDesc.DIR) {
         this.changeNodeStore(treeNode, NODE.DetailType.DIR)
       }
-      this.$store.commit('entity/RELOAD_STATE')
     },
     showTreeMenu(x, y) {
       x = x + 15
@@ -835,12 +833,12 @@ $toolHeight: 40px;
               line-height: 20px;
               padding: 3px 16px;
               margin: 0;
-              font-size: 14px;
+              font-size: 13px;
               cursor: pointer;
               outline: none;
               &:hover {
                 color: $mainColor;
-                background-color: #effbff;
+                background-color: $hoverBg;
               }
             }
           }

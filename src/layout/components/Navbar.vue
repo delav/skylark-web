@@ -121,7 +121,7 @@
         title="意见反馈"
       >
         <el-form
-          ref="ruleFormRef"
+          ref="feedbackRef"
           :model="feedbackForm"
           :rules="formRules"
           label-width="120px"
@@ -166,7 +166,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="feedbackShow=false">取消</el-button>
-            <el-button type="primary" @click="feedbackShow=false">
+            <el-button type="primary" @click="commitFeedback">
               提交
             </el-button>
           </span>
@@ -296,6 +296,15 @@ export default {
     },
     handleNumberLimit() {
       this.$message.error('超过可上传的最大文件数量')
+    },
+    commitFeedback() {
+      this.$refs['feedbackRef'].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        this.feedbackShow = false
+        this.$message.success('提交反馈成功')
+      })
     }
   }
 }

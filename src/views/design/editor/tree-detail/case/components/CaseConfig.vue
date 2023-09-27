@@ -108,27 +108,11 @@
 </template>
 
 <script>
-import NODE from "@/constans/node";
-import { createTag, deleteTag } from "@/api/tag";
-import { updateCase } from "@/api/case";
 
 export default {
   name: 'CaseConfig',
-  data() {
-    return {
-      activeDetail: '',
-      caseInfo: {},
-      selectTags: [],
-      cacheSelect: '',
-      timeUnitList: [
-        {label: '秒', value: 'seconds'},
-        {label: '分', value: 'minutes'}
-      ],
-      timeNum: '',
-      timeUnit: '',
-      priorityName: '',
-      orderNumber: ''
-    }
+  props: {
+    caseExtra: Object
   },
   computed: {
     tagList() {
@@ -142,29 +126,37 @@ export default {
     }
   },
   watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const category = this.$store.state.tree.nodeCategory
-        const detailType = this.$store.state.tree.detailType
-        if (detailType === NODE.DetailType.CASE && category === NODE.NodeCategory.TESTCASE) {
-          this.initCaseData()
-        }
+    caseExtra: {
+      handler(val) {
+        this.caseInfo = val
+        this.initCaseExtraData()
       },
+      deep: true,
       immediate: true
     },
   },
+  data() {
+    return {
+      activeDetail: '',
+      caseInfo: this.caseExtra,
+      selectTags: [],
+      cacheSelect: '',
+      timeUnitList: [
+        {label: '秒', value: 'seconds'},
+        {label: '分', value: 'minutes'}
+      ],
+      timeNum: '',
+      timeUnit: '',
+      priorityName: '',
+      orderNumber: ''
+    }
+  },
   methods: {
-    initCaseData() {
-      Object.assign(this.$data, this.$options.data())
-      const nodeInfo = this.$store.state.tree.selectedNode
-      if (JSON.stringify(nodeInfo) === '{}') {
-        return
-      }
-      this.caseInfo = nodeInfo['meta']
-      this.handlerTimeout(this.caseInfo.timeout)
+    initCaseExtraData() {
       this.handlerPriority(this.caseInfo.priority_id)
+      this.handlerTags(this.caseInfo.tag)
       this.handlerOrder(this.caseInfo.order)
-      this.handlerTags(this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG])
+      this.handlerTimeout(this.caseInfo.timeout)
     },
     handlerTags(itemTags) {
       if (!itemTags) {
@@ -198,98 +190,41 @@ export default {
         this.orderNumber = orderNumber
       }
     },
-    updateTreeNode() {
-      const treeId = this.$store.state.tree.treeId
-      const treeObj = $.fn.zTree.getZTreeObj(treeId)
-      const caseNode = this.$store.state.tree.selectedNode
-      caseNode['meta'] = this.caseInfo
-      treeObj.updateNode(caseNode)
-      this.$store.commit('tree/SET_SELECT_NODE', caseNode)
-    },
     saveCaseDoc() {
       const params = {'document': this.caseInfo.document}
-      updateCase(this.caseInfo.id, params).then((response) => {
-        this.caseInfo.document = response.data.document
-        this.updateTreeNode()
-      })
+      this.$emit('update', params)
     },
     savePriority() {
       const params = {'priority_id': this.caseInfo.priority_id}
-      updateCase(this.caseInfo.id, params).then((response) => {
-        const newPriorityId = response.data.priority_id
-        this.handlerPriority(newPriorityId)
-        this.caseInfo.priority_id = newPriorityId
-        this.updateTreeNode()
-      })
+      this.$emit('update', params)
     },
     saveCaseTimeout() {
       const timeout = this.timeNum + ' ' + this.timeUnit
       const params = {'timeout': timeout}
-      updateCase(this.caseInfo.id, params).then((response) => {
-        const timeoutStr = response.data.timeout
-        this.caseInfo.timeout = timeoutStr
-        this.handlerTimeout(timeoutStr)
-        this.updateTreeNode()
-      })
+      this.$emit('update', params)
     },
     saveCaseOrder() {
       const params = {'order': this.orderNumber}
-      updateCase(this.caseInfo.id, params).then((response) => {
-        this.orderNumber = response.data.order
-        this.caseInfo.order = this.orderNumber
-        this.updateTreeNode()
-      })
+      this.$emit('update', params)
     },
     addCaseTag(values) {
       const cacheTags = JSON.parse(this.cacheSelect)
-      // add operate
-      if (cacheTags.length < values.length) {
-        const newAddItem = values.pop()
-        this.createCaseTag(newAddItem)
-      }
-    },
-    deleteCaseTag(tagName) {
-      const caseTagList = this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG]
-      const tagItem = caseTagList.find(item => item.name === tagName)
-      if (tagItem === undefined) {
+      // not new tag add
+      if (cacheTags.length >= values.length) {
         return
       }
-      const tagId = tagItem.id
-      deleteTag(tagId).then(() => {
-        this.cacheSelect = JSON.stringify(this.selectTags)
-        this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG] = caseTagList.filter(function (item) {
-          return item.id !== tagId
-        })
-        this.updateTreeNode()
-      })
-    },
-    createCaseTag(newName) {
       const params = {
-        'project_id': this.$store.state.tree.projectId,
-        'name': newName,
-        'module_id': this.caseInfo.id,
-        'module_type': NODE.ModuleType.CASE
+        operate: 'add',
+        tagName: values.pop()
       }
-      createTag(params).then((response) => {
-        const newCaseTag = response.data
-        this.updateTagCache({id: newCaseTag.id, name: newCaseTag.name})
-        this.selectTags.push(newCaseTag.name)
-        this.cacheSelect = JSON.stringify(this.selectTags)
-        this.caseInfo['extra_data'][NODE.ExtraDataKey.TAG].push(newCaseTag)
-        this.updateTreeNode()
-        // const projectId = this.$store.state.tree.projectId
-        // fetchTagsByProject(projectId).then(response => {
-        //   this.$store.commit('tree/SET_PROJECT_TAGS', response.data)
-        // })
-      })
+      this.$emit('updateTag', params)
     },
-    updateTagCache(tagItem) {
-      const tagArray = this.tagList
-      const exist = tagArray.find(item => item.name === tagItem.name)
-      if (exist === undefined) {
-        tagArray.push(tagItem)
-        this.$store.commit('scalar/SET_PROJECT_TAGS', tagArray)
+    deleteCaseTag(tagName) {
+      const params = {
+        operate: 'del',
+        tagName: tagName
       }
+      this.$emit('updateTag', params)
     },
   }
 }

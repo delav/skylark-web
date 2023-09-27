@@ -138,26 +138,20 @@ export const routes = [
     ]
   },
   {
-    path: '/user',
+    path: '/login',
     meta: { navbar: false },
-    hidden: true,
-    children: [
-      {
-        path: 'login',
-        name: 'Login',
-        component: () => import('@/views/user/login/index')
-      },
-      {
-        path: 'register',
-        name: 'Register',
-        component: () => import('@/views/user/register/index')
-      },
-      {
-        path: 'reset',
-        name: 'Reset',
-        component: () => import('@/views/user/reset/index')
-      }
-    ]
+    component: () => import('@/views/user/login/index'),
+    hidden: true
+  },
+  {
+    path: '/register',
+    meta: { navbar: false },
+    component: () => import('@/views/user/register/index')
+  },
+  {
+    path: '/reset',
+    meta: { navbar: false },
+    component: () => import('@/views/user/reset/index')
   },
   {
     path: '/404',

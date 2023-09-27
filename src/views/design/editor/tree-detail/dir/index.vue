@@ -35,9 +35,15 @@ export default {
     '$store.state.tree.currentNodeId': {
       handler() {
         const nodeInfo = this.$store.state.tree.selectedNode
-        if (JSON.stringify(nodeInfo) === '{}') return
+        if (JSON.stringify(nodeInfo) === '{}') {
+          return
+        }
         const cateInfo = nodeInfo['meta']
         this.cateDocument = cateInfo.document
+        if (!this.isCaseDir) {
+          this.fixtureObject = {}
+          return
+        }
         this.fixtureObject = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
       },
       immediate: true

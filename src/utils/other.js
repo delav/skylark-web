@@ -14,3 +14,13 @@ export function isMobile() {
     /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
   )
 }
+
+
+export function isJsonString(str) {
+  try {
+    const obj = JSON.parse(str)
+    return !!(typeof obj == 'object' && obj)
+  } catch (err) {
+    return false
+  }
+}

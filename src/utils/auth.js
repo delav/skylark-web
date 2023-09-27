@@ -4,9 +4,9 @@ import Cookies from "js-cookie";
 const TokenKey = 'Authorization'
 
 export const NotAuthUrl = {
-  Login: '/user/login',
-  Reset: '/user/reset',
-  Register: '/user/register'
+  Login: '/login',
+  Reset: '/reset',
+  Register: '/register'
 }
 
 export function getToken() {

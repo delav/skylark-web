@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {fetchFileContent} from "@/api/file";
+import { fetchFileContent } from "@/api/file";
 
 export default {
   name: 'File',

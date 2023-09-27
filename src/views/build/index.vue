@@ -114,7 +114,7 @@ $planHeight: 260px;
       }
       .el-menu-item.is-active {
         color: $mainColor;
-        background-color: #effbff;
+        background-color: $hoverBg;
       }
       .icon-class {
         margin: 0 5px;
