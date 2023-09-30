@@ -145,19 +145,19 @@
           <el-form-item label="图片">
             <el-upload
               v-model="fileList"
-              class="upload-demo"
-              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+              class="uploadPicture"
+              action=""
               accept=".jpg,.png,.jpeg,.gif"
               :auto-upload="false"
               :limit="3"
               :on-change="handleChangeFile"
+              :on-remove="handleRemoveFile"
               :on-exceed="handleNumberLimit"
-              :before-upload="handleBeforeUpload"
             >
               <el-button type="primary">选择图片</el-button>
               <template #tip>
                 <div class="el-upload__tip">
-                  仅支持上传.jpg, .png, .jpeg, .gif格式文件，文件大小不能超过5M，最多添加3个。
+                  仅支持上传.jpg, .png, .jpeg, .gif格式文件，文件大小不能超过5M，一次最多添加3个。
                 </div>
               </template>
             </el-upload>
@@ -281,18 +281,17 @@ export default {
       this.noticeShow = true
     },
     handleChangeFile(file, fileList) {
-      console.log(fileList)
+      this.fileList = fileList
       let imgSize = Number(file.size / 1024 / 1024)
       if (imgSize > 5) {
-        this.$message.warning('文件大小不能超过5MB，请重新上传。')
-      }
-    },
-    handleBeforeUpload(file) {
-      let imgSize = Number(file.size / 1024 / 1024)
-      if (imgSize > 5) {
-        this.$message.warning('文件大小不能超过5MB，请重新上传。')
+        const currIdx = this.uploadFiles.indexOf(file)
+        this.fileList.splice(currIdx, 1)
+        this.$message.error('文件大小不能超过5MB，请重新上传。')
         return false
       }
+    },
+    handleRemoveFile(file, fileList) {
+      this.fileList = fileList
     },
     handleNumberLimit() {
       this.$message.error('超过可上传的最大文件数量')

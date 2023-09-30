@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      extraData: this.keywordExtra
+      extraData: {}
     }
   },
   watch: {
@@ -80,6 +80,7 @@ export default {
 .keyword-config {
   width: 100%;
   .collapse-title {
+    color: #606266;
     .title-pri {
       font-size: 15px;
       width: 80px;

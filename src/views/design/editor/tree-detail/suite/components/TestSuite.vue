@@ -1,7 +1,7 @@
 <template>
   <div class="test-suite">
     <div class="document">
-      <document :cate-document="cateDocument"/>
+      <document :cate-document="suiteObject.document"/>
     </div>
     <div class="fixture-list">
       <el-collapse v-model="activeDetail" accordion>
@@ -9,18 +9,17 @@
           <template #title>
             <div class="collapse-title">编辑前置后置</div>
           </template>
-          <fixture :cate-fixture="fixtureObject"/>
+          <fixture :cate-fixture="suiteObject.fixture"/>
         </el-collapse-item>
       </el-collapse>
     </div>
     <div class="variable-list">
-      <variable :variables="suiteVariables"/>
+      <variable :variables="suiteObject.variable"/>
     </div>
   </div>
 </template>
 
 <script>
-import NODE from "@/constans/node";
 import Document from "@/views/design/editor/tree-detail/components/Document";
 import Fixture from "@/views/design/editor/tree-detail/components/Fixture";
 import Variable from '@/views/design/editor/tree-detail/components/Variable';
@@ -32,26 +31,35 @@ export default {
     Fixture,
     Variable,
   },
-  data() {
-    return {
-      cateDocument: '',
-      activeDetail: '',
-      fixtureObject: {},
-      suiteVariables: []
-    }
+  props: {
+    suiteInfo: Object
   },
   watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const nodeInfo = this.$store.state.tree.selectedNode
-        if (JSON.stringify(nodeInfo) === '{}') return
-        const cateInfo = nodeInfo['meta']
-        this.cateDocument = cateInfo.document
-        this.fixtureObject = cateInfo['extra_data'][NODE.ExtraDataKey.FIXTURE]
-        this.suiteVariables = cateInfo['extra_data'][NODE.ExtraDataKey.VARIABLE]
+    suiteInfo: {
+      handler(val) {
+        this.handlerSuiteInfo(val)
       },
       immediate: true
     },
+  },
+  data() {
+    return {
+      suiteObject: {
+        document: '',
+        fixture: {},
+        variable: []
+      },
+      activeDetail: ''
+    }
+  },
+  methods: {
+    handlerSuiteInfo(suiteObj) {
+      for (const key in suiteObj) {
+        if (key in this.suiteObject) {
+          this.suiteObject[key] = suiteObj[key]
+        }
+      }
+    }
   }
 }
 </script>

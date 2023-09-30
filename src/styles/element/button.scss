@@ -5,15 +5,15 @@ $buttonText: #606266;
 $buttonHoverBg: #ffffff;
 $buttonHoverText: #00acc1;
 
-$infoButtonBg: #00acc1;
-$infoButtonText: #ffffff;
-$infoButtonHoverBg: #03879aff;
-$infoButtonHoverText: #ffffff;
-
 $primaryButtonBg: $mainColor;
 $primaryButtonText: #ffffff;
 $primaryButtonHoverBg: #ffffff;
 $primaryButtonHoverText: $mainColor;
+
+$warningButtonBg: #fa7d03;
+$warningButtonText: #ffffff;
+$warningButtonHoverBg: #ffffff;
+$warningButtonHoverText: #fa7d03;
 
 // custom button style
 .el-button {
@@ -34,24 +34,6 @@ $primaryButtonHoverText: $mainColor;
   border-color: $buttonHoverText;
 }
 
-//.el-button--info {
-//  color: $infoButtonText;
-//  background-color: $infoButtonBg;
-//  border-color: $infoButtonBg;
-//}
-//.el-button--info.is-active,
-//.el-button--info:active {
-//  color: $infoButtonText;
-//  background: $infoButtonHoverBg;
-//  border-color: $infoButtonHoverBg;
-//}
-//.el-button--info:focus,
-//.el-button--info:hover {
-//  color: $infoButtonHoverText;
-//  background: $infoButtonHoverBg;
-//  border-color: $infoButtonBg;
-//}
-
 .el-button--primary {
   color: $primaryButtonText;
   background-color: $primaryButtonBg;
@@ -68,4 +50,22 @@ $primaryButtonHoverText: $mainColor;
   color: $primaryButtonHoverText;
   background: $primaryButtonHoverBg;
   border-color: $primaryButtonBg;
+}
+
+.el-button--warning {
+  color: $warningButtonText;
+  background-color: $warningButtonBg;
+  border-color: $warningButtonBg;
+}
+.el-button--warning.is-active,
+.el-button--warning:active {
+  color: $warningButtonText;
+  background: $warningButtonHoverBg;
+  border-color: $warningButtonHoverBg;
+}
+.el-button--warning:focus,
+.el-button--warning:hover {
+  color: $warningButtonHoverText;
+  background: $warningButtonHoverBg;
+  border-color: $warningButtonBg;
 }

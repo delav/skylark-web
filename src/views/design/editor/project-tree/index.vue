@@ -93,12 +93,13 @@
             <node-action
               v-if="showDialogType===0"
               :dialog-form="nodeDialogForm"
-              @closeDialogAction="closeNodeDialog"
-              @commitDialogAction="commitNodeDialog"
+              @actionClose="closeNodeDialog"
+              @actionCommit="commitNodeDialog"
             />
             <upload-file
               v-else-if="showDialogType===1"
-              @uploadFileAction="uploadProjectFile"
+              @uploadClose="closeNodeDialog"
+              @uploadCommit="uploadProjectFile"
             />
           </div>
         </el-dialog>
@@ -554,16 +555,7 @@ export default {
     uploadProjectFile(files) {
       let formData = new FormData()
       let node = this.nodeParams.meta_data
-      const dirId = node.mid
-      let nodeList = []
-      nodeList.push(node.name)
-      node = node.getParentNode()
-      while (node !== null) {
-        nodeList.push(node.name)
-        node = node.getParentNode()
-      }
-      nodeList.push(this.$store.state.tree.projectName)
-      formData.append('dir_id', dirId)
+      formData.append('dir_id', node.mid)
       files.forEach(file => {
         formData.append('file', file)
       })
@@ -571,6 +563,7 @@ export default {
         const newNodes = response.data
         this.zTreeObj.addNodes(node, -1, newNodes)
         this.$message.success(`上传${newNodes.length}个文件成功`)
+        this.closeNodeDialog()
       })
     },
     downloadProjectFile(nodeTId) {

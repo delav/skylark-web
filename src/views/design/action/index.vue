@@ -54,7 +54,7 @@
     <div class="dialog">
       <div class="push-dialog">
         <el-dialog
-          width="550px"
+          width="600px"
           v-model="showPushDialog"
           title="推送项目"
           :close-on-click-modal="false"

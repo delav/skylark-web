@@ -64,8 +64,8 @@
 </template>
 
 <script>
+import { deepCopy } from "@/utils/dcopy";
 import { isJsonString } from "@/utils/other";
-import { fetchFileContent, saveFileContent } from "@/api/file";
 import { Codemirror } from "vue-codemirror";
 // import { oneDark } from "@codemirror/theme-one-dark";
 import { python } from "@codemirror/lang-python";
@@ -78,22 +78,6 @@ export default {
   components: {
     Codemirror
   },
-  data() {
-    return {
-      cmMode: 'python',
-      tabSize: 4,
-      extensions: [python()],
-      fileObject: {
-        env_id: 0,
-        region_id: 0,
-        file_text: '',
-      },
-      editMode: false,
-      rawContent: '',
-      envDesc: '文件默认所有环境可用，指定环境后，其他环境将无法使用该文件的变量',
-      regionDesc: '文件默认所有地区可用，指定地区后，其他地区将无法使用该文件的变量'
-    }
-  },
   computed: {
     allEnvList() {
       return this.$store.state.base.containAllEnvList
@@ -105,25 +89,33 @@ export default {
       return this.$store.state.base.showRegion
     }
   },
+  props: {
+    fileInfo: Object
+  },
   watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const nodeInfo = this.$store.state.tree.selectedNode
-        if (JSON.stringify(nodeInfo) === '{}') {
-          return
-        }
-        this.getFileContent(nodeInfo['meta']['id'])
+    fileInfo: {
+      handler(val) {
+        this.handlerFileInfo(val)
       },
+      deep: true,
       immediate: true
     },
   },
+  data() {
+    return {
+      cmMode: 'python',
+      tabSize: 4,
+      extensions: [python()],
+      fileObject: {},
+      editMode: false,
+      rawContent: '',
+      envDesc: '文件默认所有环境可用，指定环境后，其他环境将无法使用该文件的变量',
+      regionDesc: '文件默认所有地区可用，指定地区后，其他地区将无法使用该文件的变量'
+    }
+  },
   methods: {
-    getFileContent(suiteId) {
-      fetchFileContent(suiteId).then(response => {
-        this.fileObject = this.handlerFileContent(response.data)
-      })
-    },
-    handlerFileContent(fileObj) {
+    handlerFileInfo(fileObj) {
+      fileObj = deepCopy(fileObj)
       if (fileObj['env_id'] === null) {
         fileObj['env_id'] = 0
       }
@@ -146,7 +138,8 @@ export default {
         this.tabSize = 2
         this.extensions = [StreamLanguage.define(yaml)]
       }
-      return fileObj
+      this.editMode = false
+      this.fileObject = fileObj
     },
     editFileContent() {
       const editMode = this.fileObject['edit_file'] && true
@@ -177,10 +170,7 @@ export default {
         }
         params['file_text'] = formatJson
       }
-      saveFileContent(params).then(response => {
-        this.fileObject = this.handlerFileContent(response.data)
-        this.editMode = false
-      })
+      this.$emit('update', params)
     },
     restoreFileContent() {
       this.fileObject.file_text = this.rawContent

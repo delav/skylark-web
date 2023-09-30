@@ -1,7 +1,7 @@
 <template>
   <div class="new-project">
     <div class="project-info">
-      <el-input placeholder="输入项目名称" v-model.trim="newProjectName"></el-input>
+      <el-input size="large" placeholder="输入项目名称" v-model.trim="newProjectName"></el-input>
     </div>
     <div class="project-type">
       <span class="switch-text">是否公开项目
@@ -48,7 +48,7 @@
         </span>
       </p>
     </div>
-    <el-button class="new-button" @click="createNewProject" type="primary">创建</el-button>
+    <el-button class="new-button" size="large" @click="createNewProject" type="primary">创建</el-button>
   </div>
 </template>
 

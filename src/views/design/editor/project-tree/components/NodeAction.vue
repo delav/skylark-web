@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     clickCancel() {
-      this.$emit('closeDialogAction')
+      this.$emit('actionClose')
     },
     clickCommit() {
       this.$refs['newForm'].validate((valid) => {
@@ -41,7 +41,7 @@ export default {
           this.$message.warning(info.msg)
           return
         }
-        this.$emit('commitDialogAction', this.changeFrom.name)
+        this.$emit('actionCommit', this.changeFrom.name)
       })
     },
     validateRules(changeFrom) {

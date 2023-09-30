@@ -96,7 +96,6 @@ export default {
     },
   },
   mounted() {
-    console.log('init case index')
     dragHController('infos', 'args', 'resize-y')
   },
   unmounted() {

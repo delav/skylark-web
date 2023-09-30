@@ -34,6 +34,10 @@ export default {
   watch: {
     '$store.state.tree.currentNodeId': {
       handler() {
+        const detailType = this.$store.state.tree.detailType
+        if (detailType !== NODE.DetailType.DIR) {
+          return
+        }
         const nodeInfo = this.$store.state.tree.selectedNode
         if (JSON.stringify(nodeInfo) === '{}') {
           return

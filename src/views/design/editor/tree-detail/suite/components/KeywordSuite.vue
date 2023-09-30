@@ -1,7 +1,7 @@
 <template>
   <div class="keyword-suite">
     <div class="document">
-      <document :cate-document="cateDocument"/>
+      <document :cate-document="suiteObject.document"/>
     </div>
   </div>
 </template>
@@ -14,20 +14,33 @@ export default {
   components: {
     Document
   },
-  data() {
-    return {
-      cateDocument: '',
-    }
+  props: {
+    suiteInfo: Object
   },
   watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const nodeInfo = this.$store.state.tree.selectedNode
-        if (JSON.stringify(nodeInfo) === '{}') return
-        this.cateDocument = nodeInfo['meta'].document
+    suiteInfo: {
+      handler(val) {
+        this.handlerSuiteInfo(val)
       },
+      deep: true,
       immediate: true
     },
+  },
+  data() {
+    return {
+      suiteObject: {
+        document: ''
+      },
+    }
+  },
+  methods: {
+    handlerSuiteInfo(suiteObj) {
+      for (const key in suiteObj) {
+        if (key in this.suiteObject) {
+          this.suiteObject[key] = suiteObj[key]
+        }
+      }
+    }
   }
 }
 </script>

@@ -3,10 +3,8 @@
     <el-form
       ref="postForm"
       :rules="formRules"
-      label-position="left"
       label-width="60px"
       :model="versionForm"
-      style="max-width: 500px"
     >
       <el-form-item label="项目" prop="project">
         <el-input v-model="versionForm.project" disabled />
@@ -35,11 +33,11 @@
       <el-form-item label="备注" prop="remark">
         <el-input :rows="2" type="textarea" v-model="versionForm.remark" />
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="requestPostVersion">提交</el-button>
-        <el-button @click="cancelDialog">取消</el-button>
-      </el-form-item>
     </el-form>
+    <div class="push-footer">
+      <el-button @click="cancelDialog">取消</el-button>
+      <el-button type="primary" @click="requestPostVersion">提交</el-button>
+    </div>
   </div>
 </template>
 
@@ -104,5 +102,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.push-info {
+  width: 100%;
+  height: 100%;
+  .push-footer {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
 </style>

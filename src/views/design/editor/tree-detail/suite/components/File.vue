@@ -1,39 +1,41 @@
 <template>
-  <div>{{ content }}</div>
+  <div class="project-file">{{ fileObject.file_text }}</div>
 </template>
 
 <script>
-import { fetchFileContent } from "@/api/file";
+import { deepCopy } from "@/utils/dcopy";
 
 export default {
   name: 'File',
-  data() {
-    return {
-      content: {}
-    }
+  props: {
+    fileInfo: Object
   },
   watch: {
-    '$store.state.tree.currentNodeId': {
-      handler() {
-        const nodeInfo = this.$store.state.tree.selectedNode
-        if (JSON.stringify(nodeInfo) === '{}') {
-          return
-        }
-        this.getFileContent(nodeInfo['meta']['id'])
+    fileInfo: {
+      handler(val) {
+        this.handlerFileInfo(val)
       },
+      deep: true,
       immediate: true
     },
   },
+  data() {
+    return {
+      fileObject: {}
+    }
+  },
   methods: {
-    getFileContent(suiteId) {
-      fetchFileContent(suiteId).then(response => {
-        this.content = response.data.file_text
-      })
+    handlerFileInfo(fileObj) {
+      this.fileObject = deepCopy(fileObj)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.project-file {
+  padding: 5px;
+  width: 100%;
+  height: 100%;
+}
 </style>

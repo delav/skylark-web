@@ -128,8 +128,7 @@ export default {
   watch: {
     caseExtra: {
       handler(val) {
-        this.caseInfo = val
-        this.initCaseExtraData()
+        this.initCaseExtraData(val)
       },
       deep: true,
       immediate: true
@@ -138,7 +137,7 @@ export default {
   data() {
     return {
       activeDetail: '',
-      caseInfo: this.caseExtra,
+      caseInfo: {},
       selectTags: [],
       cacheSelect: '',
       timeUnitList: [
@@ -152,11 +151,11 @@ export default {
     }
   },
   methods: {
-    initCaseExtraData() {
-      this.handlerPriority(this.caseInfo.priority_id)
-      this.handlerTags(this.caseInfo.tag)
-      this.handlerOrder(this.caseInfo.order)
-      this.handlerTimeout(this.caseInfo.timeout)
+    initCaseExtraData(info) {
+      this.handlerPriority(info.priority_id)
+      this.handlerTags(info.tag)
+      this.handlerOrder(info.order)
+      this.handlerTimeout(info.timeout)
     },
     handlerTags(itemTags) {
       if (!itemTags) {

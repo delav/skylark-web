@@ -2,12 +2,25 @@
   <div class="variable-conf">
     <div class="env-head">
       <div class="env-radio">
-        <el-radio-group v-model="selectEvn" size="small" @change="changeVariableList">
-          <el-radio-button v-for="item in envList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio-button>
+        <el-radio-group v-model="selectEvn" @change="changeVariableList">
+          <el-radio-button
+            v-for="item in envList"
+            :key="item.id"
+            :label="item.id"
+          >
+            {{ item.name }}
+          </el-radio-button>
         </el-radio-group>
       </div>
+      <div class="filter-search">
+        <el-input
+          v-model="searchKey"
+          @change="filterVariable"
+          placeholder="搜索">
+        </el-input>
+      </div>
       <div class="new-button">
-        <el-button size="small" type="primary" @click="createVariableAction">新建变量</el-button>
+        <el-button type="primary" @click="createVariableAction">新建变量</el-button>
       </div>
     </div>
     <div class="common-env">
@@ -25,13 +38,13 @@
             <span v-show="!scope.row.edit">{{scope.row.name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="value" label="变量值" min-width="45%" show-overflow-tooltip>
+        <el-table-column prop="value" label="变量值" min-width="100" show-overflow-tooltip>
           <template #default="scope">
             <el-input size="small" v-model="scope.row.value" v-show="scope.row.edit" />
             <span v-show="!scope.row.edit">{{scope.row.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="region_id" label="地区" width="80" v-if="showRegion">
+        <el-table-column prop="region_id" label="地区" width="120" v-if="showRegion" sortable>
           <template #default="scope">
             <span>{{ getRegionNameById(scope.row.region_id) }}</span>
           </template>
@@ -93,13 +106,22 @@ export default {
       return this.$store.state.base.showRegion
     }
   },
+  watch: {
+    searchKey: {
+      handler() {
+        this.filterVariable()
+      }
+    }
+  },
   data() {
     return {
       envVariables: [],
       selectEvn: '',
+      envVariablesCache: '',
+      searchKey: '',
       saveDialogTitle: '',
       showSaveDialog: false,
-      variableForm: {},
+      variableForm: {}
     }
   },
   mounted() {
@@ -116,9 +138,13 @@ export default {
       this.changeVariableList(this.selectEvn)
     },
     changeVariableList(envId) {
-      if (this.projectId === '') return
+      if (this.projectId === '') {
+        return
+      }
       fetchVariables(this.projectId, NODE.ModuleType.PROJECT, envId).then(response => {
         this.envVariables = response.data
+        this.envVariablesCache = JSON.stringify(this.envVariables)
+        this.filterVariable()
       }).catch(() => {
         this.envVariables = []
       })
@@ -129,6 +155,22 @@ export default {
         return regionMap[regionId]
       }
       return 'ALL'
+    },
+    filterVariable() {
+      const envArray = JSON.parse(this.envVariablesCache)
+      if (this.searchKey.trim() === '') {
+        this.envVariables = envArray
+        return
+      }
+      let newVariables = []
+      const searchStr = this.searchKey.trim().toLowerCase()
+      for (let i = 0; i < envArray.length; i++) {
+        const itemStr = Object.values(envArray[i]).join('').toLowerCase()
+        if (itemStr.indexOf(searchStr) !== -1) {
+          newVariables.push(envArray[i])
+        }
+      }
+      this.envVariables = newVariables
     },
     delVariableAction(variableId, index) {
       this.$messageBox.confirm(
@@ -190,6 +232,9 @@ export default {
     margin-bottom: 10px;
     .env-radio {
       text-align: left;
+    }
+    .filter-search {
+      margin-left: 15px;
     }
     .new-button {
       text-align: right;
