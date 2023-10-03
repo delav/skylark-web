@@ -56,13 +56,13 @@ export default {
       },
       formRules: {
         project: [
-          {required: true, message: 'Get project error'},
+          {required: true, message: '获取项目失败'},
         ],
         branch: [
-          {required: true, message: 'Please input or choose branch', trigger: 'change'},
+          {required: true, message: '请选择或输入分支', trigger: 'change'},
         ],
         remark: [
-          {required: true, message: 'Please input remark', trigger: 'blur'},
+          {required: true, message: '请输入备注', trigger: 'blur'},
         ]
       }
     }

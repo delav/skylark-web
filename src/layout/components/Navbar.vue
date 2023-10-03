@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="logo">
-      <img :src="logo" class="navbar-logo" alt="">
+      <img class="navbar-logo" :src="logo" alt="">
     </div>
     <div class="router">
       <el-menu class="menu" :default-active="activeMenu" mode="horizontal" router>

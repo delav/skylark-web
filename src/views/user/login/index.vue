@@ -76,10 +76,10 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', message: '用户名不能为空' }
         ],
         password: [
-          { required: true, trigger: 'blur' }
+          { required: true, trigger: 'blur', message: '密码不能为空' }
         ]
       },
       loading: false,

@@ -32,10 +32,11 @@ export function getBuildProgress(data) {
   })
 }
 
-export function getBuildInfo(buildId) {
+export function getDebugLog(buildId) {
   return request({
-    url: `/builder/debug/${buildId}`,
+    url: `/builder/log`,
     method: 'get',
+    params: {id: buildId}
   })
 }
 

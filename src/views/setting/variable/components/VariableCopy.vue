@@ -7,7 +7,7 @@
           style="width: 310px"
           v-model="copyParams.from_env_id"
           @change="changeFromEnv"
-          placeholder="Select"
+          placeholder="选择环境"
         >
           <el-option
             v-for="(item, index) in envList"
@@ -21,7 +21,7 @@
           style="width: 310px;margin-left: 10px"
           v-model="copyParams.from_region_id"
           @change="changeFromRegion"
-          placeholder="Select"
+          placeholder="选择地区"
         >
           <el-option
             v-for="(item, index) in allEnvList"
@@ -36,7 +36,7 @@
         <el-select
           style="width: 310px"
           v-model="copyParams.to_env_id"
-          placeholder="Select"
+          placeholder="选择环境"
         >
           <el-option
             v-for="(item, index) in envList"
@@ -49,7 +49,7 @@
           style="width: 310px;margin-left: 10px"
           v-if="showRegion"
           v-model="copyParams.to_region_id"
-          placeholder="Select"
+          placeholder="选择地区"
         >
           <el-option
             v-for="(item, index) in allEnvList"

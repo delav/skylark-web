@@ -5,7 +5,7 @@
         <span class="item-desc">项目：</span>
         <el-select
           v-model="queryParams.project_id"
-          placeholder="Select"
+          placeholder="选择项目"
           @change="filterPlans"
         >
           <el-option
@@ -20,7 +20,7 @@
         <span class="item-desc">创建用户：</span>
         <el-select
           v-model="queryParams.create_by"
-          placeholder="Select"
+          placeholder="选择用户"
           @change="filterPlans"
         >
           <el-option
@@ -37,6 +37,7 @@
     </div>
     <div class="item-body">
       <el-table
+        v-loading="loading"
         :data="planList"
         :header-cell-style="{fontSize:'13px'}"
         :cell-style="{color: '#666', fontSize:'13px'}"
@@ -163,6 +164,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       planList: [],
       total: 0,
       pageSize: 12,
@@ -202,9 +204,12 @@ export default {
         .filter((key) => params[key] !== 0 && params[key] !== '' && params[key] !== null && params[key] !== undefined)
         .reduce((acc, key) => ({ ...acc, [key]: params[key] }), {})
       fetchPlans(page, this.pageSize, validParams).then(response => {
+        this.loading = false
         const result = response.data
         this.planList = result.data
         this.total = result.total
+      }).catch(() => {
+        this.loading = false
       })
     },
     filterPlans() {

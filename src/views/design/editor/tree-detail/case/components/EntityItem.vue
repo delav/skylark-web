@@ -58,13 +58,15 @@ export default {
   },
   methods: {
     getKeywordAttr(attr, keywordId, keywordType) {
+      const nullValue = 'None'
       const keywordUid = getKeywordUid(keywordId, keywordType)
       if (keywordUid in this.keywordDict) {
-        if (attr in this.keywordDict[keywordUid]) {
-          return this.keywordDict[keywordUid][attr]
+        if (!this.keywordDict[keywordUid][attr]) {
+          return nullValue
         }
+        return this.keywordDict[keywordUid][attr]
       }
-      return ''
+      return nullValue
     },
     entityStyle(entityItem) {
       const selectedEntities = this.$store.state.entity.selectedEntities

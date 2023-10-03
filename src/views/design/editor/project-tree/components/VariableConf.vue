@@ -26,6 +26,7 @@
     <div class="common-env">
       <el-table
         :data="envVariables"
+        v-loading="varLoading"
         border
         style="width: 100%"
         :row-style="{height: '0'}"
@@ -115,6 +116,7 @@ export default {
   },
   data() {
     return {
+      varLoading: true,
       envVariables: [],
       selectEvn: '',
       envVariablesCache: '',
@@ -130,23 +132,18 @@ export default {
   methods: {
     getEnvVariables() {
       this.selectEvn = this.envList[0]['id']
-      for (let i = 0; i < this.envList.length; i ++) {
-        const evnId = this.envList[i]['id']
-        if (!this.envList[i]['default']) continue
-        this.selectEvn = evnId
-      }
       this.changeVariableList(this.selectEvn)
     },
     changeVariableList(envId) {
-      if (this.projectId === '') {
-        return
-      }
       fetchVariables(this.projectId, NODE.ModuleType.PROJECT, envId).then(response => {
+        this.varLoading = false
         this.envVariables = response.data
         this.envVariablesCache = JSON.stringify(this.envVariables)
         this.filterVariable()
       }).catch(() => {
         this.envVariables = []
+        this.varLoading = false
+        this.$message.error('获取项目变量异常')
       })
     },
     getRegionNameById(regionId) {

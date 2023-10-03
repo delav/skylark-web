@@ -114,6 +114,15 @@ export default {
     updateCaseInfo(params) {
       const nodeInfo = this.$store.state.tree.selectedNode
       const metaInfo = nodeInfo['meta']
+      // value not change will not send request
+      for (let field in params) {
+        if (params[field] === metaInfo[field]) {
+          delete params[field]
+        }
+      }
+      if (Object.keys(params).length === 0) {
+        return
+      }
       updateCase(metaInfo.id, params).then((response) => {
         const newInfo = response.data
         for (const key in newInfo) {

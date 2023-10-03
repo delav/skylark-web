@@ -19,22 +19,39 @@
             </div>
           </div>
           <div class="detail-item">
-            <span class="item-title">输入参数：</span>
+            <span class="item-title">
+              输入参数
+              <el-tooltip
+                effect="dark"
+                content="传递给该组件的参数，格式为${xxx}，多个参数使用 | 分隔"
+                placement="top-start"
+              >
+                <el-icon style="vertical-align: -15%" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+              </el-tooltip>
+            </span>
             <div class="item-content">
               <el-input
                 @blur="updateCaseKeyword('inputs')"
                 v-model="extraData.inputs"
-                placeholder=""
               />
             </div>
           </div>
           <div class="detail-item">
-            <span class="item-title">输出参数：</span>
+            <span class="item-title">
+              输出参数
+              <el-tooltip
+                effect="dark"
+                content="该组件的返回值，可直接使用[Return]组件实现"
+                placement="top-start"
+              >
+                <el-icon style="vertical-align: -15%" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+              </el-tooltip>
+            </span>
             <div class="item-content">
               <el-input
+                :disabled="true"
                 @blur="updateCaseKeyword('outputs')"
                 v-model="extraData.outputs"
-                placeholder=""
               />
             </div>
           </div>
@@ -67,6 +84,26 @@ export default {
   },
   methods: {
     updateCaseKeyword(field) {
+      if (field === 'inputs' || field === 'outputs') {
+        const pattern = /\$\{.*\}/
+        const value = this.extraData[field]
+        if (value === undefined) {
+          return
+        } else if (value === null || value === '') {
+          // nothing
+        } else if (value.indexOf('|') !== -1) {
+          const valueList = value.split('|')
+          for (let v in valueList) {
+            if (!v.match(pattern)) {
+              this.$message.error('参数格式错误')
+              return
+            }
+          }
+        } else if (!value.match(pattern))  {
+          this.$message.error('参数格式错误')
+          return
+        }
+      }
       const params = {
         [field]: this.extraData[field]
       }

@@ -7,7 +7,7 @@
 <!--    </div>-->
     <div class="fixture-body">
       <div class="fixture-item" v-for="(item, index1) in fixtureHelpShow" :key="index1">
-        <p class="item-desc">{{ item[1] }}
+        <p class="item-desc">
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -16,6 +16,7 @@
           >
             <el-icon class="help-icon" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
           </el-tooltip>
+          {{ item[1] }}
           <el-icon class="edit-icon" @click="editFixtureItem(index1)"><Edit /></el-icon>
         </p>
         <p class="item-value">
@@ -282,7 +283,7 @@ export default {
           vertical-align: -10%;
         }
         .edit-icon {
-          margin-left: 15px;
+          margin-left: 5px;
           font-size: 16px;
           cursor: pointer;
           vertical-align: -20%;

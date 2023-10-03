@@ -44,7 +44,7 @@
       <div class="icon-list">
         <icon-item :condition="canRun" i-class="run" @func="startBuild" description="执行用例"></icon-item>
         <icon-item :condition="canStop" i-class="stop" @func="stopBuild" description="终止执行"></icon-item>
-        <icon-item :condition="seeLog" i-class="log" @func="showLog" description="查看日志"></icon-item>
+        <icon-item :condition="seeLog" i-class="log" @func="showReport" description="查看日志"></icon-item>
         <icon-item :condition="canSave" i-class="save" @func="saveEntity" description="保存修改"></icon-item>
         <icon-item :condition="isSelect" i-class="copy" @func="copyEntity" description="复制组件"></icon-item>
         <icon-item :condition="isSelect" i-class="delete" @func="deleteEntity" description="删除组件"></icon-item>
@@ -64,6 +64,19 @@
           </div>
         </el-dialog>
       </div>
+      <div class="push-dialog">
+        <el-dialog
+          width="100%"
+          v-model="showLogDialog"
+          title="日志详情"
+          :close-on-click-modal="false"
+          destroy-on-close
+        >
+          <div class="log-content">
+            <report-viewer :build-id="buildId" />
+          </div>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>
@@ -72,28 +85,31 @@
 import jquery from "jquery";
 import IconItem from "@/views/design/action/components/IconItem";
 import PushInfo from "@/views/design/action/components/PushInfo";
+import ReportViewer from "@/views/design/action/components/ReportViewer";
 import NODE from "@/constans/node";
 import CASE from "@/constans/testcase";
 import { deepCopy } from "@/utils/dcopy";
 import { guid } from "@/utils/other";
 import { updateEntities } from "@/api/entity";
 import { setCursorStyle } from "@/utils/hover";
-import { buildDebug, getBuildProgress } from "@/api/builder";
+import { buildDebug, getBuildProgress, getDebugLog } from "@/api/builder";
 
 export default {
   name: 'Action',
   components: {
     IconItem,
     PushInfo,
+    ReportViewer
   },
   data() {
     return {
       envName: '',
       regionName: '',
       hadRunCases: {},
+      buildId: '',
       runFinish: false,
       showPushDialog:false,
-      reportPath: ''
+      showLogDialog:false,
     }
   },
   computed: {
@@ -147,18 +163,22 @@ export default {
   methods: {
     addMouseEvent() {
       const that = this
-      document.oncontextmenu = function(e){
+      document.oncontextmenu = function(e) {
         e.preventDefault()
       }
-      document.onmousedown = function(e){
-        if(e.button === 2){
+      document.onmousedown = function(e) {
+        if(e.button === 2) {
           that.cancelCopyEntity()
         }
       }
     },
     removeMouseEvent() {
-      document.oncontextmenu = function(){ return true }
-      document.onmousedown = function () { return true }
+      document.oncontextmenu = function() {
+        return true
+      }
+      document.onmousedown = function () {
+        return true
+      }
     },
     setDefaultEnv() {
       const envs = this.$store.state.base.envList
@@ -186,7 +206,9 @@ export default {
       let node = treeObj.getNodesByFilter(function (node) {
         return node.mid.toString() === mid && node.desc === NODE.NodeDesc.CASE
       }, true)
-      if (node === null) return
+      if (node === null) {
+        return
+      }
       jquery('#' + node.tId + '_span').css('color', color)
     },
     getNodeTextColor(result) {
@@ -278,19 +300,21 @@ export default {
       }
       buildDebug(data).then(response => {
         this.$store.commit('action/SET_RUNNING', true)
-        this.reportPath = response.data['report_path']
-        this.getProgress(response.data['build_id'], response.data['total_case'])
+        this.buildId = response.data['build_id']
+        this.getProgress(this.buildId, response.data['total_case'])
       })
     },
     stopBuild() {
       this.$store.commit('action/SET_RUNNING', false)
     },
-    showLog() {
-      if (this.reportPath === '') return
-      const url = this.reportPath + '/log.html'
-      // window.open(url, '_blank')
-      this.$messageBox({
-        title: url.replace(/\//g,'\\\\')
+    showReport() {
+      // this.showLogDialog = true
+      getDebugLog(this.buildId).then(response => {
+        window.localStorage.removeItem('callbackHTML')
+        window.localStorage.setItem('callbackHTML', response.data)
+        const newTab = window.open(this.buildId, '_blank')
+        newTab.document.write(localStorage.getItem('callbackHTML'))
+        newTab.document.close()
       })
     },
     saveEntity() {

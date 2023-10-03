@@ -15,7 +15,7 @@
         popper-class="custom-tooltip"
         placement="top-start"
         effect="dark"
-        :content="keywordData['desc']"
+        :content="keywordData['desc']?keywordData['desc']:'None'"
       >
         <svg-icon class-name="question-icon" icon-class="question"></svg-icon>
       </el-tooltip>

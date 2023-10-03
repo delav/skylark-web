@@ -150,22 +150,22 @@ export default {
       formData: {},
       formRules: {
         title: [
-          { required: true, message: 'Please input plan title', trigger: 'blur' },
+          { required: true, message: '请选择计划标题', trigger: 'blur' },
         ],
         project_id: [
-          { required: true, message: 'Please select project', trigger: 'change' },
+          { required: true, message: '请选择项目', trigger: 'change' },
         ],
         branch: [
-          { required: true, message: 'Please select branch', trigger: 'change' },
+          { required: true, message: '请选择项目分支', trigger: 'change' },
         ],
         env_list: [
-          { required: true, message: 'Please select env', trigger: 'blur', type: 'array' },
+          { required: true, message: '请选择环境', trigger: 'blur', type: 'array' },
         ],
         region_list: [
           { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
         ],
         total_case: [
-          { required: true, message: 'Please select test cases', type: 'number' },
+          { required: true, message: '请选择执行用例', type: 'number' },
         ]
       },
       showCaseTree: false,

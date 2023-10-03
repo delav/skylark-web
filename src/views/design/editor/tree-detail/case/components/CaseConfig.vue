@@ -17,7 +17,7 @@
         </template>
         <div class="config-detail">
           <div class="detail-item">
-            <span class="item-title">用例说明：</span>
+            <span class="item-title">用例说明</span>
             <div class="item-content">
               <el-input
                 @change="saveCaseDoc"
@@ -29,9 +29,9 @@
             </div>
           </div>
           <div class="detail-item">
-            <span class="item-title">用例级别：</span>
+            <span class="item-title">用例级别</span>
             <div class="item-content">
-              <el-select v-model="caseInfo.priority_id" @change="savePriority" placeholder="Select">
+              <el-select v-model="caseInfo.priority_id" @change="savePriority" placeholder="选择级别">
                 <el-option
                   v-for="item in priorityList"
                   :key="item.id"
@@ -42,7 +42,7 @@
             </div>
           </div>
           <div class="detail-item">
-            <span class="item-title">用例标签：</span>
+            <span class="item-title">用例标签</span>
             <div class="item-content">
               <el-select
                 style="width: 100%;"
@@ -66,17 +66,17 @@
             </div>
           </div>
           <div class="detail-item">
-            <span class="item-title">超时时间：</span>
+            <span class="item-title">超时时间</span>
             <div class="item-content">
               <el-input
                 @change="saveCaseTimeout"
                 v-model="timeNum"
                 oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"
-                placeholder="Please input"
+                placeholder="请输入整数"
                 class="input-with-select"
               >
                 <template #append>
-                  <el-select @change="saveCaseTimeout" v-model="timeUnit" placeholder="Select" style="width: 80px">
+                  <el-select @change="saveCaseTimeout" v-model="timeUnit" style="width: 80px">
                     <el-option
                       v-for="(item, index) in timeUnitList"
                       :key="index"
@@ -89,13 +89,22 @@
             </div>
           </div>
           <div class="detail-item">
-            <span class="item-title">执行序号：</span>
+            <span class="item-title">
+              优先级
+              <el-tooltip
+                effect="dark"
+                content="测试套件内的用例执行优先级，越小优先级越高。不设置则顺序随机。"
+                placement="top-start"
+              >
+                <el-icon style="vertical-align: -15%" size="14px" color="#bfcbd9"><QuestionFilled /></el-icon>
+              </el-tooltip>
+            </span>
             <div class="item-content">
               <el-input
                 @change="saveCaseOrder"
                 v-model.number="orderNumber"
                 oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"
-                placeholder="Please input"
+                placeholder="请输入整数"
                 class="input-with-select"
               >
               </el-input>
@@ -198,12 +207,19 @@ export default {
       this.$emit('update', params)
     },
     saveCaseTimeout() {
-      const timeout = this.timeNum + ' ' + this.timeUnit
+      let timeout = ''
+      if (this.timeNum !== '') {
+        timeout = this.timeNum + ' ' + this.timeUnit
+      }
       const params = {'timeout': timeout}
       this.$emit('update', params)
     },
     saveCaseOrder() {
-      const params = {'order': this.orderNumber}
+      let orderNum = null
+      if (this.orderNumber !== '') {
+        orderNum = parseInt(this.orderNumber)
+      }
+      const params = {'order': orderNum}
       this.$emit('update', params)
     },
     addCaseTag(values) {

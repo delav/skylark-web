@@ -37,7 +37,7 @@
           />
         </span>
         <span class="project-list" v-show="copySwitch">
-          <el-select style="width: 320px" v-model="copyProject" placeholder="Select">
+          <el-select style="width: 320px" v-model="copyProject" placeholder="选择项目">
             <el-option
               v-for="(item, index) in projectList"
               :key="index"

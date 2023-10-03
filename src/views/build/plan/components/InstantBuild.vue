@@ -81,7 +81,7 @@ export default {
       formData: {},
       formRules: {
         env_list: [
-          { required: true, message: 'Please select env', trigger: 'blur', type: 'array' },
+          { required: true, message: '请选择环境', trigger: 'blur', type: 'array' },
         ],
         region_list: [
           { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
