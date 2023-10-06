@@ -1,6 +1,7 @@
 .el-dialog {
   margin: 12vh auto;
   position: relative;
+  min-width: 200px;
   .el-dialog__header{
     position: absolute;
     padding-top: 10px;

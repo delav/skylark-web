@@ -3,7 +3,7 @@
     <p class="recently-header">
       <span class="desc">最近构建</span>
       <span class="refresh">
-        <el-icon @click="refreshRecentlyRecordList" :size="20" style="margin-top: 5px"><RefreshLeft /></el-icon>
+        <el-icon @click="refreshRecentlyRecordList" :size="16" style="margin-top: 7px"><RefreshLeft /></el-icon>
       </span>
     </p>
     <div class="recently-list">
@@ -14,13 +14,13 @@
             ref-name="itemText"
             font-size="14px"
             :content="item['desc']"
-            @click="getRecentlyPlanDetail"
+            @click="gotoRecordDetail(item.id)"
           />
           <p class="time-tip">构建开始时间：{{item['create_at']}}</p>
         </div>
         <div class="item-tip">
           <span v-if="item['status'] === 0">
-            <el-image style="width: 20px; height: 20px" :src="loadingUrl" />
+            <el-image style="width: 20px; height: 20px" :src="runningGig" />
           </span>
 <!--          <svg-icon v-if="item['status'] === 0" icon-class="timing" class="run-icon"></svg-icon>-->
           <svg-icon v-else-if="item['status'] === 1" icon-class="finish" class="finish-icon"></svg-icon>
@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      loadingUrl: require('@/assets/loading.gif'),
+      runningGig: require('@/assets/running.gif'),
       recentlyRecordList: [],
     }
   },
@@ -59,7 +59,9 @@ export default {
     refreshRecentlyRecordList() {
       this.$store.dispatch('record/getRecentlyRecordList')
     },
-    getRecentlyPlanDetail() {}
+    gotoRecordDetail(recordId) {
+      this.$router.push(`/build/record/detail/${recordId}`)
+    }
   }
 }
 </script>
@@ -70,23 +72,25 @@ $itemHeight: 48px;
 
 .recently-content {
   height: 100%;
-  border-right: solid 1px #dcdfe6;
   .recently-header {
     height: 24px;
     margin: 0;
     padding-left: 5px;
-    background-color: #dcdfe6;
+    background-color: #f4f5f7;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    color: $textColor;
     .desc {
       font-size: 13px;
     }
     .refresh {
-      margin-left: auto;
-      margin-right: 5px;
+      //margin-left: auto;
+      margin-left: 5px;
       cursor: pointer;
-      color: $mainColor;
+      :hover {
+        color: $mainColor;
+      }
     }
   }
   .recently-list {

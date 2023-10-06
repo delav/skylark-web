@@ -42,7 +42,11 @@
           </div>
         </template>
         <div class="card-body">
-          <div class="common-env" v-show="showCommon">
+          <el-empty
+            v-if="commonVariables.length===0 && regionVariables.length===0"
+            description="找不到该项目下的变量"
+          />
+          <div class="common-env" v-show="commonVariables.length>0">
             <el-table
               :data="commonVariables"
               border
@@ -82,7 +86,7 @@
               </el-table-column>
             </el-table>
           </div>
-          <div class="region-env" v-show="showRegion">
+          <div class="region-env" v-show="regionVariables.length>0">
             <div class="region-head">
               <el-radio-group v-model="selectRegionId" @change="changeRegionList">
                 <el-radio v-for="item in regionList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio>
@@ -93,7 +97,7 @@
                 :data="regionVariables"
                 border
                 stripe
-                :show-header="!showCommon"
+                :show-header="commonVariables.length===0"
                 style="width: 100%"
                 :row-style="{height: '0'}"
                 :cell-style="{padding: '4px'}"
@@ -135,7 +139,7 @@
     </div>
     <div class="create-dialog">
       <el-dialog
-        width="680px"
+        width="600px"
         v-model="showSaveDialog"
         :title="saveDialogTitle"
         :close-on-click-modal="false"
@@ -150,7 +154,7 @@
     </div>
     <div class="copy-dialog">
       <el-dialog
-        width="650px"
+        width="700px"
         v-model="showCopyDialog"
         title="复制变量"
         :close-on-click-modal="false"
@@ -196,8 +200,7 @@ export default {
     '$store.state.base.baseLoaded': {
       handler() {
         if (this.projectList.length !== 0 && this.selectProjectId === '') {
-          this.selectProjectId = this.projectList[0]['id']
-          this.changeProject()
+          this.changeProject(this.projectList[0]['id'])
         }
       },
       immediate: true
@@ -212,7 +215,6 @@ export default {
       commonVariables: [],
       regionVariables: [],
       commonKey: 'common',
-      showCommon: false,
       showSaveDialog: false,
       saveDialogTitle: '',
       showCopyDialog: false,
@@ -222,7 +224,9 @@ export default {
     }
   },
   methods: {
-    changeProject() {
+    changeProject(projectId) {
+      Object.assign(this.$data, this.$options.data())
+      this.selectProjectId = projectId
       if (this.envList.length !== 0) {
         this.selectEvnId = this.envList[0]['id']
       }
@@ -242,7 +246,9 @@ export default {
       let variablesDict = {}
       fetchVariables(this.selectProjectId, NODE.ModuleType.PROJECT, envId).then(response => {
         const resList = response.data
-        if (resList.length === 0) return
+        if (resList.length === 0) {
+          return
+        }
         for (let i = 0; i < resList.length; i++) {
           const regionId = resList[i]['region_id']
           let regionKey = ''
@@ -257,9 +263,7 @@ export default {
             variablesDict[regionKey] = [resList[i]]
           }
         }
-        this.showCommon = false
         if (this.commonKey in variablesDict) {
-          this.showCommon = true
           this.commonVariables = variablesDict[this.commonKey]
         }
         if (this.showRegion) {
@@ -267,7 +271,6 @@ export default {
         }
         this.envVariables = variablesDict
       }).catch(() => {
-        this.showCommon = false
         this.commonVariables = []
         this.regionVariables = []
       })

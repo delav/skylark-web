@@ -2,25 +2,33 @@
   <div class="case-tree">
     <div class="check-header">
       <div class="priority-checkbox">
-        <span>用例级别</span>
+        <span class="priority-label">级别筛选</span>
         <el-checkbox-group
-          @change="handleCheck"
+          v-model="checkedPriList"
+          @change="quickCheck"
         >
-          <el-checkbox v-for="(item, index) in shortcutOptions['priorityList']" :key="index" :label="item.name">
+          <el-checkbox v-for="(item, index) in shortcutOptions['priorityList']" :key="index" :label="item.id">
             {{ item.name }}
           </el-checkbox>
         </el-checkbox-group>
       </div>
       <div class="tag-checkbox">
-        <span>用例标签</span>
+        <span class="tag-label">标签筛选</span>
         <el-checkbox-group
-          @change="handleCheck"
+          v-model="checkedTagList"
+          @change="quickCheck"
         >
           <el-checkbox v-for="(item, index) in shortcutOptions['tagList']" :key="index" :label="item.name">
             {{ item.name }}
           </el-checkbox>
         </el-checkbox-group>
       </div>
+    </div>
+    <div class="check-info">
+      <p class="content">
+        <span>已选用例：</span>
+        <span>{{selectCases}}/{{totalCases}}</span>
+      </p>
     </div>
     <div class="checker">
       <tree
@@ -31,8 +39,8 @@
       </tree>
     </div>
     <div class="check-footer">
-      <el-button>取消</el-button>
-      <el-button type="primary" @click="confirmCheck">确认</el-button>
+      <el-button @click="cancelCheck">取消</el-button>
+      <el-button type="primary" @click="confirmCheck">确定</el-button>
     </div>
   </div>
 </template>
@@ -71,9 +79,16 @@ export default {
         view: {
           showIcon: false,
         },
+        callback: {
+          onCheck: this.countCheckedCases,
+        }
       },
       zTreeObj: null,
-      shortcutOptions: {}
+      totalCases: 0,
+      selectCases: 0,
+      shortcutOptions: {},
+      checkedPriList: [],
+      checkedTagList: []
     }
   },
   created() {
@@ -82,7 +97,10 @@ export default {
   methods: {
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
-      console.log(this.zTreeObj.getNodes())
+      const caseNodes = this.zTreeObj.getNodesByFilter(function (node) {
+        return node.desc === NODE.NodeDesc.CASE
+      }, false)
+      this.totalCases = caseNodes.length
     },
     getShortcutOptions() {
       axios.all([fetchTagsByProject(this.projectId), fetchPriorities()]).then(
@@ -94,27 +112,68 @@ export default {
         })
       )
     },
-    handleCheck(value) {
-      console.log(value)
-    },
-    confirmCheck() {
-      const params = {}
+    countCheckedCases() {
       const checkedCases = this.zTreeObj.getNodesByFilter(function (node) {
         return node.checked === true && node.desc === NODE.NodeDesc.CASE
       }, false)
-      let caseIdStrings = ''
+      this.selectCases = checkedCases.length
+    },
+    quickCheck() {
+      const caseNodes = this.zTreeObj.getNodesByFilter(function (node) {
+        return node.desc === NODE.NodeDesc.CASE
+      }, false)
+      let checkPriFlag = false
+      let checkTagFlag = false
+      if (this.checkedPriList.length !== 0) {
+        checkPriFlag = true
+      }
+      if (this.checkedTagList.length !== 0) {
+        checkTagFlag = true
+      }
+      for (let i = 0; i < caseNodes.length; i++) {
+        const node = caseNodes[i]
+        let checkNodeFlag = false
+        if (checkPriFlag && checkTagFlag) {
+          checkNodeFlag = this.isContainPri(node.extra['pri'], this.checkedPriList)
+            && this.isContainTag(node.extra['tag'], this.checkedTagList)
+        } else if (checkPriFlag && !checkTagFlag) {
+          checkNodeFlag = this.isContainPri(node.extra['pri'], this.checkedPriList)
+        } else if (!checkPriFlag && checkTagFlag) {
+          checkNodeFlag = this.isContainTag(node.extra['tag'], this.checkedTagList)
+        }
+        if (checkNodeFlag) {
+          this.zTreeObj.checkNode(node, true, true)
+        } else {
+          this.zTreeObj.checkNode(node, false, true)
+        }
+      }
+      this.countCheckedCases()
+    },
+    isContainPri(casePri, checkPris) {
+      return checkPris.indexOf(casePri) !== -1
+    },
+    isContainTag(caseTags, checkTags) {
+      for (let j = 0; j < caseTags.length; j++) {
+        const  caseTag = caseTags[j]
+        if (checkTags.indexOf(caseTag) !== -1) {
+          return true
+        }
+      }
+      return false
+    },
+    cancelCheck() {
+      this.$emit('cancel')
+    },
+    confirmCheck() {
+      const checkedCases = this.zTreeObj.getNodesByFilter(function (node) {
+        return node.checked === true && node.desc === NODE.NodeDesc.CASE
+      }, false)
+      let caseIdList = []
       for (let i = 0; i < checkedCases.length; i++) {
         const caseId = checkedCases[i].mid
-        if (i !== checkedCases.length - 1) {
-          caseIdStrings += caseId + ','
-          continue
-        }
-        caseIdStrings += caseId
+        caseIdList.push(caseId)
       }
-      params['count'] = checkedCases.length
-      params['cases'] = caseIdStrings
-      params['options'] = this.shortcutOptions
-      this.$emit('confirmAction', params)
+      this.$emit('confirm', caseIdList)
     }
   }
 }
@@ -123,5 +182,55 @@ export default {
 <style lang="scss" scoped>
 .case-tree {
   min-width: 300px;
+  .check-header {
+    margin-bottom: 10px;
+    //background-color: #f4f5f7;
+    //padding: 0 5px;
+    .priority-checkbox {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      .priority-label {
+        width: 75px;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+    }
+    .tag-checkbox {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      .tag-label {
+        width: 75px;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+    }
+  }
+  .check-info {
+    padding: 10px 0 5px 0;
+    .content {
+      margin: 0;
+      font-size: 13px;
+    }
+  }
+  .checker {
+    padding: 5px;
+    border: 1px solid #e4e7ed;
+    min-height: 150px;
+  }
+  .check-footer {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+:deep(.el-checkbox) {
+  margin-right: 15px;
+  height: 28px;
+  .el-checkbox__label {
+    padding-left: 5px;
+  }
 }
 </style>

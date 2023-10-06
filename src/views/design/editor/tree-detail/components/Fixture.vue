@@ -32,7 +32,7 @@
     </div>
     <div class="fixture-editor">
       <el-dialog
-        width="50%"
+        width="600px"
         v-model="showFixtureEdit"
         :title="editTitle"
       >
@@ -65,7 +65,7 @@
                   @click="changeKeyword(item)"
                 />
               </el-select>
-              <el-button style="margin-left: 5px" @click="addKeywordToFixture">添加</el-button>
+              <el-button type="info" style="margin-left: 5px" @click="addKeywordToFixture">添加</el-button>
             </div>
             <div class="keyword-params">
               <p class="param-desc" v-if="showParams">组件参数
@@ -277,7 +277,7 @@ export default {
       .item-desc {
         margin: 0 0 4px 0;
         font-size: 14px;
-        color: #6b778c;
+        color: $textColor;
         .help-icon {
           cursor: pointer;
           vertical-align: -10%;

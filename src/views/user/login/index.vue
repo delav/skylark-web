@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="image-viewer">
       <el-image
-        style="width: 500px; height: auto"
+        style="width: 700px; height: auto"
         :src="loginImage"
         fit="contain"
       />
@@ -11,7 +11,7 @@
       <el-form ref="loginForm" class="login-form" :model="loginForm" :rules="loginRules">
         <div class="login-image">
           <el-image
-            style="width: 140px; height: auto"
+            style="width: 180px; height: auto"
             :src="login1Image"
             fit="contain"
           />
@@ -67,7 +67,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      loginImage: require('@/assets/login.svg'),
+      loginImage: require('@/assets/login.jpg'),
       logoImage: require('@/assets/logo.png'),
       login1Image: require('@/assets/login-1.png'),
       loginForm: {
@@ -141,7 +141,7 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f3f6f9;
+    background-color: #e7eef6;
     width: 50%;
   }
   .login-box {
@@ -167,6 +167,7 @@ export default {
         margin: 0 0 5px 0;
         font-weight: 500;
         font-size: 15px;
+        color: #6b778c;
       }
       .svg-container {
         padding: 6px 5px 6px 15px;

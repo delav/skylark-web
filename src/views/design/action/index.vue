@@ -58,6 +58,7 @@
           v-model="showPushDialog"
           title="推送项目"
           :close-on-click-modal="false"
+          destroy-on-close
         >
           <div class="env-content">
             <push-info @closeDialog="closePushDialog" />
@@ -365,7 +366,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
-$textColor: #6b778c;
 
 .action {
   height: $toolbarHeight;

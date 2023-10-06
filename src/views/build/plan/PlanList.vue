@@ -39,20 +39,20 @@
       <el-table
         v-loading="loading"
         :data="planList"
-        :header-cell-style="{fontSize:'13px'}"
+        :header-cell-style="{fontSize:'13px', background: '#f4f5f7'}"
         :cell-style="{color: '#666', fontSize:'13px'}"
         border
         stripe
         style="width: 100%">
         <el-table-column prop="id" label="编号" width="70" />
-        <el-table-column prop="title" label="计划名称" show-overflow-tooltip />
-        <el-table-column prop="project_id" label="项目" width="130" show-overflow-tooltip>
+        <el-table-column prop="title" label="计划标题" min-width="150" show-overflow-tooltip />
+        <el-table-column prop="project_id" label="项目" min-width="150" show-overflow-tooltip>
           <template #default="scope">
             <span>{{projectMap[scope.row.project_id]}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="branch" label="分支" width="100" show-overflow-tooltip  />
-        <el-table-column prop="env_id" label="环境" width="150" min-width="100" show-overflow-tooltip >
+        <el-table-column prop="branch" label="分支" min-width="100" show-overflow-tooltip  />
+        <el-table-column prop="env_id" label="环境" min-width="120" show-overflow-tooltip >
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.env_list"
@@ -65,7 +65,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="region_id" label="地区" width="120" min-width="90" show-overflow-tooltip v-if="showRegion">
+        <el-table-column prop="region_id" label="地区" min-width="120" show-overflow-tooltip v-if="showRegion">
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.region_list"
@@ -78,15 +78,15 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="total_case" label="用例总数" width="80" show-overflow-tooltip >
+        <el-table-column prop="total_case" label="用例总数" width="80" min-width="80" show-overflow-tooltip >
           <template #default="scope">
             <span>{{scope.row.total_case}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="periodic_switch" label="定时开关" width="80" show-overflow-tooltip>
+        <el-table-column prop="periodic_switch" label="定时开关" width="80" min-width="80" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="small" type="success" v-if="scope.row.periodic_switch">是</el-tag>
-            <el-tag size="small" type="danger" v-else>否</el-tag>
+            <el-tag size="small" type="success" v-if="scope.row.periodic_switch">开</el-tag>
+            <el-tag size="small" type="danger" v-else>关</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="periodic_expr" label="定时配置" min-width="100" show-overflow-tooltip>
@@ -109,15 +109,15 @@
               <el-icon :size="18"><CaretRight /></el-icon>
             </el-button>
             <el-button-group>
-              <el-button type="warning" size="small" @click="editPlan(scope.row.id)" link>编辑</el-button>
-              <el-button type="primary" size="small" @click="getPlanDetail(scope.row.id)" link>详情</el-button>
+              <el-button type="warning" size="small" @click="editPlan(scope.row)" link>编辑</el-button>
+              <el-button type="primary" size="small" @click="gotoPlanDetail(scope.row.id)" link>详情</el-button>
               <el-popconfirm
                 confirm-button-text="Yes"
                 cancel-button-text="No"
                 :hide-icon="true"
                 :hide-after="50"
-                title="确认删除该计划？"
-                @confirm="deletePlan(scope.row)"
+                title="确定删除该计划？"
+                @confirm="confirmDeletePlan(scope.row.id)"
               >
                 <template #reference>
                   <el-button type="danger" size="small" link>删除</el-button>
@@ -136,30 +136,55 @@
         @current-change="changePage"
       />
     </div>
-    <div class="builder">
-      <el-dialog
-        width="65%"
-        v-model="showBuild"
-        title="执行构建"
-        :close-on-click-modal="false"
-        @close="closeBuild"
-      >
-        <div class="content">
-          <instant-build @successBuild="executeBuild" />
-        </div>
-      </el-dialog>
+    <div class="dialog-area">
+      <div class="plan-edit">
+        <el-dialog
+          width="700px"
+          v-model="showPlanEdit"
+          :title="editTitle"
+          :close-on-click-modal="false"
+          destroy-on-close
+        >
+          <div class="content">
+            <plan-form
+              :plan-data="planData"
+              @cancel="cancelEdit"
+              @confirm="confirmSavePlan"
+            />
+          </div>
+        </el-dialog>
+      </div>
+      <div class="plan-build">
+        <el-dialog
+          width="600px"
+          v-model="showBuild"
+          title="执行构建"
+          :close-on-click-modal="false"
+          destroy-on-close
+        >
+          <div class="content">
+            <instant-build
+              :build-data="buildData"
+              @cancel="cancelBuild"
+              @confirm="executeBuild"
+            />
+          </div>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import PlanForm from "@/views/build/plan/components/PlanForm";
 import InstantBuild from "@/views/build/plan/components/InstantBuild";
-import { guid } from "@/utils/other";
-import { fetchPlans, deletePlan } from "@/api/plan";
+import { fetchPlans, deletePlan, updatePlan, createPlan } from "@/api/plan";
+import { buildInstantTest } from "@/api/builder";
 
 export default {
   name: 'PlanList',
   components: {
+    PlanForm,
     InstantBuild
   },
   data() {
@@ -169,6 +194,10 @@ export default {
       total: 0,
       pageSize: 12,
       showBuild: false,
+      showPlanEdit: false,
+      editTitle: '',
+      planData: {},
+      buildData: {},
       queryParams: {
         project_id: 0,
         create_by: ''
@@ -216,31 +245,55 @@ export default {
       this.getPlanList(1, this.queryParams)
     },
     newPlan() {
-      this.$router.push('/build/plan/create')
+      this.planData = {}
+      this.editTitle = '新建计划'
+      this.showPlanEdit = true
     },
-    editPlan(planId) {
-      this.$router.push(`/build/plan/edit/${planId}`)
+    editPlan(plan) {
+      this.planData = plan
+      this.editTitle = '更新计划'
+      this.showPlanEdit = true
     },
-    getPlanDetail(planId) {
+    confirmSavePlan(params) {
+      const planId = params['id']
+      if (planId === undefined) {
+        createPlan(params).then(() => {
+          this.showPlanEdit = false
+          this.getPlanList(1, this.queryParams)
+        })
+      } else {
+        delete params['id']
+        updatePlan(planId, params).then(() => {
+          this.showPlanEdit = false
+          this.getPlanList(1, this.queryParams)
+        })
+      }
+    },
+    gotoPlanDetail(planId) {
       this.$router.push(`/build/plan/detail/${planId}`)
     },
-    deletePlan(planData) {
-      deletePlan(planData.id).then(() => {
+    confirmDeletePlan(planId) {
+      deletePlan(planId).then(() => {
         this.getPlanList(1, this.queryParams)
       })
     },
     preBuild(planData) {
-      this.$store.commit('plan/SET_PLAN_DATA', planData)
-      this.$store.commit('plan/SET_CHANGE_FLAG', guid())
+      this.buildData = planData
       this.showBuild = true
     },
-    closeBuild() {
-      this.$store.commit('plan/SET_PLAN_DATA', {})
+    cancelEdit() {
+      this.showPlanEdit = false
     },
-    executeBuild() {
+    cancelBuild() {
       this.showBuild = false
-      this.closeBuild()
-      this.$message.success('构建请求已发送')
+    },
+    executeBuild(params) {
+      buildInstantTest(params).then(() => {
+        this.showBuild = false
+        this.$router.push('/build/record/list')
+      }).catch(() => (
+        this.showBuild = false
+      ))
     },
     changePage(pageVal) {
       this.getPlanList(pageVal, this.queryParams)
@@ -253,7 +306,7 @@ export default {
 .plan-list {
   width: 100%;
   height: 100%;
-  padding: 5px;
+  padding: 0 5px 5px 5px;
   overflow: auto;
   .operate-header {
     width: 100%;

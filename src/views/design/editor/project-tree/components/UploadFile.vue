@@ -15,12 +15,12 @@
       :file-list="uploadFiles"
     >
       <template #trigger>
-        <el-button type="primary">选择文件</el-button>
+        <el-button type="info">选择文件</el-button>
       </template>
     </el-upload>
     <div class="upload-footer">
       <el-button @click="closeUpload">取消</el-button>
-      <el-button type="primary" @click="submitUpload">确认</el-button>
+      <el-button type="primary" @click="submitUpload">确定</el-button>
     </div>
   </div>
 </template>

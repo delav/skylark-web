@@ -104,6 +104,8 @@ $planHeight: 260px;
     .menu-list {
       height: $menuHeight;
       .el-menu--vertical>.el-menu-item {
+        color: $textColor;
+        font-weight: 500;
         height: $menuItemHeight;
         line-height: $menuItemHeight;
         padding: 0 0 0 5px;

@@ -4,7 +4,7 @@
       <el-form-item
         prop="name"
         :label="changeFrom.label"
-        :rules="[{ required: true, message: 'name is required' }]"
+        :rules="formRules"
       >
         <el-input v-model="changeFrom.name" />
       </el-form-item>
@@ -24,7 +24,10 @@ export default {
   },
   data() {
     return {
-      changeFrom: this.dialogForm
+      changeFrom: this.dialogForm,
+      formRules: [
+        { required: true, message: '名称不能为空' }
+      ]
     }
   },
   methods: {

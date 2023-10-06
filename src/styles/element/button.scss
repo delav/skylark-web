@@ -15,6 +15,11 @@ $warningButtonText: #ffffff;
 $warningButtonHoverBg: #ffffff;
 $warningButtonHoverText: #fa7d03;
 
+$infoButtonBg: #6c757d;
+$infoButtonText: #ffffff;
+$infoButtonHoverBg: #ffffff;
+$infoButtonHoverText: #6c757d;
+
 // custom button style
 .el-button {
   color: $buttonText;
@@ -68,4 +73,22 @@ $warningButtonHoverText: #fa7d03;
   color: $warningButtonHoverText;
   background: $warningButtonHoverBg;
   border-color: $warningButtonBg;
+}
+
+.el-button--info {
+  color: $infoButtonText;
+  background-color: $infoButtonBg;
+  border-color: $infoButtonBg;
+}
+.el-button--info.is-active,
+.el-button--info:active {
+  color: $infoButtonText;
+  background: $infoButtonHoverBg;
+  border-color: $infoButtonHoverBg;
+}
+.el-button--info:focus,
+.el-button--info:hover {
+  color: $infoButtonHoverText;
+  background: $infoButtonHoverBg;
+  border-color: $infoButtonBg;
 }

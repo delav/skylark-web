@@ -101,7 +101,7 @@
     <div class="navbar-dialog">
       <el-dialog
         class="notice-dialog"
-        width="550px"
+        width="600px"
         v-model="noticeShow"
         center
       >
@@ -116,7 +116,7 @@
       </el-dialog>
       <el-dialog
         class="feedback-dialog"
-        width="50%"
+        width="700px"
         v-model="feedbackShow"
         title="意见反馈"
       >
@@ -124,7 +124,7 @@
           ref="feedbackRef"
           :model="feedbackForm"
           :rules="formRules"
-          label-width="120px"
+          label-width="80px"
         >
           <el-form-item label="标题" prop="title">
             <el-input v-model="feedbackForm.title" />

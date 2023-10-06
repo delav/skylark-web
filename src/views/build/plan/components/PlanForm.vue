@@ -5,13 +5,13 @@
         ref="ruleFormRef"
         :model="formData"
         :rules="formRules"
-        label-width="130px"
+        label-width="100px"
         status-icon
       >
         <el-form-item label="计划标题" prop="title">
           <el-input v-model="formData.title"></el-input>
         </el-form-item>
-        <el-form-item label="项目名称" prop="project_id">
+        <el-form-item label="项目" prop="project_id">
           <el-select
             style="width: 100%"
             v-model="formData.project_id"
@@ -39,7 +39,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="执行环境" prop="env_list">
+        <el-form-item label="环境" prop="env_list">
           <el-select
             style="width: 100%"
             v-model="formData.env_list"
@@ -53,7 +53,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="执行地区" prop="region_list">
+        <el-form-item label="地区" prop="region_list" v-if="showRegion">
           <el-select
             style="width: 100%"
             v-model="formData.region_list"
@@ -88,33 +88,33 @@
         </el-form-item>
         <el-form-item label="期望通过率" prop="expect_pass">
           <drag-progress
-            ref="cusChild"
             :width="500"
             :percent="formData.expect_pass"
-            bgColor="#ddd"
-            progressColor="#409EFF"
             :showPerText="true"
             :max="100"
+            progressColor="#00acc1"
             @percentChange="onPercentChange"
           />
         </el-form-item>
-        <el-form-item class="operate-button">
-          <el-button type="primary" @click="confirmAndBuild">确定并构建</el-button>
-          <el-button class="create-button" type="primary" @click="confirmPlan">确定</el-button>
-        </el-form-item>
       </el-form>
+      <div class="form-footer">
+        <el-button @click="cancelPlan">取消</el-button>
+        <el-button class="create-button" type="primary" @click="confirmPlan">确定</el-button>
+      </div>
     </div>
     <div class="case-dialog">
       <el-dialog
+        width="700px"
         v-model="showCaseTree"
         title="选择执行用例"
         :close-on-click-modal="false"
       >
         <div class="case-content">
           <case-tree
-            :project-id="formData.project"
+            :project-id="formData.project_id"
             :tree-array="getBranchContent()"
-            @confirmAction="saveCheckedCase"
+            @cancel="cancelCheckCase"
+            @confirm="saveCheckedCase"
           />
         </div>
       </el-dialog>
@@ -133,13 +133,16 @@ export default {
     CaseTree,
     DragProgress,
   },
+  props: {
+    planData: Object
+  },
   data() {
     const validateRegion = (rule, value, callback) => {
       if (!this.showRegion) {
         callback()
       }
       else if (value.length === 0) {
-        callback(new Error('Please select region'))
+        callback(new Error('请选择地区'))
       } else {
         callback()
       }
@@ -173,10 +176,11 @@ export default {
     }
   },
   watch: {
-    '$store.state.plan.changeFlag': {
-      handler() {
-        this.formData = this.$store.state.plan.planData
+    planData: {
+      handler(val) {
+        this.formData = val
       },
+      deep: true,
       immediate: true
     },
   },
@@ -206,7 +210,6 @@ export default {
       fetchVersion(projectId).then(response => {
         this.versionList = response.data
       })
-      this.formData['project_name'] = project.name
     },
     setBranch(index) {
       this.branchIndex = index
@@ -222,14 +225,19 @@ export default {
       const index = this.branchIndex
       return JSON.parse(this.versionList[index]['nodes'])
     },
-    saveCheckedCase(caseInfo) {
+    cancelCheckCase() {
       this.showCaseTree = false
-      this.formData['total_case'] = caseInfo['count']
-      this.formData['build_cases'] = caseInfo['cases']
-      this.formData['extra_data'] = JSON.stringify(caseInfo['options'])
+    },
+    saveCheckedCase(caseList) {
+      this.showCaseTree = false
+      this.formData['case_list'] = caseList
+      this.formData['total_case'] = caseList.length
     },
     onPercentChange(num) {
       this.formData.expect_pass = num
+    },
+    cancelPlan() {
+      this.$emit('cancel')
     },
     confirmPlan() {
       this.$refs['ruleFormRef'].validate((valid) => {
@@ -254,35 +262,9 @@ export default {
             return
           }
         }
-        this.$emit('confirmAction', this.formData)
+        this.$emit('confirm', this.formData)
       })
     },
-    confirmAndBuild() {
-      this.$refs['ruleFormRef'].validate((valid) => {
-        if (!valid) {
-          return
-        }
-        if (this.formData['periodic_switch']) {
-          if (!this.formData['periodic_expr']) {
-            this.$message.warning('定时配置不能为空')
-            return
-          }
-          this.formData['periodic_expr'] = this.formData['periodic_expr'].replace(/(^\s*)|(\s*$)/g, '')
-          if (this.formData['periodic_expr'] === '') {
-            this.$message.warning('定时配置不能为空')
-            return
-          }
-          try {
-            const cronParse = require('cron-parser')
-            cronParse.parseExpression(this.formData['periodic_expr'])
-          } catch (err) {
-            this.$message.warning('定时表达式错误')
-            return
-          }
-        }
-        this.$emit('confirmAndBuildAction', this.formData)
-      })
-    }
   }
 }
 </script>
@@ -297,12 +279,11 @@ export default {
   }
   .body {
     width: 100%;
-    .operate-button {
-      float: right;
-      margin-top: 20px;
-      .create-button {
-        margin-left: 25px;
-      }
+    .form-footer {
+      margin-top: 30px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
   }
 }

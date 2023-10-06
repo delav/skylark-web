@@ -158,12 +158,9 @@ export default {
         const newTag = response.data
         metaInfo['extra_data'][NODE.ExtraDataKey.TAG].push(newTag)
         this.updateTreeNode(metaInfo)
+        const projectId = this.$store.state.tree.projectId
+        this.$store.dispatch('scalar/getProjectTags', projectId)
       })
-      // fetchTagByCase(metaInfo.id).then(response => {
-      //   this.caseExtraInfo.tag = response.data
-      //   metaInfo['extra_data'][NODE.ExtraDataKey.TAG] = response.data
-      //   this.updateTreeNode(metaInfo)
-      // })
     },
     deleteCaseTag(tagName) {
       const nodeInfo = this.$store.state.tree.selectedNode

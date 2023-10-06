@@ -125,7 +125,7 @@
     </div>
     <div class="dialog-area">
       <el-dialog
-        width="70%"
+        width="75%"
         v-model="showJsonDialog"
         title="格式化编辑"
         :close-on-click-modal="false"
@@ -373,7 +373,7 @@ $labelWidth: 80px;
       padding: 0 5px;
       font-size: 13px;
       margin: 0;
-      color: #6b778c;
+      color: $textColor;
     }
   }
   .entity-input {

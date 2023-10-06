@@ -16,7 +16,11 @@ module.exports = defineConfig({
   outputDir: 'dist',
   assetsDir: 'static',
   devServer: {
+    host: '0.0.0.0',
     port: port,
+    client: {
+      webSocketURL: `ws://0.0.0.0:${port}/ws`,
+    },
   },
   configureWebpack: {
     name: name,

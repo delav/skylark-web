@@ -48,7 +48,9 @@
         </span>
       </p>
     </div>
-    <el-button class="new-button" size="large" @click="createNewProject" type="primary">创建</el-button>
+    <el-button class="new-button" size="large" @click="createNewProject" type="primary">
+      <el-icon size="15"><Plus /></el-icon>创建
+    </el-button>
   </div>
 </template>
 

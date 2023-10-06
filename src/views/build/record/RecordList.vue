@@ -6,6 +6,7 @@
         <el-select
           v-model="queryParams.project_id"
           placeholder="选择项目"
+          filterable
           @change="filterRecords"
         >
           <el-option
@@ -21,6 +22,7 @@
         <el-select
           v-model="queryParams.create_by"
           placeholder="选择用户"
+          filterable
           @change="filterRecords"
         >
           <el-option
@@ -37,9 +39,9 @@
           v-model="queryParams.date_range"
           type="daterange"
           unlink-panels
-          range-separator="To"
-          start-placeholder="Start date"
-          end-placeholder="End date"
+          range-separator="至"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
         />
       </div>
     </div>
@@ -50,25 +52,26 @@
         :header-cell-style="{fontSize:'13px'}"
         :cell-style="{color: '#666', fontSize:'13px'}"
         border
+        stripe
         style="width: 100%">
         <el-table-column prop="id" label="编号" width="70" />
-        <el-table-column prop="desc" label="描述" show-overflow-tooltip>
+        <el-table-column prop="desc" label="标题" min-width="120" show-overflow-tooltip>
           <template #default="scope">
             <el-link type="primary" @click="routeToRecordDetail(scope.row.id)" :underline="false">{{ scope.row.desc }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="plan_id" label="计划编号" width="80">
+        <el-table-column prop="plan_id" label="关联计划" width="80" min-width="80">
           <template #default="scope">
             <el-link @click="routeToPlanDetail(scope.row.plan_id)" :underline="false">{{ scope.row.plan_id }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="执行状态" width="90">
+        <el-table-column prop="status" label="状态" width="100" min-width="100">
           <template #default="scope">
             <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
             <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="env_list" label="执行环境" width="160" min-width="120" show-overflow-tooltip >
+        <el-table-column prop="env_list" label="环境" min-width="120" show-overflow-tooltip >
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.env_list"
@@ -81,7 +84,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="region_list" label="执行地区" width="120" min-width="100" show-overflow-tooltip v-if="showRegion">
+        <el-table-column prop="region_list" label="地区" min-width="120" show-overflow-tooltip v-if="showRegion">
           <template #default="scope">
             <el-tag
               v-for="(id, index) in scope.row.region_list"
@@ -94,11 +97,11 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="create_by" label="执行用户" width="180" show-overflow-tooltip >
+        <el-table-column prop="create_by" label="构建用户" min-width="100" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="create_at" label="执行时间" width="170" show-overflow-tooltip >
+        <el-table-column prop="create_at" label="构建时间" min-width="100" show-overflow-tooltip >
         </el-table-column>
-        <el-table-column prop="periodic" label="定时执行" width="80" min-width="80">
+        <el-table-column prop="periodic" label="定时构建" width="80" min-width="80">
           <template #default="scope">
             <el-tag size="small" type="success" v-if="scope.row.periodic">是</el-tag>
             <el-tag size="small" type="danger" v-else>否</el-tag>
@@ -119,6 +122,7 @@
 
 <script>
 import { fetchRecords } from "@/api/record";
+import { deepCopy } from "@/utils/dcopy";
 
 export default {
   name: 'PlanList',
@@ -168,10 +172,18 @@ export default {
       })
     },
     changePage(pageVal) {
-      this.getRecordList(pageVal, this.queryParams)
+      const params = deepCopy(this.queryParams)
+      if (this.queryParams['project_id'] === 0) {
+        delete params['project_id']
+      }
+      this.getRecordList(pageVal, params)
     },
     filterRecords() {
-      this.getRecordList(1, this.queryParams)
+      const params = deepCopy(this.queryParams)
+      if (this.queryParams['project_id'] === 0) {
+        delete params['project_id']
+      }
+      this.getRecordList(1, params)
     },
     routeToRecordDetail(recordId) {
       this.$router.push(`/build/record/detail/${recordId}`)
@@ -187,7 +199,7 @@ export default {
 .record-list {
   width: 100%;
   height: 100%;
-  padding: 5px;
+  padding: 0 5px 5px 5px;
   overflow: auto;
   .operate-header {
     width: 100%;

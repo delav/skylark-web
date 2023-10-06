@@ -7,7 +7,7 @@
           <el-select
             :disabled="postVariableForm.id!==undefined"
             v-model="postVariableForm.env_id"
-            style="width: 275px"
+            style="width: 235px"
           >
             <el-option
               v-for="(item, index) in envList"
@@ -21,7 +21,7 @@
           <el-select
             :disabled="postVariableForm.id!==undefined"
             v-model="postVariableForm.region_id"
-            style="width: 275px"
+            style="width: 235px"
           >
             <el-option
               v-for="(item, index) in allRegionList"
@@ -53,7 +53,7 @@
       </el-form>
     </div>
     <div class="action-footer">
-      <el-button @click="createSave">取消</el-button>
+      <el-button @click="cancelSave">取消</el-button>
       <el-button type="primary" @click="confirmSave">确定</el-button>
     </div>
   </div>
@@ -61,7 +61,7 @@
 
 <script>
 
-import {createVariable, updateVariable} from "@/api/variable";
+import { createVariable, updateVariable } from "@/api/variable";
 
 export default {
   name: 'VariableSave',
@@ -107,8 +107,8 @@ export default {
     }
   },
   methods: {
-    createSave() {
-      this.$emit('cancelAction')
+    cancelSave() {
+      this.$emit('cancel')
     },
     confirmSave() {
       this.$refs['ruleForm'].validate((valid) => {
@@ -117,14 +117,14 @@ export default {
         }
         if (this.postVariableForm['id']) {
           updateVariable(this.postVariableForm['id'], this.postVariableForm).then(() => {
-            this.$emit('commitAction')
+            this.$emit('confirm')
           })
         } else {
           if (this.postVariableForm['region_id'] === 0) {
             delete this.postVariableForm['region_id']
           }
           createVariable(this.postVariableForm).then(() => {
-            this.$emit('commitAction')
+            this.$emit('confirm')
           })
         }
       })

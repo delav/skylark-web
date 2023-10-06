@@ -159,7 +159,7 @@ export default {
     },
     delVariable(row, index) {
       this.$messageBox.confirm(
-        '删除变量可能会导致使用到该变量的用例执行失败，是否确认删除?',
+        '删除变量可能会导致使用到该变量的用例执行失败，是否确定删除?',
         '删除变量',
         {
           cancelButtonText: '取消',

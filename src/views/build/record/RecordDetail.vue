@@ -51,9 +51,10 @@
             <el-table-column prop="id" label="编号" width="70" />
             <el-table-column prop="status" label="运行状态" width="100">
               <template #default="scope">
-                <span v-if="scope.row.status===-1">执行中</span>
-                <span v-if="scope.row.status===0">已完成</span>
-                <span v-if="scope.row.status===1">执行异常</span>
+                <span v-if="scope.row.status===-1">等待中</span>
+                <span v-if="scope.row.status===0">执行中</span>
+                <span v-if="scope.row.status===1">已完成</span>
+                <span v-if="scope.row.status===2">已终止</span>
               </template>
             </el-table-column>
             <el-table-column prop="env_id" label="执行环境" min-width="100" show-overflow-tooltip >

@@ -70,7 +70,7 @@
     </div>
     <div class="create-dialog">
       <el-dialog
-        width="680px"
+        width="600px"
         v-model="showSaveDialog"
         :title="saveDialogTitle"
         :close-on-click-modal="false"
@@ -78,8 +78,8 @@
       >
         <variable-save
           :variable-form="variableForm"
-          @commitAction="commitSaveVariable"
-          @cancelAction="cancelSaveVariable"
+          @confirm="commitSaveVariable"
+          @cancel="cancelSaveVariable"
         />
       </el-dialog>
     </div>

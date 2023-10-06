@@ -3,7 +3,7 @@
     <p class="instantly-header">
       <span class="desc">即将构建</span>
       <span class="refresh">
-        <el-icon @click="refreshInstantlyPlanList" :size="20" style="margin-top: 5px"><RefreshLeft /></el-icon>
+        <el-icon @click="refreshInstantlyPlanList" :size="16" style="margin-top: 7px"><RefreshLeft /></el-icon>
       </span>
     </p>
     <div class="instantly-list">
@@ -14,9 +14,9 @@
             ref-name="itemText"
             font-size="14px"
             :content="item['title']"
-            @click="getInstantlyPlanDetail"
+            @click="gotoPlanDetail(item.id)"
           />
-          <p class="time-tip">下一次构建时间：{{item['periodic']['next_time']}}</p>
+          <p class="time-tip">下次构建时间：{{item['periodic']['next_time']}}</p>
         </div>
         <div class="item-tip">
         </div>
@@ -53,7 +53,9 @@ export default {
     refreshInstantlyPlanList() {
       this.$store.dispatch('plan/getInstantlyPlanList')
     },
-    getInstantlyPlanDetail() {}
+    gotoPlanDetail(planId) {
+      this.$router.push(`/build/plan/detail/${planId}`)
+    }
   }
 }
 </script>
@@ -64,23 +66,25 @@ $itemHeight: 48px;
 
 .instantly-content {
   height: 100%;
-  border-right: solid 1px #dcdfe6;
   .instantly-header {
     height: 24px;
     margin: 0;
     padding-left: 5px;
-    background-color: #dcdfe6;
+    background-color: #f4f5f7;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    color: $textColor;
     .desc {
       font-size: 13px;
     }
     .refresh {
-      margin-left: auto;
-      margin-right: 5px;
+      //margin-left: auto;
+      margin-left: 5px;
       cursor: pointer;
-      color: $mainColor;
+      :hover {
+        color: $mainColor;
+      }
     }
   }
   .instantly-list {

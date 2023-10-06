@@ -1,6 +1,9 @@
 /* global settings */
 // main color
 $mainColor: #00acc1;
+// text color
+$textColor: #6b778c;
+// hover color
 $hoverBg: #effbff;
 // navbar
 $menuBg: #fff;
@@ -42,6 +45,7 @@ $entityGridHeight: 104px;
 
 :export {
   mainColor: $mainColor;
+  textColor: $textColor;
   hoverBg: $hoverBg;
   resizeBg: $resizeBg;
   resizeHoverBg: $resizeHoverBg;

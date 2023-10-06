@@ -69,20 +69,20 @@
         @selection-change="selectChangeVariable"
         @select-all="selectAllVariable"
         :row-style="{height: '0'}"
-        :cell-style="{padding: '3px 0'}"
-        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px 0' }"
+        :cell-style="{padding: '2px 0', fontSize: '13px'}"
+        :header-cell-style="{ background: '#f4f5f7', fontWeight: 500, color: '#606266', padding: '3px 0' }"
       >
         <el-table-column type="selection" width="50" />
-        <el-table-column fixed prop="name" label="变量名" width="180" sortable show-overflow-tooltip>
+        <el-table-column fixed prop="name" label="变量名" width="160" sortable show-overflow-tooltip>
         </el-table-column>
         <el-table-column prop="value" label="变量值" min-width="40%" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column v-show="showRegion" prop="region_id" label="地区" width="100" sortable>
+        <el-table-column v-show="showRegion" prop="region_id" label="地区" width="90" sortable>
           <template #default="scope">
             <span>{{getRegionName(scope.row['region_id'])}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="备注" min-width="20%" show-overflow-tooltip>
+        <el-table-column prop="remark" label="备注" width="140" show-overflow-tooltip>
         </el-table-column>
       </el-table>
     </div>
@@ -193,8 +193,8 @@ export default {
       margin-bottom: 10px;
     }
     .desc-text {
+      width: 80px;
       margin-left:auto;
-      padding-right: 20px;
     }
   }
   .copy-content {

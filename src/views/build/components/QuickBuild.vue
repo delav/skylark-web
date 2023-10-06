@@ -1,103 +1,101 @@
 <template>
   <div class="quick-build">
     <div class="content">
-      <el-card class="box-card">
-        <template #header>
-          <div class="card-header">
-            <span>快速构建</span>
-          </div>
-        </template>
-        <div class="card-body">
-          <el-form
-            ref="ruleFormRef"
-            :model="formData"
-            :rules="formRules"
-            label-width="130px"
-            status-icon
-          >
-            <el-form-item label="项目名称" prop="project_id">
-              <el-select
-                style="width: 100%"
-                v-model="formData.project_id"
-                placeholder="选择项目">
-                <el-option
-                  v-for="(item, index) in projectList"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                  @click.native="changeProject(item)"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="项目分支" prop="branch">
-              <el-select
-                style="width: 100%"
-                v-model="formData.branch"
-                placeholder="选择分支">
-                <el-option
-                  v-for="(item, index) in versionList"
-                  :key="index"
-                  :label="item.branch"
-                  :value="item.branch"
-                  @click.native="setBranch(index)"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="执行环境" prop="envs">
-              <el-select
-                style="width: 100%"
-                v-model="formData.envs"
-                multiple
-                placeholder="选择环境">
-                <el-option
-                  v-for="item in envList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="执行地区" prop="regions">
-              <el-select
-                style="width: 100%"
-                v-model="formData.regions"
-                multiple
-                placeholder="选择地区">
-                <el-option
-                  v-for="item in regionList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="执行用例" prop="total_case">
-              <el-input
-                style="float: left;width: 120px"
-                v-model="formData.total_case"
-                disabled
-              >
-              </el-input>
-              <el-button style="float: left;margin-left: 20px" type="primary" @click="showCaseTree=true">选择用例</el-button>
-            </el-form-item>
-            <el-form-item class="operate-button">
-              <el-button type="primary" @click="createQuickBuild">构建</el-button>
-            </el-form-item>
-          </el-form>
+      <div class="card-header">
+        <span>快速构建</span>
+      </div>
+      <div class="card-body">
+        <el-form
+          ref="ruleFormRef"
+          :model="formData"
+          :rules="formRules"
+          label-width="120px"
+          status-icon
+        >
+          <el-form-item label="项目名称" prop="project_id">
+            <el-select
+              style="width: 100%"
+              v-model="formData.project_id"
+              placeholder="选择项目">
+              <el-option
+                v-for="(item, index) in projectList"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+                @click.native="changeProject(item)"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="项目分支" prop="branch">
+            <el-select
+              style="width: 100%"
+              v-model="formData.branch"
+              placeholder="选择分支">
+              <el-option
+                v-for="(item, index) in branchList"
+                :key="index"
+                :label="item.branch"
+                :value="item.branch"
+                @click.native="setBranch(index)"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="执行环境" prop="env_list">
+            <el-select
+              style="width: 100%"
+              v-model="formData.env_list"
+              multiple
+              placeholder="选择环境">
+              <el-option
+                v-for="item in envList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="执行地区" prop="region_list" v-if="showRegion">
+            <el-select
+              style="width: 100%"
+              v-model="formData.region_list"
+              multiple
+              placeholder="选择地区">
+              <el-option
+                v-for="item in regionList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="执行用例" prop="total_case">
+            <el-input
+              style="float: left;width: 120px"
+              v-model="formData.total_case"
+              disabled
+            >
+            </el-input>
+            <el-button style="float: left;margin-left: 20px" type="primary" @click="openCheckCase">选择用例</el-button>
+          </el-form-item>
+        </el-form>
+        <div class="build-footer">
+          <el-button type="primary" @click="createQuickBuild">立即构建</el-button>
         </div>
-      </el-card>
+      </div>
     </div>
     <div class="case-dialog">
       <el-dialog
+        width="700px"
         v-model="showCaseTree"
         title="选择执行用例"
         :close-on-click-modal="false"
       >
         <div class="case-content">
           <case-tree
-            :project-id="formData.project"
+            :project-id="formData.project_id"
             :tree-array="getBranchContent()"
-            @confirmAction="saveCheckedCase"
+            @cancel="cancelCheckCase"
+            @confirm="saveCheckedCase"
           />
         </div>
       </el-dialog>
@@ -135,48 +133,48 @@ export default {
         callback()
       }
       else if (value.length === 0) {
-        callback(new Error('Please select region'))
+        callback(new Error('请选择地区'))
       } else {
         callback()
       }
     }
     return {
-      showQuickBuild: false,
-      versionList: [],
-      planList: [],
       formData: {
-        'expect_pass': 90
+        project_id: null,
+        branch: '',
+        env_list: [],
+        region_list: [],
+        total_case: 0
       },
       formRules: {
-        title: [
-          { required: true, message: '请求输入计划标题', trigger: 'blur' },
-        ],
         project_id: [
           { required: true, message: '请选择项目', trigger: 'change' },
         ],
         branch: [
           { required: true, message: '请选择项目分支', trigger: 'change' },
         ],
-        envs: [
-          { required: true, message: '请选择环境', trigger: 'blur', type: 'array' },
+        env_list: [
+          { required: true, message: '请选择环境', trigger: 'change', type: 'array' },
         ],
-        regions: [
-          { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
+        region_list: [
+          { required: true, validator: validateRegion, trigger: 'change', type: 'array' },
         ],
         total_case: [
-          { required: true, message: '请选择执行的用例', type: 'number' },
+          { required: true, message: '请选择执行的用例', type: 'number', min: 1 },
         ]
       },
-      showCaseTree: false,
-      branchIndex: 0
+      branchList: [],
+      branchIndex: 0,
+      showCaseTree: false
     }
   },
   methods: {
     changeProject(project) {
-      this.versionList = []
-      const projectId = project.id
-      fetchVersion(projectId).then(response => {
-        this.versionList = response.data
+      this.$refs['ruleFormRef'].clearValidate()
+      Object.assign(this.$data, this.$options.data())
+      this.formData['project_id'] = project.id
+      fetchVersion(project.id).then(response => {
+        this.branchList = response.data
       })
       this.formData['project_name'] = project.name
     },
@@ -185,13 +183,22 @@ export default {
     },
     getBranchContent () {
       const index = this.branchIndex
-      return JSON.parse(this.versionList[index]['nodes'])
+      return JSON.parse(this.branchList[index]['nodes'])
     },
-    saveCheckedCase (caseInfo) {
+    openCheckCase() {
+      if (this.formData.branch === '') {
+        this.$message.warning('请先选择分支')
+        return
+      }
+      this.showCaseTree = true
+    },
+    cancelCheckCase() {
       this.showCaseTree = false
-      this.formData['total_case'] = caseInfo['count']
-      this.formData['build_cases'] = caseInfo['cases']
-      this.formData['extra_data'] = JSON.stringify(caseInfo['options'])
+    },
+    saveCheckedCase (caseList) {
+      this.showCaseTree = false
+      this.formData['case_list'] = caseList
+      this.formData['total_case'] = caseList.length
     },
     createQuickBuild() {
       this.$refs['ruleFormRef'].validate((valid) => {
@@ -212,13 +219,24 @@ export default {
 .quick-build {
   width: 100%;
   height: 100%;
-  padding: 5px;
   .content {
+    padding: 0 5px 5px 5px;
     height: 100%;
-    min-height: 600px;
-    min-width: 500px;
-    .box-card {
-      height: 100%;
+    border-radius: 2px;
+    overflow: auto;
+    .card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #e4e7ed;
+    }
+    .card-body {
+      padding: 20px;
+      margin-right: 40px;
+      .build-footer {
+        margin-top: 30px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
     }
   }
 }

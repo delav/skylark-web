@@ -118,7 +118,7 @@
       </div>
       <div class="new-dialog">
         <el-dialog
-          width="550px"
+          width="600px"
           v-model="showNewDialog"
           title="新建项目"
           :close-on-click-modal="false"
