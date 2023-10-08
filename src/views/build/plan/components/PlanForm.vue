@@ -113,6 +113,7 @@
           <case-tree
             :project-id="formData.project_id"
             :tree-array="getBranchContent()"
+            :checked-cases="checkedCaseList"
             @cancel="cancelCheckCase"
             @confirm="saveCheckedCase"
           />
@@ -172,13 +173,14 @@ export default {
         ]
       },
       showCaseTree: false,
-      branchIndex: 0
+      branchIndex: 0,
+      checkedCaseList: []
     }
   },
   watch: {
     planData: {
       handler(val) {
-        this.formData = val
+        this.initData(val)
       },
       deep: true,
       immediate: true
@@ -204,6 +206,16 @@ export default {
     this.$options.data()
   },
   methods: {
+    initData(formData) {
+      this.formData = formData
+      if (formData['id'] === undefined) {
+        return
+      }
+      this.checkedCaseList = formData['case_list']
+      fetchVersion(formData['project_id']).then(response => {
+        this.versionList = response.data
+      })
+    },
     changeProject(project) {
       this.versionList = []
       const projectId = project.id

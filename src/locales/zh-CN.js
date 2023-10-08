@@ -4,7 +4,7 @@ const Navbar = {
   _design: '用例设计',
   _build: '执行计划',
   _setting: '配置管理',
-  _statistics: '数据分析',
+  _statistics: '数据统计',
 }
 
 const SettingNavBar = {

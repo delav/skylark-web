@@ -2,6 +2,7 @@ import axios from "axios";
 import { fetchProjectList } from "@/api/project";
 import { fetchEnvs } from "@/api/env";
 import { fetchRegions } from "@/api/region";
+import { getUsers } from '@/api/user';
 
 
 const getBaseState = () => {
@@ -17,6 +18,7 @@ const getBaseState = () => {
     containAllProjectList: [],
     containAllEnvList: [],
     containAllRegionList: [],
+    userList: [],
     sysNoticeList: [
       {'title': '关于平台新功能通知', 'content': '平台新增了版本控制功能，欢迎大家体验', 'new': true},
       {'title': '关于平台维护时间通知', 'content': '由于升级更新功能，平台于2023-09-18 16:30:00起维护，届时平台将不可用，预计1小时', 'new': true}
@@ -62,6 +64,9 @@ const mutations = {
   },
   SET_ALL_REGION_LIST: (state, array) => {
     state.containAllRegionList = array
+  },
+  SET_USER_LIST: (state, array) => {
+    state.userList = array
   }
 }
 
@@ -145,6 +150,16 @@ const actions = {
         commit('SET_BASE_LOADED', true)
       })
     )
+  },
+  getUserList({ commit }) {
+    return new Promise((resolve, reject) => {
+      getUsers().then(response => {
+        commit('SET_USER_LIST', response.data)
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

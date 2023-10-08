@@ -94,6 +94,7 @@
           <case-tree
             :project-id="formData.project_id"
             :tree-array="getBranchContent()"
+            :checked-cases="[]"
             @cancel="cancelCheckCase"
             @confirm="saveCheckedCase"
           />

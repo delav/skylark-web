@@ -91,6 +91,11 @@ export default {
               that.deleteEntity()
             }
             break
+          case 67:
+            if (status && that.keyboardOnKey === 'ctrl') {
+              that.copyEntity()
+            }
+            break
         }
       }
     },
@@ -135,6 +140,25 @@ export default {
       }
       this.$store.commit('entity/SET_CURRENT_ENTITY', entityItem)
       this.$store.commit('entity/SET_SELECTED_ENTITIES', selectedEntities)
+    },
+    copyEntity() {
+      const selectedEntities = this.$store.state.entity.selectedEntities
+      if (selectedEntities.length === 0) return
+      this.$store.commit('entity/SET_COPY_ENTITIES', selectedEntities)
+      setCursorStyle(['et-case'], 'copy')
+      // const body = document.querySelector('#entity')
+      document.oncontextmenu = this.cancelCopyEntity
+      this.$message.success('复制成功，单击鼠标右键取消')
+    },
+    cancelCopyEntity() {
+      document.oncontextmenu = function () {
+        document.oncontextmenu = function () { return true }
+        return false
+      }
+      const copiedEntities = this.$store.state.entity.copiedEntities
+      if (copiedEntities.length === 0) return
+      this.$store.commit('entity/SET_COPY_ENTITIES', [])
+      setCursorStyle(['et-case'], 'auto')
     },
     pasteEntity(copiedEntities, index) {
       copiedEntities = deepCopy(copiedEntities)

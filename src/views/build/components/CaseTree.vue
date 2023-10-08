@@ -7,7 +7,7 @@
           v-model="checkedPriList"
           @change="quickCheck"
         >
-          <el-checkbox v-for="(item, index) in shortcutOptions['priorityList']" :key="index" :label="item.id">
+          <el-checkbox v-for="(item, index) in shortcutOptions['priList']" :key="index" :label="item.id">
             {{ item.name }}
           </el-checkbox>
         </el-checkbox-group>
@@ -60,6 +60,7 @@ export default {
   props: {
     projectId: Number,
     treeArray: Array,
+    checkedCases: Array
   },
   data() {
     return {
@@ -86,7 +87,10 @@ export default {
       zTreeObj: null,
       totalCases: 0,
       selectCases: 0,
-      shortcutOptions: {},
+      shortcutOptions: {
+        'priList': [],
+        'tagList': []
+      },
       checkedPriList: [],
       checkedTagList: []
     }
@@ -101,13 +105,23 @@ export default {
         return node.desc === NODE.NodeDesc.CASE
       }, false)
       this.totalCases = caseNodes.length
+      if (this.checkedCases.length === 0) {
+        return
+      }
+      this.selectCases = this.checkedCases.length
+      for (let i = 0; i < caseNodes.length; i++) {
+        const caseId = caseNodes[i]['mid']
+        if (this.checkedCases.indexOf(caseId) !== -1) {
+          this.zTreeObj.checkNode(caseNodes[i], true, true)
+        }
+      }
     },
     getShortcutOptions() {
       axios.all([fetchTagsByProject(this.projectId), fetchPriorities()]).then(
         axios.spread((r1, r2) => {
           this.shortcutOptions = {
             'tagList': r1.data,
-            'priorityList': r2.data
+            'priList': r2.data
           }
         })
       )
@@ -170,7 +184,7 @@ export default {
       }, false)
       let caseIdList = []
       for (let i = 0; i < checkedCases.length; i++) {
-        const caseId = checkedCases[i].mid
+        const caseId = checkedCases[i]['mid']
         caseIdList.push(caseId)
       }
       this.$emit('confirm', caseIdList)

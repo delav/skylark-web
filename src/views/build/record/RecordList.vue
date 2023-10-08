@@ -28,8 +28,8 @@
           <el-option
             v-for="item in userList"
             :key="item.id"
-            :label="item.name"
-            :value="item.id"
+            :label="item.email"
+            :value="item.email"
           />
         </el-select>
       </div>
@@ -49,7 +49,7 @@
       <el-table
         v-loading="loading"
         :data="recordList"
-        :header-cell-style="{fontSize:'13px'}"
+        :header-cell-style="{fontSize:'13px', background: '#f4f5f7'}"
         :cell-style="{color: '#666', fontSize:'13px'}"
         border
         stripe
@@ -63,12 +63,6 @@
         <el-table-column prop="plan_id" label="关联计划" width="80" min-width="80">
           <template #default="scope">
             <el-link @click="routeToPlanDetail(scope.row.plan_id)" :underline="false">{{ scope.row.plan_id }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="100" min-width="100">
-          <template #default="scope">
-            <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
-            <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="env_list" label="环境" min-width="120" show-overflow-tooltip >
@@ -105,6 +99,12 @@
           <template #default="scope">
             <el-tag size="small" type="success" v-if="scope.row.periodic">是</el-tag>
             <el-tag size="small" type="danger" v-else>否</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" fixed="right" width="100" min-width="100">
+          <template #default="scope">
+            <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
+            <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -199,7 +199,8 @@ export default {
 .record-list {
   width: 100%;
   height: 100%;
-  padding: 0 5px 5px 5px;
+  padding: 0 5px;
+  margin-bottom: 5px;
   overflow: auto;
   .operate-header {
     width: 100%;

@@ -26,8 +26,8 @@
           <el-option
             v-for="item in userList"
             :key="item.id"
-            :label="item.name"
-            :value="item.id"
+            :label="item.email"
+            :value="item.email"
           />
         </el-select>
       </div>
@@ -180,6 +180,7 @@ import PlanForm from "@/views/build/plan/components/PlanForm";
 import InstantBuild from "@/views/build/plan/components/InstantBuild";
 import { fetchPlans, deletePlan, updatePlan, createPlan } from "@/api/plan";
 import { buildInstantTest } from "@/api/builder";
+import {deepCopy} from "@/utils/dcopy";
 
 export default {
   name: 'PlanList',
@@ -242,6 +243,10 @@ export default {
       })
     },
     filterPlans() {
+      const params = deepCopy(this.queryParams)
+      if (this.queryParams['project_id'] === 0) {
+        delete params['project_id']
+      }
       this.getPlanList(1, this.queryParams)
     },
     newPlan() {
@@ -306,7 +311,8 @@ export default {
 .plan-list {
   width: 100%;
   height: 100%;
-  padding: 0 5px 5px 5px;
+  padding: 0 5px;
+  margin-bottom: 5px;
   overflow: auto;
   .operate-header {
     width: 100%;

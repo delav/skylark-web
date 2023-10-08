@@ -8,10 +8,11 @@ export function login(data) {
   })
 }
 
-export function getInfo() {
+export function register(data) {
   return request({
-    url: `/user/info/1`,
-    method: 'get'
+    url: 'user/register',
+    method: 'post',
+    data: data
   })
 }
 
@@ -23,17 +24,16 @@ export function reset(data) {
   })
 }
 
-export function register(data) {
+export function getUsers() {
   return request({
-    url: 'user/register',
-    method: 'post',
-    data: data
+    url: 'user/info',
+    method: 'get',
   })
 }
 
-export function getUserEmails() {
+export function getInfo() {
   return request({
-    url: 'user/register',
-    method: 'get',
+    url: `/user/info/1`,
+    method: 'get'
   })
 }
