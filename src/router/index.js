@@ -48,19 +48,19 @@ export const routes = [
             path: '/build/plan/list',
             name: 'PlanList',
             component: () => import('@/views/build/plan/PlanList'),
-            meta: { navbar: true, title: i18n.global.t('BuildNavBar._plan'), icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/list' }
+            meta: { sidebar: true, title: i18n.global.t('BuildNavBar._plan'), icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/list' }
           },
           {
             path: '/build/record/list',
             name: 'RecordList',
             component: () => import('@/views/build/record/RecordList'),
-            meta: { navbar: true, title: i18n.global.t('BuildNavBar._record'), icon: 'record', activeMenu: '/build', secondActiveMenu: '/build/record/list' }
+            meta: { sidebar: true, title: i18n.global.t('BuildNavBar._record'), icon: 'record', activeMenu: '/build', secondActiveMenu: '/build/record/list' }
           },
           {
             path: '/build/quick/start',
             name: 'QuickBuild',
             component: () => import('@/views/build/components/QuickBuild'),
-            meta: { navbar: true, title: i18n.global.t('BuildNavBar._quick'), icon: 'quick-build', activeMenu: '/build', secondActiveMenu: '/build/quick/start' }
+            meta: { sidebar: true, title: i18n.global.t('BuildNavBar._quick'), icon: 'quick-build', activeMenu: '/build', secondActiveMenu: '/build/quick/start' }
           },
           {
             path: '/build/plan/detail/:id',
@@ -93,19 +93,19 @@ export const routes = [
             path: '/setting/variable',
             name: 'Variable',
             component: () => import('@/views/setting/variable/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'setting-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
+            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'setting-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
           },
           {
             path: '/setting/notice',
             name: 'Notice',
             component: () => import('@/views/setting/notice/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'setting-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notice' }
+            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'setting-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notice' }
           },
           {
             path: '/setting/project',
             name: 'Project',
             component: () => import('@/views/setting/project/index'),
-            meta: { navbar: true, title: i18n.global.t('SettingNavBar._project'), icon: 'setting-project', activeMenu: '/setting', secondActiveMenu: '/setting/project' }
+            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._project'), icon: 'setting-project', activeMenu: '/setting', secondActiveMenu: '/setting/project' }
           }
         ]
       },
@@ -129,7 +129,6 @@ export const routes = [
     path: '/login',
     meta: { navbar: false },
     component: () => import('@/views/user/login/index'),
-    hidden: true
   },
   {
     path: '/register',
@@ -145,13 +144,11 @@ export const routes = [
     path: '/404',
     meta: { navbar: false },
     component: () => import('@/views/error/404'),
-    hidden: true
   },
   {
     path: '/401',
     meta: { navbar: false },
     component: () => import('@/views/error/401'),
-    hidden: true
   },
 ]
 

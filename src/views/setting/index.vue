@@ -2,7 +2,11 @@
   <div class="setting">
     <div class="setting-navbar">
       <el-menu :default-active="activeMenu" style="height: 100%" router>
-        <el-menu-item v-for="(route, i) in settingRoutes" :key="i" :index="resolvePath(route)">
+        <el-menu-item
+          v-for="(route, i) in settingRoutes"
+          :key="i"
+          :index="resolvePath(route)"
+        >
           <svg-icon class="icon-class" :icon-class="route.meta.icon" ></svg-icon>
           <span>{{ route.meta.title }}</span>
         </el-menu-item>
@@ -28,14 +32,14 @@ export default {
     },
     settingRoutes() {
       const navbarRoutes = []
-      const allRoutes = this.$router.options.routes
+      const allRoutes = this.$router.getRoutes()
       for (let i = 0; i < allRoutes.length; i++) {
         const item = allRoutes[i]
         if (item.name === this.$options.name) {
           const child2Routes = item.children[0]['children']
           if (!child2Routes) break
           child2Routes.forEach(childItem => {
-            if (childItem.meta['navbar']) {
+            if (childItem.meta['sidebar']) {
               navbarRoutes.push(childItem)
             }
           })
@@ -66,7 +70,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
-$navbarWidth: 200px;
+$navbarWidth: 250px;
 $menuItemHeight: 48px;
 $menuHeight: 125px;
 $planHeight: 260px;

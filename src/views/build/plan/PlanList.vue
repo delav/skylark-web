@@ -2,7 +2,7 @@
   <div class="plan-list">
     <div class="operate-header">
       <div class="header-item project-filter">
-        <span class="item-desc">项目：</span>
+        <span class="item-label">项目：</span>
         <el-select
           v-model="queryParams.project_id"
           placeholder="选择项目"
@@ -17,7 +17,7 @@
         </el-select>
       </div>
       <div class="header-item user-filter">
-        <span class="item-desc">创建用户：</span>
+        <span class="item-label">创建用户：</span>
         <el-select
           v-model="queryParams.create_by"
           placeholder="选择用户"
@@ -308,6 +308,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
+
 .plan-list {
   width: 100%;
   height: 100%;
@@ -318,11 +320,15 @@ export default {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
+    padding: 10px 0;
+    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.10);
+    margin-bottom: 10px;
+    border: 1px solid #e4e7ed;
+    overflow: hidden;
     .header-item {
-      padding-bottom: 10px;
-      padding-right: 15px;
-      .item-desc {
-        color: #666;
+      padding: 0 10px;
+      .item-label {
+        color: $textColor;
         font-size: 14px;
       }
     }

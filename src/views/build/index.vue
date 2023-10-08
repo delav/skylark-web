@@ -46,14 +46,14 @@ export default {
     },
     settingRoutes() {
       const navbarRoutes = []
-      const allRoutes = this.$router.options.routes
+      const allRoutes = this.$router.getRoutes()
       for (let i = 0; i < allRoutes.length; i++) {
         const item = allRoutes[i]
         if (item.name === this.$options.name) {
           const child2Routes = item.children[0]['children']
           if (!child2Routes) break
           child2Routes.forEach(childItem => {
-            if (childItem.meta['navbar']) {
+            if (childItem.meta['sidebar']) {
               navbarRoutes.push(childItem)
             }
           })

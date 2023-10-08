@@ -9,6 +9,7 @@ const getBaseState = () => {
   return {
     baseLoaded: false,
     projectList: [],
+    globalProject: '',
     envList: [],
     regionList: [],
     projectMap: {},
@@ -37,6 +38,9 @@ const mutations = {
   },
   SET_PROJECT_LIST: (state, projectArray) => {
     state.projectList = projectArray
+  },
+  SET_GLOBAL_PROJECT: (state, projectId) => {
+    state.globalProject = projectId
   },
   SET_ENV_LIST: (state, evnArray) => {
     state.envList = evnArray

@@ -17,16 +17,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      .logo {
-        width: $logoWidth;
-        text-align: left;
-        overflow: hidden;
-        .navbar-logo {
-          width: auto;
-          height: 45px;
-          margin-left: 5px;
-        }
-      }
       .router {
         height: 100%;
         width: calc(100% - #{$logoWidth} - #{$infoWidth});
@@ -50,39 +40,6 @@
           }
         }
       }
-      .info {
-        height: 100%;
-        width: $infoWidth;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        .handbook {
-        }
-        .feedback {
-        }
-        .notice {
-          padding: 0 8px;
-        }
-        .divider {
-          margin: 0 8px;
-          width: 1px;
-          height: 16px;
-          border-left: 1px solid #dcdfe6;
-        }
-        .language {
-        }
-        .profile {
-          margin-right: 15px;
-        }
-      }
-    }
-  }
-  // mobile responsive
-  .mobile {
-    .navbar-container {
-      transition: transform .28s;
-      height: $navbarHeight;
     }
   }
 }

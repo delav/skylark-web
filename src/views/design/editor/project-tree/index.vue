@@ -262,6 +262,7 @@ export default {
       fetchBaseDir(projectId).then(response => {
         // this.zTreeNodes = formatBaseNodes(response.data)
         this.zTreeNodes = response.data
+        this.$store.commit('base/SET_GLOBAL_PROJECT', projectId)
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/RELOAD_STATE')
         this.$store.commit('tree/SET_PROJECT_ID', projectId)

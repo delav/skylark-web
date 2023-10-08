@@ -1,6 +1,7 @@
 <template>
   <div class="variable-config">
-    <div class="project-list">
+    <div class="variable-header">
+      <span class="item-label">项目：</span>
       <el-select
         class="project-selector"
         v-model="selectProjectId"
@@ -18,45 +19,89 @@
       </el-select>
     </div>
     <div class="variable-body">
-      <el-card>
-        <template #header>
-          <div class="card-header">
-            <div class="env-radio">
-              <el-radio-group v-model="selectEvnId" @change="changeVariableList">
-                <el-radio-button v-for="item in envList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio-button>
-              </el-radio-group>
-            </div>
-            <div class="variable-search">
-              <el-input
-                style="width: 100%"
-                v-model="searchKey"
-                placeholder="输入关键字搜索"
-                @keyup.enter.native="searchVariable"
-              >
-              </el-input>
-            </div>
-            <div class="operate-button">
-              <el-button type="primary" @click="copyVariableAction">复制变量</el-button>
-              <el-button type="primary" @click="createVariableAction">新建变量</el-button>
-            </div>
+      <div class="card-header">
+        <div class="env-radio">
+          <el-radio-group v-model="selectEvnId" @change="changeVariableList">
+            <el-radio-button v-for="item in envList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio-button>
+          </el-radio-group>
+        </div>
+        <div class="variable-search">
+          <el-input
+            style="width: 100%"
+            v-model="searchKey"
+            placeholder="输入关键字搜索"
+            @keyup.enter.native="searchVariable"
+          >
+          </el-input>
+        </div>
+        <div class="operate-button">
+          <el-button type="primary" @click="copyVariableAction">复制变量</el-button>
+          <el-button type="primary" @click="createVariableAction">新建变量</el-button>
+        </div>
+      </div>
+      <div class="card-body">
+        <el-empty
+          v-if="commonVariables.length===0 && regionVariables.length===0"
+          description="找不到该项目的变量"
+        />
+        <div class="common-env" v-show="commonVariables.length>0">
+          <el-table
+            :data="commonVariables"
+            border
+            stripe
+            style="width: 100%"
+            :row-style="{height: '0'}"
+            :cell-style="{padding: '4px'}"
+            :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
+          >
+            <el-table-column fixed prop="name" label="变量名" width="250" sortable>
+              <template #default="scope">
+                <el-input size="small" v-model="scope.row.name" v-show="scope.row.edit" />
+                <span v-show="!scope.row.edit">{{scope.row.name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="value" label="变量值" min-width="45%" show-overflow-tooltip>
+              <template #default="scope">
+                <el-input size="small" v-model="scope.row.value" v-show="scope.row.edit" />
+                <span v-show="!scope.row.edit">{{scope.row.value}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="remark" label="备注" min-width="25%" show-overflow-tooltip>
+              <template #default="scope">
+                <el-input size="small" v-model="scope.row.remark" v-show="scope.row.edit" />
+                <span v-show="!scope.row.edit">{{scope.row.remark}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="175" align="center">
+              <template #default="scope">
+                <el-link type="warning" style="font-size: 13px" :underline="false" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">
+                  <el-icon><Edit /></el-icon>编辑
+                </el-link>
+                <el-link type="danger" style="font-size: 13px;margin-left: 10px" :underline="false" @click="delVariableAction(scope.row)">
+                  <el-icon><Delete /></el-icon>删除
+                </el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="region-env" v-show="regionVariables.length>0">
+          <div class="region-head">
+            <el-radio-group v-model="selectRegionId" @change="changeRegionList">
+              <el-radio v-for="item in regionList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio>
+            </el-radio-group>
           </div>
-        </template>
-        <div class="card-body">
-          <el-empty
-            v-if="commonVariables.length===0 && regionVariables.length===0"
-            description="找不到该项目下的变量"
-          />
-          <div class="common-env" v-show="commonVariables.length>0">
+          <div class="region-body">
             <el-table
-              :data="commonVariables"
+              :data="regionVariables"
               border
               stripe
+              :show-header="commonVariables.length===0"
               style="width: 100%"
               :row-style="{height: '0'}"
               :cell-style="{padding: '4px'}"
               :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
             >
-              <el-table-column fixed prop="name" label="变量名" width="180" sortable>
+              <el-table-column fixed prop="name" label="变量名" width="250" sortable>
                 <template #default="scope">
                   <el-input size="small" v-model="scope.row.name" v-show="scope.row.edit" />
                   <span v-show="!scope.row.edit">{{scope.row.name}}</span>
@@ -86,56 +131,8 @@
               </el-table-column>
             </el-table>
           </div>
-          <div class="region-env" v-show="regionVariables.length>0">
-            <div class="region-head">
-              <el-radio-group v-model="selectRegionId" @change="changeRegionList">
-                <el-radio v-for="item in regionList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio>
-              </el-radio-group>
-            </div>
-            <div class="region-body">
-              <el-table
-                :data="regionVariables"
-                border
-                stripe
-                :show-header="commonVariables.length===0"
-                style="width: 100%"
-                :row-style="{height: '0'}"
-                :cell-style="{padding: '4px'}"
-                :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
-              >
-                <el-table-column fixed prop="name" label="变量名" width="180" sortable>
-                  <template #default="scope">
-                    <el-input size="small" v-model="scope.row.name" v-show="scope.row.edit" />
-                    <span v-show="!scope.row.edit">{{scope.row.name}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="value" label="变量值" min-width="45%" show-overflow-tooltip>
-                  <template #default="scope">
-                    <el-input size="small" v-model="scope.row.value" v-show="scope.row.edit" />
-                    <span v-show="!scope.row.edit">{{scope.row.value}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="remark" label="备注" min-width="25%" show-overflow-tooltip>
-                  <template #default="scope">
-                    <el-input size="small" v-model="scope.row.remark" v-show="scope.row.edit" />
-                    <span v-show="!scope.row.edit">{{scope.row.remark}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column fixed="right" label="操作" width="175" align="center">
-                  <template #default="scope">
-                    <el-link type="warning" style="font-size: 13px" :underline="false" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">
-                      <el-icon><Edit /></el-icon>编辑
-                    </el-link>
-                    <el-link type="danger" style="font-size: 13px;margin-left: 10px" :underline="false" @click="delVariableAction(scope.row)">
-                      <el-icon><Delete /></el-icon>删除
-                    </el-link>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </div>
         </div>
-      </el-card>
+      </div>
     </div>
     <div class="create-dialog">
       <el-dialog
@@ -200,7 +197,12 @@ export default {
     '$store.state.base.baseLoaded': {
       handler() {
         if (this.projectList.length !== 0 && this.selectProjectId === '') {
-          this.changeProject(this.projectList[0]['id'])
+          const globalProject = this.$store.state.base.globalProject
+          if (globalProject !== '') {
+            this.changeProject(globalProject)
+          } else {
+            this.changeProject(this.projectList[0]['id'])
+          }
         }
       },
       immediate: true
@@ -330,7 +332,7 @@ export default {
       this.showCopyDialog = false
     },
     delVariableAction(row) {
-      this.$messageBox.alert('删除可能会导致使用到该变量的用例执行失败，是否继续?', '删除变量', {
+      this.$messageBox.confirm('删除可能会导致使用到该变量的用例执行失败，是否继续?', '删除变量', {
         cancelButtonText: '取消',
         confirmButtonText: '确定',
       }).then( () => {
@@ -345,23 +347,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
+
 .variable-config {
   width: 100%;
   height: 100%;
-  padding: 5px;
-  .project-list {
-    padding: 18px 0;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+  padding: 0 5px;
+  .variable-header {
+    padding: 10px 0;
     margin-bottom: 10px;
-    border-radius: 4px;
     border: 1px solid #e4e7ed;
     overflow: hidden;
+    .item-label {
+      font-size: 14px;
+      padding-left: 10px;
+      color: $textColor;
+    }
     .project-selector {
-      padding-left: 20px;
+      padding-left: 5px;
     }
   }
   .variable-body {
+    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.10);
+    //border: 1px solid #e4e7ed;
+    overflow: hidden;
     .card-header {
+      padding: 10px 0;
       display: flex;
       align-content: flex-start;
       .env-radio {

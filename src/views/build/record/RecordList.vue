@@ -56,13 +56,16 @@
         style="width: 100%">
         <el-table-column prop="id" label="编号" width="70" />
         <el-table-column prop="desc" label="标题" min-width="120" show-overflow-tooltip>
-          <template #default="scope">
-            <el-link type="primary" @click="routeToRecordDetail(scope.row.id)" :underline="false">{{ scope.row.desc }}</el-link>
-          </template>
         </el-table-column>
         <el-table-column prop="plan_id" label="关联计划" width="80" min-width="80">
           <template #default="scope">
             <el-link @click="routeToPlanDetail(scope.row.plan_id)" :underline="false">{{ scope.row.plan_id }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" width="100" min-width="100">
+          <template #default="scope">
+            <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
+            <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="env_list" label="环境" min-width="120" show-overflow-tooltip >
@@ -101,10 +104,9 @@
             <el-tag size="small" type="danger" v-else>否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" fixed="right" width="100" min-width="100">
+        <el-table-column fixed="right" label="操作" width="70">
           <template #default="scope">
-            <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
-            <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
+            <el-button type="primary" size="small" @click="routeToRecordDetail(scope.row.id)" link>详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -196,6 +198,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
+
 .record-list {
   width: 100%;
   height: 100%;
@@ -206,11 +210,15 @@ export default {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
+    padding: 10px 0;
+    //box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    border: 1px solid #e4e7ed;
+    overflow: hidden;
     .header-item {
-      padding-bottom: 10px;
-      padding-right: 15px;
+      padding: 0 10px;
       .item-desc {
-        color: #666;
+        color: $textColor;
         font-size: 14px;
       }
     }
