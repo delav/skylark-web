@@ -210,6 +210,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       selectProjectId: '',
       selectEvnId: '',
       selectRegionId: '',
@@ -271,6 +272,7 @@ export default {
         if (this.showRegion) {
           this.regionVariables = variablesDict[this.selectRegionId]
         }
+        this.loading = false
         this.envVariables = variablesDict
       }).catch(() => {
         this.commonVariables = []

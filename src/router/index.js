@@ -102,11 +102,17 @@ export const routes = [
             meta: { sidebar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'setting-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notice' }
           },
           {
-            path: '/setting/project',
-            name: 'Project',
-            component: () => import('@/views/setting/project/index'),
-            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._project'), icon: 'setting-project', activeMenu: '/setting', secondActiveMenu: '/setting/project' }
-          }
+            path: '/setting/keyword',
+            name: 'Keyword',
+            component: () => import('@/views/setting/keyword/index'),
+            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._keyword'), icon: 'setting-component', activeMenu: '/setting', secondActiveMenu: '/setting/keyword' }
+          },
+          {
+            path: '/setting/access',
+            name: 'Access',
+            component: () => import('@/views/setting/access/index'),
+            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._access'), icon: 'setting-access', activeMenu: '/setting', secondActiveMenu: '/setting/access' }
+          },
         ]
       },
     ]
@@ -129,26 +135,31 @@ export const routes = [
     path: '/login',
     meta: { navbar: false },
     component: () => import('@/views/user/login/index'),
+    hidden: true
   },
   {
     path: '/register',
     meta: { navbar: false },
-    component: () => import('@/views/user/register/index')
+    component: () => import('@/views/user/register/index'),
+    hidden: true
   },
   {
     path: '/reset',
     meta: { navbar: false },
-    component: () => import('@/views/user/reset/index')
+    component: () => import('@/views/user/reset/index'),
+    hidden: true
   },
   {
     path: '/404',
     meta: { navbar: false },
     component: () => import('@/views/error/404'),
+    hidden: true
   },
   {
     path: '/401',
     meta: { navbar: false },
     component: () => import('@/views/error/401'),
+    hidden: true
   },
 ]
 

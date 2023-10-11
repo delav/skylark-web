@@ -8,19 +8,19 @@
         </el-menu-item>
       </el-menu>
     </div>
-    <info />
+    <right />
   </div>
 </template>
 
 <script>
-import Logo from "@/layout/components/Logo";
-import Info from "@/layout/components/Info";
+import Logo from "@/layout/components/NavbarItem/Logo";
+import Right from "@/layout/components/NavbarItem/Right";
 
 export default {
   name: 'Navbar',
   components: {
     Logo,
-    Info
+    Right
   },
   computed: {
     routes() {

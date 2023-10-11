@@ -1,6 +1,6 @@
 import request from "@/http/request";
 
-export function getKeywordGroup() {
+export function fetchKeywordGroup() {
   return request({
     url: '/keyword_group',
     method: 'get',

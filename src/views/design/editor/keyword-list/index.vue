@@ -113,7 +113,7 @@ export default {
   methods: {
     getProjectKeywords() {
       const projectId = this.$store.state.tree.projectId
-      axios.all([getLibKeyword({'project_id': projectId}), getUserKeyword(projectId)]).then(
+      axios.all([getLibKeyword(projectId), getUserKeyword(projectId)]).then(
         axios.spread((r1, r2) => {
           this.keywordGroups = r1.data.concat(r2.data)
           this.keywordGroupsCache = JSON.stringify(this.keywordGroups)
