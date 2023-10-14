@@ -8,3 +8,11 @@ export function getNotice(projectId) {
     params: { project: projectId }
   })
 }
+
+export function saveNotice(data) {
+  return request({
+    url: '/notice',
+    method: 'post',
+    data: data
+  })
+}

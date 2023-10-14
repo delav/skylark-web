@@ -20,6 +20,6 @@ export function getLibKeywordByGroup(groupId) {
   return request({
     url: '/keyword/lib_keyword/get_list_by_group',
     method: 'get',
-    params: { group: groupId}
+    params: { group: groupId }
   })
 }

@@ -39,8 +39,14 @@
               />
             </el-form-item>
             <el-form-item label="群通知类型" prop="notice_mode">
-              <el-radio-group v-model="noticeForm.notice_mode" @change="changeNoticeMode">
-                <el-radio v-for="item in noticeModeList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio>
+              <el-radio-group v-model="noticeForm.notice_mode">
+                <el-radio
+                  v-for="(item, index) in noticeModeList"
+                  :key="index"
+                  :label="item.mode"
+                >
+                  {{ item['name'] }}
+                </el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="微信群Token" prop="wecom_token" v-show="noticeForm.notice_mode===1">
@@ -90,7 +96,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">保存</el-button>
+              <el-button type="primary" @click="commitNotice">保存</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -100,7 +106,7 @@
 </template>
 
 <script>
-import { getNotice } from "@/api/notice";
+import { getNotice, saveNotice } from "@/api/notice";
 
 export default {
   name: 'Notice',
@@ -144,9 +150,9 @@ export default {
       },
       formRules: {},
       noticeModeList: [
-        { id: 1, name: '企业微信' },
-        { id: 2, name: '钉钉' },
-        { id: 3, name: '飞书' },
+        { mode: 1, name: '企业微信' },
+        { mode: 2, name: '钉钉' },
+        { mode: 3, name: '飞书' },
       ]
     }
   },
@@ -160,8 +166,11 @@ export default {
         }
       })
     },
-    changeNoticeMode(noticeMode) {
-      console.log(noticeMode)
+    commitNotice() {
+      saveNotice(this.noticeForm).then(response => {
+        this.noticeForm = response.data
+        this.$message.success('保存成功')
+      })
     }
   }
 }
