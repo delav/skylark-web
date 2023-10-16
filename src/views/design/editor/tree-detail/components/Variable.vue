@@ -6,8 +6,8 @@
         border
         style="width: 100%"
         :row-style="{height: '0'}"
-        :cell-style="{padding: '3px', color: '#666', fontSize:'13px'}"
-        :header-cell-style="{ color: '#606266', padding: '5px', fontWeight: 600, fontSize:'13px' }"
+        :cell-style="{padding: '4px', color: '#666', fontSize:'13px'}"
+        :header-cell-style="{ color: '#606266', padding: '6px', fontWeight: 600, fontSize:'13px' }"
       >
         <el-table-column fixed prop="name" label="变量名" width="200" sortable>
           <template #default="scope">

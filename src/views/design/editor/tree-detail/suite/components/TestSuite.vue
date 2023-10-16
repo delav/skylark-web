@@ -65,6 +65,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
+
 .test-suite {
   width: 100%;
   height: 100%;
@@ -75,7 +77,7 @@ export default {
     margin-top: 10px;
     .collapse-title {
       padding-left: 15px;
-      color: #606266;
+      color: $textColor;
       font-size: 13px;
     }
   }

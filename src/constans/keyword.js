@@ -15,7 +15,9 @@ const KeywordArgType = {
 const KeywordCategory = {
   ORDINARY: 0,
   RESERVED: 1,
-  CUSTOMIZED: 9
+  DEPENDENCE: 2,
+  CUSTOMIZED: 3,
+  PLATFORM: 9,
 }
 
 export default {

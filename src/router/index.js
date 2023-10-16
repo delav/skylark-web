@@ -3,30 +3,20 @@ import i18n from "@/locales/index";
 import Layout from "@/layout";
 
 export const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Layout,
-  //   redirect: '/home',
-  //   meta: { navbar: true, title: i18n.global.t('Navbar._home') },
-  //   children: [
-  //     {
-  //       path: 'home',
-  //       name: 'Home',
-  //       component: () => import('@/views/home/index'),
-  //       meta: { }
-  //     }
-  //   ]
-  // },
   {
     path: '/',
-    name: 'Design',
+    name: 'Home',
     redirect: '/design',
+    meta: { navbar: false }
+  },
+  {
+    path: '/design',
+    name: 'Design',
     component: Layout,
     meta: { navbar: true, title: i18n.global.t('Navbar._design') },
     children: [
       {
-        path: 'design',
+        path: '',
         name: 'Design',
         component: () => import('@/views/design/index'),
         meta: { }

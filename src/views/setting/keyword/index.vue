@@ -19,22 +19,30 @@
           v-for="(group, index) in keywordGroups"
           :name="group['id']"
           :key="index"
-          :title="group['name']"
         >
+          <template #title>
+            <div class="collapse-title">{{ group['name'] }}</div>
+          </template>
           <el-table
             :data="groupKeywordMap[group['id']]"
-            :header-cell-style="{padding: '3px', fontSize:'13px'}"
-            :cell-style="{padding: '3px', color: '#666', fontSize:'13px'}"
+            :header-cell-style="{padding: '4px', fontSize:'13px', background: '#f4f5f7'}"
+            :cell-style="{padding: '4px', color: '#666', fontSize:'13px'}"
           >
-            <el-table-column label="用户名" min-width="100" prop="username" />
-            <el-table-column label="邮箱地址" min-width="120" prop="email" />
-            <el-table-column label="所属团队" min-width="100" prop="group_name" />
-            <el-table-column label="所属部门" min-width="100" prop="department_name" />
-            <el-table-column label="加入时间" min-width="120" prop="date_joined" />
-            <el-table-column fixed="right" label="操作" width="80">
+            <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
+            <el-table-column label="组件名" min-width="100" prop="ext_name" show-overflow-tooltip/>
+            <el-table-column label="来源" min-width="100" prop="source" show-overflow-tooltip/>
+            <el-table-column label="功能" min-width="120" prop="desc" show-overflow-tooltip/>
+            <el-table-column label="状态" min-width="80" prop="status">
               <template #default="scope">
-                <el-button type="primary" size="small" @click="editKeyword(scope.row)" link>编辑</el-button>
-                <el-button type="primary" size="small" @click="showKeywordDetail(scope.row)" link>详情</el-button>
+                <el-tag>{{keywordStatusMap(scope.row.status)}}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="110">
+              <template #default="scope">
+                <el-button-group>
+                  <el-button type="primary" size="small" @click="editKeyword(scope.row)" link>编辑</el-button>
+                  <el-button type="primary" size="small" @click="showKeywordDetail(scope.row)" link>详情</el-button>
+                </el-button-group>
               </template>
             </el-table-column>
           </el-table>
@@ -45,6 +53,7 @@
 </template>
 
 <script>
+import { statusMap } from "@/constans/common";
 import { deepCopy } from "@/utils/dcopy";
 import { fetchKeywordGroup } from "@/api/kgroup";
 import { getLibKeywordByGroup } from "@/api/keyword";
@@ -84,6 +93,9 @@ export default {
       }
       this.rawActiveNames = deepCopy(this.activeNames)
     },
+    keywordStatusMap(status) {
+      return statusMap(status)
+    },
     editKeyword() {},
     showKeywordDetail() {}
   }
@@ -119,6 +131,12 @@ export default {
     .group-button {
       margin-left: auto;
       margin-right: 10px;
+    }
+  }
+  .card-body {
+    .collapse-title {
+      color: $textColor;
+      font-size: 14px;
     }
   }
 }

@@ -145,6 +145,7 @@ const actions = {
     if (state.baseLoaded) {
       return
     }
+    dispatch('getUserList')
     axios.all([
       dispatch('getProjects'),
       dispatch('getEnvironments'),

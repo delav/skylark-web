@@ -30,8 +30,8 @@
         border
         style="width: 100%"
         :row-style="{height: '0'}"
-        :cell-style="{padding: '3px', color: '#666', fontSize:'13px'}"
-        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '5px', fontWeight: 500, fontSize:'13px' }"
+        :cell-style="{padding: '4px', color: '#666', fontSize:'13px'}"
+        :header-cell-style="{ background: '#f4f5f7', color: '#606266', padding: '6px', fontWeight: 500, fontSize:'13px' }"
       >
         <el-table-column fixed prop="name" label="变量名" width="180" sortable>
           <template #default="scope">

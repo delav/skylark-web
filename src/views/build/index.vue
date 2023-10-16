@@ -79,7 +79,6 @@ export default {
   },
   created() {
     this.$store.dispatch('base/getBaseInfo')
-    this.$store.dispatch('base/getUserList')
   },
   methods: {
     resolvePath(route) {

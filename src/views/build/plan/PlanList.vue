@@ -112,8 +112,8 @@
               <el-button type="warning" size="small" @click="editPlan(scope.row)" link>编辑</el-button>
               <el-button type="primary" size="small" @click="gotoPlanDetail(scope.row.id)" link>详情</el-button>
               <el-popconfirm
-                confirm-button-text="Yes"
-                cancel-button-text="No"
+                confirm-button-text="确定"
+                cancel-button-text="取消"
                 :hide-icon="true"
                 :hide-after="50"
                 title="确定删除该计划？"

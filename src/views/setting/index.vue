@@ -58,7 +58,9 @@ export default {
     }
   },
   data() {
-    this.onlyOneChild = null
+    return {
+      onlyOneChild: null
+    }
   },
   mounted() {
     this.$store.dispatch('base/getBaseInfo')

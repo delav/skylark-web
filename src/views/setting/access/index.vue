@@ -14,8 +14,8 @@
             <div class="user-list">
               <el-table
                 :data="props.row['user_list']"
-                :header-cell-style="{padding: '3px', fontSize:'13px'}"
-                :cell-style="{padding: '3px', color: '#666', fontSize:'13px'}"
+                :header-cell-style="{padding: '4px', fontSize:'13px'}"
+                :cell-style="{padding: '4px', color: '#666', fontSize:'13px'}"
               >
                 <el-table-column label="用户名" min-width="100" prop="username" />
                 <el-table-column label="邮箱地址" min-width="120" prop="email" />
@@ -24,7 +24,20 @@
                 <el-table-column label="加入时间" min-width="120" prop="date_joined" />
                 <el-table-column fixed="right" label="操作" width="80">
                   <template #default="scope">
-                    <el-button type="primary" size="small" @click="removeUserPermission(scope.row.id, props.row.id)" link>移除</el-button>
+                    <el-popconfirm
+                      v-if="userEmail!==scope.row.email"
+                      confirm-button-text="确定"
+                      cancel-button-text="取消"
+                      title="移除后该用户将不再有权访问该项目，确定移除吗?"
+                      :hide-icon="true"
+                      :hide-after="50"
+                      @confirm="removeUserPermission(scope.row.id, props.row.id)"
+                    >
+                      <template #reference>
+                        <el-button type="primary" size="small" link>移除</el-button>
+                      </template>
+                    </el-popconfirm>
+                    <span v-else></span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -48,6 +61,7 @@
               </div>
               <template #reference>
                 <el-tag v-if="scope.row.personal">个人项目</el-tag>
+                <span v-else></span>
               </template>
             </el-popover>
           </template>
@@ -118,6 +132,9 @@ export default {
   computed: {
     userList() {
       return this.$store.state.base.userList
+    },
+    userEmail() {
+      return this.$store.state.user.info.email
     }
   },
   data() {
@@ -154,11 +171,12 @@ export default {
     updatePersonalProject(projectId) {
       const params = {'personal': false}
       updateProject(projectId, params).then(() => {
+        this.$message.success('操作成功')
         this.getAccessProjects()
       })
     },
     addUserPermission() {
-      this.$refs['ruleFormRef'].validate((valid) => {
+      this.$refs['ruleForm'].validate((valid) => {
         if (!valid) {
           return
         }
@@ -168,6 +186,8 @@ export default {
           'project_id': this.permissionForm.project_id,
         }
         updateAccessProject(params).then(() => {
+          this.$message.success('添加用户权限成功')
+          this.showAddPermission = false
           this.getAccessProjects()
         })
       })
@@ -179,6 +199,7 @@ export default {
         'project_id': projectId,
       }
       updateAccessProject(params).then(() => {
+        this.$message.success('移除用户权限成功')
         this.getAccessProjects()
       })
     },

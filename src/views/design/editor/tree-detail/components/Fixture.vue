@@ -57,13 +57,19 @@
                 :popper-append-to-body="false"
                 filterable
               >
-                <el-option
-                  v-for="(item, index) in keywordList"
+                <el-option-group
+                  v-for="(group, index) in keywordCategoryList"
                   :key="index"
-                  :label="item.ext_name"
-                  :value="item.ext_name"
-                  @click="changeKeyword(item)"
-                />
+                  :label="group.label"
+                >
+                  <el-option
+                    v-for="(item, index) in group.keywords"
+                    :key="index"
+                    :label="item.ext_name"
+                    :value="item.ext_name"
+                    @click="changeKeyword(item)"
+                  />
+                </el-option-group>
               </el-select>
               <el-button type="info" style="margin-left: 5px" @click="addKeywordToFixture">添加</el-button>
             </div>
@@ -117,12 +123,24 @@ export default {
     cateFixture: Object
   },
   computed: {
-    keywordList() {
+    keywordCategoryList() {
+      let categoryKeywords = {
+        'builtin': {'label': '内置组件', 'keywords': []},
+        'platform': {'label': '平台组件', 'keywords': []}
+      }
       const allKeywordList = Object.values(this.$store.state.keyword.keywordObjects)
-      const showKeywords = allKeywordList.filter(item => {
-        return item.category !== KEYWORD.KeywordCategory.RESERVED
-      })
-      return Object.values(showKeywords)
+      for (let i = 0; i < allKeywordList.length; i++) {
+        const category = allKeywordList[i]['category']
+        if (category === KEYWORD.KeywordCategory.RESERVED) {
+          continue
+        }
+        if (category === KEYWORD.KeywordCategory.PLATFORM) {
+          categoryKeywords.platform.keywords.push(allKeywordList[i])
+        } else {
+          categoryKeywords.builtin.keywords.push(allKeywordList[i])
+        }
+      }
+      return Object.values(categoryKeywords)
     },
   },
   watch: {
