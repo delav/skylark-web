@@ -19,7 +19,13 @@
         </el-tooltip>
       </div>
       <div class="content" id="et-keyword">
-        <el-collapse v-model="groupNames">
+        <el-empty
+          style="height: 60%"
+          v-show="keywordGroups.length===0"
+          :image-size="72"
+          description="No Data"
+        />
+        <el-collapse v-model="groupNames" v-if="keywordGroups.length!==0">
           <el-collapse-item
             v-for="(group, index) in keywordGroups"
             :name="group['name']"
@@ -188,6 +194,9 @@ export default {
     },
     filterKeyword () {
       const expandGroups = []
+      if (this.keywordGroupsCache === '') {
+        return
+      }
       const keywordArr = JSON.parse(this.keywordGroupsCache)
       if (this.searchInput.trim() === '') {
         this.keywordGroups = keywordArr
@@ -337,6 +346,7 @@ $foldExpandIconSize: 32px;
     font-size: 13px;
   }
   .el-collapse-item__content {
+    font-size: 13px;
     padding-bottom: 0;
     color: #606266;
   }

@@ -4,7 +4,7 @@
       <span class="item-label">项目：</span>
       <el-select
         class="project-selector"
-        v-model="selectProjectId"
+        v-model="noticeForm.project_id"
         placement="bottom-start"
         placeholder="选择项目"
         :popper-append-to-body="false"
@@ -20,7 +20,7 @@
     </div>
     <div class="notice-body">
       <div class="card-body">
-        <div class="notice-form" v-if="selectProjectId!==''">
+        <div class="notice-form" v-if="noticeForm.project_id!==''">
           <el-form
             ref="ruleFormRef"
             :model="noticeForm"
@@ -121,7 +121,7 @@ export default {
   watch: {
     '$store.state.base.baseLoaded': {
       handler() {
-        if (this.projectList.length !== 0 && this.selectProjectId === '') {
+        if (this.projectList.length !== 0 && this.noticeForm.project_id === '') {
           const globalProject = this.$store.state.base.globalProject
           if (globalProject !== '') {
             this.changeProject(globalProject)
@@ -135,8 +135,8 @@ export default {
   },
   data() {
     return {
-      selectProjectId: '',
       noticeForm: {
+        'project_id': '',
         'notice_switch': false,
         'notice_mode': 1,
         'wecom_token': '',
@@ -159,7 +159,7 @@ export default {
   methods: {
     changeProject(projectId) {
       Object.assign(this.$data, this.$options.data())
-      this.selectProjectId = projectId
+      this.noticeForm['project_id'] = projectId
       getNotice(projectId).then(response => {
         if (JSON.stringify(response.data) !== '{}') {
           this.noticeForm = response.data

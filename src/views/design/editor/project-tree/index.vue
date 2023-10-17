@@ -152,7 +152,7 @@ import { fetchCaseNode, createCase, updateCase, deleteCase, duplicateCase } from
 import { uploadFile, downloadFile, batchDeleteFile } from "@/api/file";
 import { addSvgHover } from "@/utils/hover";
 import { transformData } from "@/utils/tree";
-import {updateEntities} from "@/api/entity";
+import { updateEntities } from "@/api/entity";
 
 export default {
   name: 'ProjectTree',
@@ -245,7 +245,7 @@ export default {
   },
   mounted() {
     this.getProjectTreeList()
-    this.$store.dispatch('scalar/getPriorities')
+    this.$store.dispatch('config/getPriorities')
   },
   methods: {
     getProjectTreeList() {
@@ -272,7 +272,7 @@ export default {
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/RELOAD_STATE')
       })
-      this.$store.dispatch('scalar/getProjectTags', projectId)
+      this.$store.dispatch('config/getProjectTags', projectId)
     },
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
@@ -376,6 +376,7 @@ export default {
         '节点内容已编辑，是否保存？',
         '警告',
         {
+          autofocus: false,
           confirmButtonText: '保存',
           cancelButtonText: '取消',
           type: 'warning',
@@ -670,6 +671,7 @@ export default {
         warnInfo,
         actionInfo.title,
         {
+          autofocus: false,
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',

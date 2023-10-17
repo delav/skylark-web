@@ -184,7 +184,7 @@ export default {
 .const {
   width: 100%;
   height: 100%;
-  padding: 5px;
+  padding: 0 5px;
   .const-config {
     width: 100%;
     margin-bottom: 5px;
@@ -192,7 +192,7 @@ export default {
     //border-radius: 4px;
     .content {
       display: flex;
-      padding: 5px;
+      padding: 6px 0;
       flex-flow: row wrap;
       align-items: flex-start;
       justify-content: left;

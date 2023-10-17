@@ -125,13 +125,13 @@ export default {
   },
   computed: {
     tagList() {
-      return this.$store.state.scalar.projectTags
+      return this.$store.state.config.projectTags
     },
     priorityList() {
-      return this.$store.state.scalar.priorities
+      return this.$store.state.config.priorities
     },
     priorityMap() {
-      return this.$store.state.scalar.priorityMap
+      return this.$store.state.config.priorityMap
     }
   },
   watch: {

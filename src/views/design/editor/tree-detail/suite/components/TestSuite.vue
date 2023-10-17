@@ -4,7 +4,10 @@
       <document :cate-document="suiteObject.document"/>
     </div>
     <div class="fixture-list">
-      <el-collapse v-model="activeDetail" accordion>
+      <el-collapse
+        v-model="activeDetail"
+        accordion
+      >
         <el-collapse-item name="1">
           <template #title>
             <div class="collapse-title">编辑前置后置</div>

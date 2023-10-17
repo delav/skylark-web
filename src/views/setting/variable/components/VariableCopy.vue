@@ -24,7 +24,7 @@
           placeholder="选择地区"
         >
           <el-option
-            v-for="(item, index) in allEnvList"
+            v-for="(item, index) in allRegionList"
             :key="index"
             :label="item.name"
             :value="item.id"
@@ -52,7 +52,7 @@
           placeholder="选择地区"
         >
           <el-option
-            v-for="(item, index) in allEnvList"
+            v-for="(item, index) in allRegionList"
             :key="index"
             :label="item.name"
             :value="item.id"
@@ -111,6 +111,9 @@ export default {
     allEnvList() {
       return this.$store.state.base.containAllEnvList
     },
+    allRegionList() {
+      return this.$store.state.base.containAllRegionList
+    }
   },
   props: {
     moduleInfo: Object
@@ -159,7 +162,7 @@ export default {
       this.selectVariables = []
     },
     cancelCopy() {
-      this.$emit('cancelCopyAction')
+      this.$emit('cancel')
     },
     confirmCopy() {
       if (this.selectVariables.length !== 0) {
@@ -169,8 +172,10 @@ export default {
         }
         this.copyParams['variable_id_list'] = variableIds
       }
+      this.copyParams['module_id'] = this.moduleInfo.module_id
+      this.copyParams['module_type'] = this.moduleInfo.module_type
       copyVariableByEnv(this.copyParams).then(() => {
-        this.$emit('commitAction', this.copyParams.to_env_id)
+        this.$emit('commit', this.copyParams.to_env_id)
       })
     },
   }

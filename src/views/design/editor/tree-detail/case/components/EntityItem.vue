@@ -104,6 +104,7 @@ export default {
       padding: 0 3px;
       height: 20px;
       font-size: 12px;
+      color: $textColor;
     }
     .item-out {
       height: 20px;

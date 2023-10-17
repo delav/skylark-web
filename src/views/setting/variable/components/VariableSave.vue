@@ -97,7 +97,7 @@ export default {
     return {
       fieldRules: {
         name: [
-          { required: true, validator: validateName, trigger: 'blur', message: '变量名不能为空' },
+          { required: true, validator: validateName, trigger: 'blur' },
         ],
         value: [
           { required: true, trigger: 'blur', message: '变量值不能为空' }

@@ -60,6 +60,7 @@ $itemHeight: 50px;
     font-size: 16px;
     line-height: $itemHeight;
     vertical-align: -5%;
+    margin-right: 5px;
   }
 }
 </style>

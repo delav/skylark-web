@@ -159,7 +159,7 @@ export default {
         metaInfo['extra_data'][NODE.ExtraDataKey.TAG].push(newTag)
         this.updateTreeNode(metaInfo)
         const projectId = this.$store.state.tree.projectId
-        this.$store.dispatch('scalar/getProjectTags', projectId)
+        this.$store.dispatch('config/getProjectTags', projectId)
       })
     },
     deleteCaseTag(tagName) {

@@ -29,7 +29,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="135" align="center">
           <template #header>
-            <el-button size="small" @click="showVarDialog" plain>新建变量</el-button>
+            <el-button size="small" @click="showVarDialog">新建变量</el-button>
           </template>
           <template #default="scope">
             <el-link type="warning" style="font-size: 12px" :underline="false" @click="editVariable(scope.row, scope.$index)">
@@ -162,6 +162,7 @@ export default {
         '删除变量可能会导致使用到该变量的用例执行失败，是否确定删除?',
         '删除变量',
         {
+          autofocus: false,
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning',

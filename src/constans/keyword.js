@@ -13,8 +13,8 @@ const KeywordArgType = {
 }
 
 const KeywordCategory = {
-  ORDINARY: 0,
-  RESERVED: 1,
+  RESERVED: 0,
+  ORDINARY: 1,
   DEPENDENCE: 2,
   CUSTOMIZED: 3,
   PLATFORM: 9,

@@ -42,6 +42,7 @@
               <el-tag
                 @close="removeKeywordFromFixture(index)"
                 closable
+                @click="editKeywordFromFixture(index)"
               >
                 {{ value }}
               </el-tag>
@@ -74,7 +75,8 @@
               <el-button type="info" style="margin-left: 5px" @click="addKeywordToFixture">添加</el-button>
             </div>
             <div class="keyword-params">
-              <p class="param-desc" v-if="showParams">组件参数
+              <p class="param-desc" v-if="showParams">
+                <span style="margin-right: 10px;line-height: 24px">组件参数</span>
                 <el-button
                   v-if="showOperateButton"
                   size="small"
@@ -182,7 +184,8 @@ export default {
       fixtureKeywords: [],
       showParams: false,
       keywordParams: [],
-      showOperateButton: false
+      showOperateButton: false,
+      editKeywordIndex: -1,
     }
   },
   methods: {
@@ -223,6 +226,7 @@ export default {
       this.showFixtureEdit = false
     },
     changeKeyword(keyword) {
+      this.editKeywordIndex = -1
       this.keywordParams = []
       this.showOperateButton = false
       if (keyword['input_type'] === KEYWORD.KeywordArgType.NONE) {
@@ -271,11 +275,63 @@ export default {
       this.keywordParams.pop()
     },
     addKeywordToFixture() {
-      const keywordMsg = this.currentKeyword + '|' + this.keywordParams.join('|')
-      this.fixtureKeywords.push(keywordMsg)
+      let keywordMsg = this.currentKeyword
+      if (this.keywordParams.length !== 0) {
+        keywordMsg = keywordMsg + '|' + this.keywordParams.join('|')
+      }
+      if (this.editKeywordIndex === -1) {
+        this.fixtureKeywords.push(keywordMsg)
+      } else {
+        this.fixtureKeywords[this.editKeywordIndex] = keywordMsg
+      }
+      this.currentKeyword = ''
+      this.showParams = false
+      this.keywordParams = []
+      this.showOperateButton = false
+      this.editKeywordIndex = -1
+    },
+    editKeywordFromFixture(index) {
+      this.editKeywordIndex = index
+      const keywordStr = this.fixtureKeywords[index]
+      let keywordExtName = ''
+      let keywordParamList = []
+      if (keywordStr.indexOf('|') !== -1) {
+        const msgList = keywordStr.split('|')
+        keywordExtName = msgList[0]
+        keywordParamList = msgList.splice(1, msgList.length+1)
+      } else {
+        keywordExtName = keywordStr
+      }
+      const keyword = this.findKeywordByExtName(keywordExtName)
+      if (!keyword) {
+        this.editKeywordIndex = -1
+        return
+      }
+      this.currentKeyword = keywordExtName
+      this.keywordParams = keywordParamList
+      this.showOperateButton = false
+      if (keyword['input_type'] === KEYWORD.KeywordArgType.NONE) {
+        this.showParams = false
+        return
+      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.LIST
+        || keyword['input_type'] === KEYWORD.KeywordArgType.DICT) {
+        this.showOperateButton = true
+      }
+      this.showParams = true
     },
     removeKeywordFromFixture(index) {
       this.fixtureKeywords.splice(index, 1)
+    },
+    findKeywordByExtName(extName) {
+      for (let i = 0; i < this.keywordCategoryList.length; i++) {
+        const categoryKeywords = this.keywordCategoryList[i]['keywords']
+        for (let j = 0; j < categoryKeywords.length; j++) {
+          if (categoryKeywords[j]['ext_name'] === extName) {
+            return categoryKeywords[j]
+          }
+        }
+      }
+      return null
     }
   }
 }
@@ -343,7 +399,7 @@ export default {
       }
       .keyword-params {
         .param-desc {
-          margin: 10px 0 0 0;
+          margin: 10px 0 3px 0;
           font-size: 13px;
           height: 28px;
         }

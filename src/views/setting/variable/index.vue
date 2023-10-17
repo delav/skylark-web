@@ -29,7 +29,7 @@
           <el-input
             style="width: 100%"
             v-model="searchKey"
-            placeholder="输入关键字搜索"
+            placeholder="搜索"
             @keyup.enter.native="searchVariable"
           >
           </el-input>
@@ -144,8 +144,8 @@
       >
         <variable-save
           :variable-form="variableForm"
-          @commitAction="commitSaveVariable"
-          @cancelAction="cancelSaveVariable"
+          @commit="commitSaveVariable"
+          @cancel="cancelSaveVariable"
         />
       </el-dialog>
     </div>
@@ -159,8 +159,8 @@
       >
         <variable-copy
           :module-info="moduleInfo"
-          @commitAction="commitCopyVariable"
-          @cancelAction="cancelCopyVariable"
+          @commit="commitCopyVariable"
+          @cancel="cancelCopyVariable"
         />
       </el-dialog>
     </div>
@@ -334,16 +334,37 @@ export default {
       this.showCopyDialog = false
     },
     delVariableAction(row) {
-      this.$messageBox.confirm('删除可能会导致使用到该变量的用例执行失败，是否继续?', '删除变量', {
-        cancelButtonText: '取消',
-        confirmButtonText: '确定',
-      }).then( () => {
+      this.$messageBox.confirm(
+        '删除可能会导致使用到该变量的用例执行失败，是否继续?',
+        '删除变量',
+        {
+          autofocus: false,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          type: 'warning',
+        }
+      ).then( () => {
         deleteVariable(row.id).then(() => {
           this.changeVariableList(this.selectEvnId)
         })
       })
     },
-    searchVariable() {}
+    searchVariable() {
+      const searchStr = this.searchKey.trim().toLowerCase()
+      if (searchStr === '') {
+        this.commonVariables = this.envVariables[this.commonKey]
+        this.regionVariables = this.envVariables[this.selectRegionId]
+        return
+      }
+      this.commonVariables = this.commonVariables.filter(function (item) {
+        const itemStr = Object.values(item).join(',').toLowerCase()
+        return itemStr.indexOf(searchStr) !== -1
+      })
+      this.regionVariables = this.regionVariables.filter(function (item) {
+        const itemStr = Object.values(item).join(',').toLowerCase()
+        return itemStr.indexOf(searchStr) !== -1
+      })
+    }
   }
 }
 </script>

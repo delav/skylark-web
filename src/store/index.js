@@ -6,9 +6,9 @@ import tree from "@/store/modules/design/tree";
 import entity from "@/store/modules/design/entity";
 import keyword from "@/store/modules/design/keyword";
 import action from "@/store/modules/design/action";
+import config from "@/store/modules/design/config";
 import plan from "@/store/modules/build/plan";
 import record from "@/store/modules/build/record";
-import scalar from "@/store/modules/scalar";
 
 const store = createStore({
     modules: {
@@ -17,10 +17,10 @@ const store = createStore({
       tree,
       entity,
       keyword,
+      config,
       action,
       plan,
       record,
-      scalar,
     },
     getters
 })
