@@ -377,7 +377,7 @@ export default {
     display: flex;
     width: 300px;
     height: 100%;
-    padding-left: 5px;
+    padding-left: 7px;
     padding-top: -1px;
     line-height: $toolbarHeight;
     .env-list {

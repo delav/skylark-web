@@ -231,7 +231,7 @@ $foldExpandIconSize: 32px;
 
 .keyword-list {
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   .keyword-show {
     height: 100%;
     .head {

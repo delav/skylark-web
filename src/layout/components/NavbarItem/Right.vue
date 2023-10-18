@@ -3,13 +3,13 @@
     <div class="content">
       <div class="handbook">
         <el-link :underline="false">
-          使用手册<el-icon style="margin-left: 3px"><Document /></el-icon>
+          使用手册<el-icon style="margin: 3px 0 0 2px"><Document /></el-icon>
         </el-link>
       </div>
       <div class="divider"></div>
       <div class="feedback">
         <el-link :underline="false" @click="feedbackShow=true">
-          意见反馈<el-icon style="margin-left: 3px"><EditPen /></el-icon>
+          意见反馈<el-icon style="margin: 3px 0 0 2px"><EditPen /></el-icon>
         </el-link>
       </div>
       <div class="divider"></div>

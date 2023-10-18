@@ -78,18 +78,7 @@ export default {
         if (JSON.stringify(nodeInfo) === '{}') {
           return
         }
-        if (this.isKeyword) {
-          this.keywordExtraInfo.document = nodeInfo['meta']['document']
-          this.keywordExtraInfo.inputs = nodeInfo['meta']['inputs']
-          this.keywordExtraInfo.outputs = nodeInfo['meta']['outputs']
-        }
-        if (this.isTestcase) {
-          this.caseExtraInfo.document = nodeInfo['meta']['document']
-          this.caseExtraInfo.priority_id = nodeInfo['meta']['priority_id']
-          this.caseExtraInfo.tag = nodeInfo['meta']['extra_data'][NODE.ExtraDataKey.TAG]
-          this.caseExtraInfo.order = nodeInfo['meta']['order']
-          this.caseExtraInfo.timeout = nodeInfo['meta']['timeout']
-        }
+        this.setExtraInfo(nodeInfo['meta'])
         this.$store.dispatch('entity/getEntities', nodeInfo['meta']['id'])
       },
       immediate: true
@@ -102,7 +91,26 @@ export default {
     this.$store.commit('entity/RELOAD_STATE')
   },
   methods: {
+    setExtraInfo(metaInfo) {
+      if (this.isKeyword) {
+        this.keywordExtraInfo = {
+          document: metaInfo['document'],
+          inputs: metaInfo['inputs'],
+          outputs: metaInfo['outputs'],
+        }
+      }
+      if (this.isTestcase) {
+        this.caseExtraInfo = {
+          document: metaInfo['document'],
+          priority_id: metaInfo['priority_id'],
+          tag: metaInfo['extra_data'][NODE.ExtraDataKey.TAG],
+          order: metaInfo['order'],
+          timeout: metaInfo['timeout'],
+        }
+      }
+    },
     updateTreeNode(metaData) {
+      this.setExtraInfo(metaData)
       // update node meta data, for run debug not need to query db
       const treeId = this.$store.state.tree.treeId
       const treeObj = $.fn.zTree.getZTreeObj(treeId)

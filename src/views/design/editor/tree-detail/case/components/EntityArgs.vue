@@ -32,7 +32,7 @@
               :hide-after="50"
               :content="entityArgs['inputDesc'][index]"
             >
-              <span class="argument-name">{{name}}:</span>
+              <span class="argument-name">{{name}}</span>
             </el-tooltip>
             <el-input
               class="argument-value"
@@ -62,7 +62,7 @@
           >
             <template #item="{ index }">
               <p class="dynamic-argument">
-                <span class="argument-name">arg{{index+1}}:</span>
+                <span class="argument-name">arg{{index+1}}</span>
                 <el-icon class="mover" color="#909399"><Rank /></el-icon>
                 <el-input
                   class="argument-value"
@@ -104,7 +104,7 @@
             :hide-after="50"
             :content="entityArgs['outputDesc'][index]"
           >
-            <span class="argument-name">{{name}}:</span>
+            <span class="argument-name">{{name}}</span>
           </el-tooltip>
           <el-input
             class="argument-value"
@@ -365,7 +365,7 @@ $labelWidth: 80px;
 .entity-args {
   width: 100%;
   height: 100%;
-  padding: 5px 0;
+  padding: 5px 5px 10px 5px;
   overflow-y: auto;
   .entity-desc {
     height: 60px;
@@ -405,6 +405,7 @@ $labelWidth: 80px;
         .argument-name {
           width: $labelWidth;
           max-width: $labelWidth;
+          color: $textColor;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -432,6 +433,7 @@ $labelWidth: 80px;
         .argument-name {
           width: $labelWidth;
           max-width: $labelWidth;
+          color: $textColor;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -486,6 +488,7 @@ $labelWidth: 80px;
         margin: 5px 10px 0 10px;
         .argument-name {
           width: $labelWidth;
+          color: $textColor;
           left: 0;
           position: absolute;
           line-height: 32px;

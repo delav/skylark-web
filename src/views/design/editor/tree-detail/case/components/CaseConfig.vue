@@ -4,7 +4,7 @@
       <el-collapse-item name="1">
         <template #title>
           <div v-if="activeDetail!=='1'" class="collapse-title">
-            <span class="title-pri">{{ priorityName }}</span>
+            <span class="title-pri" v-bind:style="'color:' + priorityColor">{{ priorityName }}</span>
             <el-tag
               class="title-tag"
               v-for="(tagName, index) in selectTags"
@@ -156,6 +156,7 @@ export default {
       timeNum: '',
       timeUnit: '',
       priorityName: '',
+      priorityColor: '#606266',
       orderNumber: ''
     }
   },
@@ -190,7 +191,20 @@ export default {
     },
     handlerPriority(priorityId) {
       if (priorityId in this.priorityMap) {
+        this.caseInfo.priority_id = priorityId
         this.priorityName = this.priorityMap[priorityId]
+        this.priorityColor = this.getPriorityColor(this.priorityName)
+      }
+    },
+    getPriorityColor(priorityName) {
+      if (priorityName === 'P0') {
+        return '#ff484c'
+      } else if (priorityName === 'P1') {
+        return '#fa7d03'
+      } else if (priorityName === 'P2') {
+        return '#f6c475'
+      } else if (priorityName === 'P3') {
+        return '#337ecc'
       }
     },
     handlerOrder(orderNumber) {
@@ -255,6 +269,7 @@ export default {
       color: $mainColor;
       font-size: 15px;
       margin-right: 15px;
+      font-weight: 600;
     }
     .title-tag {
       margin-left: 5px;
