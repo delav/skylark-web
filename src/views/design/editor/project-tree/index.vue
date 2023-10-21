@@ -145,7 +145,8 @@ import NodeAction from "@/views/design/editor/project-tree/components/NodeAction
 import UploadFile from "@/views/design/editor/project-tree/components/UploadFile";
 import NODE from "@/constans/node";
 import { ElLoading } from "element-plus";
-import { updateProject, fetchProjectTree } from "@/api/project";
+import { fetchProjectInfo } from "@/api/base";
+import { updateProject } from "@/api/project";
 import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
 import { fetchDirAndSuiteNode, createSuite, updateSuite, deleteSuite, duplicateSuite } from "@/api/suite";
 import { fetchCaseNode, createCase, updateCase, deleteCase, duplicateCase } from "@/api/case";
@@ -249,8 +250,44 @@ export default {
   },
   methods: {
     getProjectTreeList() {
-      fetchProjectTree().then(response => {
-        this.projectTreeList = response.data
+      return fetchProjectInfo().then(response => {
+        const projectInfo = response.data
+        const departmentList = projectInfo['department_list']
+        const groupList = projectInfo['group_list']
+        const projectList = projectInfo['project_list']
+        const departmentMap = {}
+        const groupMap = {}
+        for (let i = 0; i < departmentList.length; i++) {
+          departmentList[i]['leaf'] = false
+          departmentMap[departmentList[i]['id']] = departmentList[i]
+        }
+        for (let j = 0; j < groupList.length; j++) {
+          groupList[j]['leaf'] = false
+          groupMap[groupList[j]['id']] = groupList[j]
+        }
+        for (let k = 0; k < projectList.length; k++) {
+          const groupId = projectList[k]['group_id']
+          if (groupMap[groupId] === undefined) {
+            continue
+          }
+          if ('children' in groupMap[groupId]) {
+            groupMap[groupId]['children'].push(projectList[k])
+          } else {
+            groupMap[groupId]['children'] = [projectList[k]]
+          }
+        }
+        for (const groupId in groupMap) {
+          const departmentId = groupMap[groupId]['department_id']
+          if (departmentMap[departmentId] === undefined) {
+            continue
+          }
+          if ('children' in departmentMap[departmentId]) {
+            departmentMap[departmentId]['children'].push(groupMap[groupId])
+          } else {
+            departmentMap[departmentId]['children'] = [groupMap[groupId]]
+          }
+        }
+        this.projectTreeList = Object.values(departmentMap)
       })
     },
     changeProject() {
@@ -765,12 +802,10 @@ export default {
     closeNewDialog () {
       this.showNewDialog = false
     },
-    successNewProject(projectInfo) {
-      fetchProjectTree().then(response => {
-        this.projectTreeList = response.data
-        this.projectId = projectInfo['id']
-        this.loadProjectData(projectInfo['id'], projectInfo['name'])
-      })
+    async successNewProject(projectInfo) {
+      await this.getProjectTreeList()
+      this.projectId = projectInfo['id']
+      this.loadProjectData(projectInfo['id'], projectInfo['name'])
     }
   }
 }
