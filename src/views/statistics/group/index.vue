@@ -6,7 +6,7 @@
 export default {
   name: 'GroupView',
   mounted() {
-    const groupId = this.$route.params.id
+    const groupId = this.$route.query.id
     this.getGroupStatistics(groupId)
   },
   methods: {

@@ -110,33 +110,15 @@ export const routes = [
   {
     path: '/statistics',
     name: 'Statistics',
+    redirect: '/statistics/overview',
     component: Layout,
     meta: { navbar: true, title: i18n.global.t('Navbar._statistics') },
     children: [
       {
-        path: '',
-        redirect: '/statistics/overview',
+        path: '/statistics/overview',
+        name: 'Overview',
         component: () => import('@/views/statistics/index'),
-        children: [
-          {
-            path: '/statistics/overview',
-            name: 'Overview',
-            component: () => import('@/views/statistics/overview/index'),
-            meta: { activeMenu: '/statistics' }
-          },
-          {
-            path: '/statistics/group/:id',
-            name: 'GroupView',
-            component: () => import('@/views/statistics/group/index'),
-            meta: { activeMenu: '/statistics' }
-          },
-          {
-            path: '/statistics/project/:id',
-            name: 'ProjectView',
-            component: () => import('@/views/statistics/project/index'),
-            meta: { activeMenu: '/statistics' }
-          },
-        ]
+        meta: { }
       }
     ]
   },

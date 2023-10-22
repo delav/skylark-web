@@ -9,7 +9,6 @@ import action from "@/store/modules/design/action";
 import config from "@/store/modules/design/config";
 import plan from "@/store/modules/build/plan";
 import record from "@/store/modules/build/record";
-import statistics from "@/store/modules/statistics/info";
 
 const store = createStore({
     modules: {
@@ -22,7 +21,6 @@ const store = createStore({
       action,
       plan,
       record,
-      statistics
     },
     getters
 })
