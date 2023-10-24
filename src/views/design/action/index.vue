@@ -42,13 +42,13 @@
     </div>
     <div class="action-content">
       <div class="icon-list">
-        <icon-item :condition="canRun" i-class="run" @func="startBuild" description="执行用例"></icon-item>
-        <icon-item :condition="canStop" i-class="stop" @func="stopBuild" description="终止执行"></icon-item>
-        <icon-item :condition="seeLog" i-class="log" @func="showReport" description="查看日志"></icon-item>
-        <icon-item :condition="canSave" i-class="save" @func="saveEntity" description="保存修改"></icon-item>
-        <icon-item :condition="isSelect" i-class="copy" @func="copyEntity" description="复制组件"></icon-item>
-        <icon-item :condition="isSelect" i-class="delete" @func="deleteEntity" description="删除组件"></icon-item>
-        <icon-item :condition="canPush" i-class="push" @func="showPushDialog=true" description="推送项目"></icon-item>
+        <icon-item :condition="canRun" i-class="action-run" @func="startBuild" description="执行用例"></icon-item>
+        <icon-item :condition="canStop" i-class="action-stop" @func="stopBuild" description="终止执行"></icon-item>
+        <icon-item :condition="seeLog" i-class="action-log" @func="showReport" description="查看日志"></icon-item>
+        <icon-item :condition="canSave" i-class="action-save" @func="saveEntity" description="保存修改"></icon-item>
+        <icon-item :condition="isSelect" i-class="action-copy" @func="copyEntity" description="复制组件"></icon-item>
+        <icon-item :condition="isSelect" i-class="action-delete" @func="deleteEntity" description="删除组件"></icon-item>
+        <icon-item :condition="canPush" i-class="action-push" @func="showPushDialog=true" description="推送项目"></icon-item>
       </div>
     </div>
     <div class="dialog">

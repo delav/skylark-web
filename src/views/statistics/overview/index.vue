@@ -3,33 +3,33 @@
     <div class="content">
       <div class="count-view">
         <el-row :gutter="20">
-          <el-col :span="6"><div class="grid-content ep-bg-purple" />
-            <count-card i-class="plan" i-color="#7ad835" description="总项目数" :count="12"></count-card>
+          <el-col :span="6">
+            <count-card i-class="statistics-project" i-color="#7ad835" description="总项目数" :count="12"></count-card>
           </el-col>
-          <el-col :span="6"><div class="grid-content ep-bg-purple" />
-            <count-card i-class="plan" i-color="#fa7d03" description="总用例数" :count="358"></count-card></el-col>
-          <el-col :span="6"><div class="grid-content ep-bg-purple" />
-            <count-card i-class="plan" i-color="#4886ff" description="总执行次数" :count="159"></count-card></el-col>
-          <el-col :span="6"><div class="grid-content ep-bg-purple" />
-            <count-card i-class="plan" i-color="#ff484c" description="总体通过率" :count="81.20"></count-card></el-col>
+          <el-col :span="6">
+            <count-card i-class="statistics-case" i-color="#fa7d03" description="总用例数" :count="358"></count-card></el-col>
+          <el-col :span="6">
+            <count-card i-class="statistics-build" i-color="#4886ff" description="总执行次数" :count="159"></count-card></el-col>
+          <el-col :span="6">
+            <count-card i-class="statistics-rate" i-color="#ff484c" description="总体通过率" :count="81.20"></count-card></el-col>
         </el-row>
       </div>
       <div class="chart-view">
         <el-row :gutter="20">
-          <el-col :span="16"><div class="grid-content ep-bg-purple" />
-            <div class="chart-card" id="mainChart" style="height: 500px;width: 100%"></div>
+          <el-col :span="16">
+            <div class="chart-card" id="mainChart" style="height: 500px;max-width: 100%"></div>
           </el-col>
-          <el-col :span="8"><div class="grid-content ep-bg-purple" />
-            <div class="chart-card" id="chart1" style="height: 240px;width: 100%"></div>
-            <div class="chart-card" id="chart2" style="height: 240px;width: 100%; margin-top: 20px"></div>
+          <el-col :span="8">
+            <div class="chart-card" id="chart1" style="height: 240px;max-width: 100%"></div>
+            <div class="chart-card" id="chart2" style="height: 240px;max-width: 100%; margin-top: 20px"></div>
           </el-col>
         </el-row>
         <el-row :gutter="20" style="margin-top: 20px">
-          <el-col :span="12"><div class="grid-content ep-bg-purple" />
-            <div class="chart-card" id="chart3" style="height: 500px;width: 100%"></div>
+          <el-col :span="12">
+            <div class="chart-card" id="chart3" style="height: 500px;max-width: 100%"></div>
           </el-col>
-          <el-col :span="12"><div class="grid-content ep-bg-purple" />
-            <div class="chart-card" id="chart4" style="height: 500px;width: 100%"></div>
+          <el-col :span="12">
+            <div class="chart-card" id="chart4" style="height: 500px;max-width: 100%"></div>
           </el-col>
         </el-row>
       </div>
@@ -97,17 +97,17 @@ export default {
         yAxis: {},
         series: [
           {
-            name: '数据1',
+            name: '用例总数',
             type: 'bar',
             data: yData
           },
           {
-            name: '数据2',
+            name: '执行次数',
             type: 'bar',
             data: [23, 24, 18, 25, 27, 28, 25]
           },
           {
-            name: '数据3',
+            name: '平均通过率',
             type: 'bar',
             data: [26, 21, 15, 28, 25, 28, 21]
           },
@@ -176,7 +176,7 @@ export default {
         yAxis: {},
         series: [
           {
-            name: '销量',
+            name: '数据',
             type: 'bar',
             data: yData
           }
@@ -199,7 +199,7 @@ export default {
         yAxis: {},
         series: [
           {
-            name: '销量',
+            name: '数据',
             type: 'bar',
             data: yData
           }
@@ -232,14 +232,6 @@ export default {
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, .12);
         padding: 5px;
-        .card-body {
-          padding: 20px 25px;
-          display: flex;
-          flex-wrap: wrap;
-          margin-right: -15px;
-          margin-left: -15px;
-          align-items: center;
-        }
       }
     }
   }

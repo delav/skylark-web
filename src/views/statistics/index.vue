@@ -1,9 +1,6 @@
 <template>
   <div class="statistics">
     <div class="header">
-      <div class="header-item overview-button">
-        <el-button type="primary" @click="routeOverview">总览</el-button>
-      </div>
       <div class="header-item department-filter">
         <span class="item-label">部门：</span>
         <el-select
@@ -49,6 +46,9 @@
           />
         </el-select>
       </div>
+      <div class="header-item overview-button">
+        <el-button type="primary" @click="routeOverview">重置</el-button>
+      </div>
     </div>
     <div class="body">
 <!--      <router-view :key="key"></router-view>-->
@@ -61,7 +61,7 @@
 import Overview from "@/views/statistics/overview";
 import GroupView from "@/views/statistics/group";
 import ProjectView from "@/views/statistics/project";
-import {fetchProjectInfo} from "@/api/base";
+import { fetchProjectInfo } from "@/api/base";
 
 export default {
   name: 'Statistics',
@@ -210,8 +210,8 @@ export default {
       this.setComponent(this.componentType.project)
     },
     routeOverview() {
-      this.$router.push(this.overviewPath)
       Object.assign(this.$data, this.$options.data())
+      this.$router.push(this.overviewPath)
     },
   }
 }
@@ -223,20 +223,27 @@ export default {
 .statistics {
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
   .header {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
     padding: 10px 0;
     margin-bottom: 10px;
-    border: 1px solid #e4e7ed;
+    //border: 1px solid #e4e7ed;
     overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, .08);
+    //border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .12);
     .header-item {
       padding: 0 10px;
       .item-label {
         color: $textColor;
         font-size: 14px;
       }
+    }
+    .overview-button {
+      margin-left: auto;
     }
   }
 }

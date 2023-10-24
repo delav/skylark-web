@@ -22,8 +22,8 @@
           <span v-if="item['status'] === 0">
             <el-image style="width: 20px; height: 20px" :src="runningGig" />
           </span>
-<!--          <svg-icon v-if="item['status'] === 0" icon-class="timing" class="run-icon"></svg-icon>-->
-          <svg-icon v-else-if="item['status'] === 1" icon-class="finish" class="finish-icon"></svg-icon>
+<!--          <svg-icon v-if="item['status'] === 0" icon-class="build-timing" class="run-icon"></svg-icon>-->
+          <svg-icon v-else-if="item['status'] === 1" icon-class="build-finish" class="finish-icon"></svg-icon>
         </div>
       </div>
     </div>

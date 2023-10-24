@@ -118,7 +118,7 @@ export const routes = [
         path: '/statistics/overview',
         name: 'Overview',
         component: () => import('@/views/statistics/index'),
-        meta: { }
+        meta: { activeMenu: '/statistics' }
       }
     ]
   },
