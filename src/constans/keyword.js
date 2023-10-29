@@ -1,9 +1,3 @@
-const KeywordType = {
-  LIB: 0,
-  USER: 1,
-  PRO: 2
-}
-
 const KeywordArgType = {
   NONE: 0,
   SINGLE: 1,
@@ -21,7 +15,6 @@ const KeywordCategory = {
 }
 
 export default {
-  KeywordType,
   KeywordArgType,
   KeywordCategory
 }

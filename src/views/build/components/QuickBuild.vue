@@ -94,7 +94,8 @@
           <case-tree
             :project-id="formData.project_id"
             :tree-array="getBranchContent()"
-            :checked-cases="[]"
+            :checked-cases="formData.case_list"
+            :auto-latest="formData.auto_latest"
             @cancel="cancelCheckCase"
             @confirm="saveCheckedCase"
           />
@@ -145,7 +146,9 @@ export default {
         branch: '',
         env_list: [],
         region_list: [],
-        total_case: 0
+        case_list: [],
+        total_case: 0,
+        auto_latest: false
       },
       formRules: {
         project_id: [
@@ -196,10 +199,11 @@ export default {
     cancelCheckCase() {
       this.showCaseTree = false
     },
-    saveCheckedCase (caseList) {
+    saveCheckedCase (confirmData) {
       this.showCaseTree = false
-      this.formData['case_list'] = caseList
-      this.formData['total_case'] = caseList.length
+      this.formData['case_list'] = confirmData['caseList']
+      this.formData['auto_latest'] = confirmData['autoLatest']
+      this.formData['total_case'] = confirmData['totalCase']
     },
     createQuickBuild() {
       this.$refs['ruleFormRef'].validate((valid) => {

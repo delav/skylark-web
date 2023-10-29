@@ -14,7 +14,7 @@
             </el-descriptions-item>
             <el-descriptions-item label="创建时间：">{{recordDetailData['create_at']}}</el-descriptions-item>
             <el-descriptions-item label="执行用户：">{{recordDetailData['create_by']}}</el-descriptions-item>
-            <el-descriptions-item label="环境：">
+            <el-descriptions-item label="执行环境：">
               <el-tag
                 v-for="(id, index) in recordDetailData['env_list']"
                 :key="index"
@@ -25,7 +25,7 @@
                 {{ envMap[id] }}
               </el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="地区：" v-if="showRegion">
+            <el-descriptions-item label="执行地区：" v-if="showRegion">
               <el-tag
                 v-for="(id, index) in recordDetailData['region_list']"
                 :key="index"

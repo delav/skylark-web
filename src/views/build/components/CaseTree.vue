@@ -1,6 +1,25 @@
 <template>
   <div class="case-tree">
     <div class="check-header">
+      <div class="auto-select">
+        <span class="select-label">
+          自动全选
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="推荐使用。开启后，将自动执行该项目分支下所有的最新测试用例"
+            placement="left-start"
+          >
+            <el-icon style="vertical-align: -12%" size="15px" color="#bfcbd9"><QuestionFilled /></el-icon>
+          </el-tooltip>：
+        </span>
+        <el-switch
+          v-model="caseLatest"
+          @change="changeAutoSelect"
+          active-text="开启"
+          inactive-text="关闭"
+        />
+      </div>
       <div class="priority-checkbox">
         <span class="priority-label">级别筛选</span>
         <el-checkbox-group
@@ -60,7 +79,8 @@ export default {
   props: {
     projectId: Number,
     treeArray: Array,
-    checkedCases: Array
+    checkedCases: Array,
+    autoLatest: Boolean
   },
   data() {
     return {
@@ -84,6 +104,7 @@ export default {
           onCheck: this.countCheckedCases,
         }
       },
+      caseLatest: false,
       zTreeObj: null,
       totalCases: 0,
       selectCases: 0,
@@ -97,6 +118,7 @@ export default {
   },
   created() {
     this.getShortcutOptions()
+    this.caseLatest = this.autoLatest? this.autoLatest:false
   },
   methods: {
     zTreeOnCreated(zTreeObj) {
@@ -111,9 +133,10 @@ export default {
       this.selectCases = this.checkedCases.length
       for (let i = 0; i < caseNodes.length; i++) {
         const caseId = caseNodes[i]['mid']
-        if (this.checkedCases.indexOf(caseId) !== -1) {
-          this.zTreeObj.checkNode(caseNodes[i], true, true)
+        if (this.checkedCases.indexOf(caseId) === -1 && !this.autoLatest) {
+          continue
         }
+        this.zTreeObj.checkNode(caseNodes[i], true, true)
       }
     },
     getShortcutOptions() {
@@ -125,6 +148,12 @@ export default {
           }
         })
       )
+    },
+    changeAutoSelect(flag) {
+      if (flag) {
+        this.zTreeObj.checkAllNodes(flag)
+        this.countCheckedCases()
+      }
     },
     countCheckedCases() {
       const checkedCases = this.zTreeObj.getNodesByFilter(function (node) {
@@ -187,7 +216,12 @@ export default {
         const caseId = checkedCases[i]['mid']
         caseIdList.push(caseId)
       }
-      this.$emit('confirm', caseIdList)
+      const confirmData = {
+        'caseList': caseIdList,
+        'autoLatest': this.caseLatest,
+        'totalCase': caseIdList.length
+      }
+      this.$emit('confirm', confirmData)
     }
   }
 }
@@ -200,6 +234,17 @@ export default {
     margin-bottom: 10px;
     //background-color: #f4f5f7;
     //padding: 0 5px;
+    .auto-select {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+      .select-label {
+        font-size: 15px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+      }
+    }
     .priority-checkbox {
       display: flex;
       align-items: center;

@@ -54,6 +54,14 @@
                 disabled
               />
             </el-descriptions-item>
+            <el-descriptions-item label="自动更新用例：">
+              <el-switch
+                v-model="planDetailData['auto_latest']"
+                active-text="打开"
+                inactive-text="关闭"
+                disabled
+              />
+            </el-descriptions-item>
             <el-descriptions-item label="预期通过率：">
               <el-progress
                 style="display: inline-flex;width: 180px;"
@@ -71,7 +79,7 @@
             border
             style="width: 100%">
             <el-table-column prop="id" label="编号" width="70" />
-            <el-table-column prop="desc" label="描述" min-width="15%" show-overflow-tooltip>
+            <el-table-column prop="desc" label="标题" min-width="15%" show-overflow-tooltip>
               <template #default="scope">
                 <el-link @click="routeToRecordDetail(scope.row.id)" :underline="false">{{ scope.row.desc }}</el-link>
               </template>

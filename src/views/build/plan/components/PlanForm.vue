@@ -113,7 +113,8 @@
           <case-tree
             :project-id="formData.project_id"
             :tree-array="getBranchContent()"
-            :checked-cases="checkedCaseList"
+            :checked-cases="formData.case_list"
+            :auto-latest="formData.auto_latest"
             @cancel="cancelCheckCase"
             @confirm="saveCheckedCase"
           />
@@ -169,12 +170,11 @@ export default {
           { required: true, validator: validateRegion, trigger: 'blur', type: 'array' },
         ],
         total_case: [
-          { required: true, message: '请选择执行用例', type: 'number' },
+          { required: true, message: '请选择执行用例', type: 'number', min: 1 },
         ]
       },
       showCaseTree: false,
       branchIndex: 0,
-      checkedCaseList: []
     }
   },
   watch: {
@@ -211,7 +211,6 @@ export default {
       if (formData['id'] === undefined) {
         return
       }
-      this.checkedCaseList = formData['case_list']
       fetchVersion(formData['project_id']).then(response => {
         this.versionList = response.data
       })
@@ -240,10 +239,11 @@ export default {
     cancelCheckCase() {
       this.showCaseTree = false
     },
-    saveCheckedCase(caseList) {
+    saveCheckedCase(confirmData) {
       this.showCaseTree = false
-      this.formData['case_list'] = caseList
-      this.formData['total_case'] = caseList.length
+      this.formData['case_list'] = confirmData['caseList']
+      this.formData['auto_latest'] = confirmData['autoLatest']
+      this.formData['total_case'] = confirmData['totalCase']
     },
     onPercentChange(num) {
       this.formData.expect_pass = num
@@ -285,7 +285,6 @@ export default {
 .plan-form {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
-  padding: 5px;
   max-width: 800px;
   .head {
   }
