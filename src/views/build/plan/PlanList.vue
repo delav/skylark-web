@@ -250,7 +250,7 @@ export default {
       this.getPlanList(1, this.queryParams)
     },
     newPlan() {
-      this.planData = {}
+      this.planData = {expect_pass: 90}
       this.editTitle = '新建计划'
       this.showPlanEdit = true
     },

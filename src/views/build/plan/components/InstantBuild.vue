@@ -127,6 +127,12 @@ export default {
     cancelBuild() {
       this.$emit('cancel')
     },
+    exceptPassShow(passValue) {
+      if (!passValue) {
+        return 0
+      }
+      return passValue + ' %'
+    },
     confirmBuild () {
       this.$refs['ruleFormRef'].validate((valid) => {
         if (!valid) {

@@ -51,10 +51,11 @@
             <el-table-column prop="id" label="编号" width="70" />
             <el-table-column prop="status" label="状态" min-width="80">
               <template #default="scope">
-                <span v-if="scope.row.status===-1">等待中</span>
-                <span v-if="scope.row.status===0">执行中</span>
-                <span v-if="scope.row.status===1">已完成</span>
-                <span v-if="scope.row.status===2">已终止</span>
+                <el-tag type="info" v-if="scope.row.status===-1">等待中</el-tag>
+                <el-tag type="warning" v-if="scope.row.status===0">执行中</el-tag>
+                <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
+                <el-tag type="success" v-if="scope.row.status===2">执行成功</el-tag>
+                <el-tag type="danger" v-if="scope.row.status===3">执行失败</el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="env_id" label="环境" min-width="100" show-overflow-tooltip >
