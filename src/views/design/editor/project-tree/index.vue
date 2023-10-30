@@ -145,6 +145,7 @@ import NodeAction from "@/views/design/editor/project-tree/components/NodeAction
 import UploadFile from "@/views/design/editor/project-tree/components/UploadFile";
 import NODE from "@/constans/node";
 import { ElLoading } from "element-plus";
+import { guid } from "@/utils/other";
 import { fetchProjectInfo } from "@/api/base";
 import { updateProject } from "@/api/project";
 import { fetchBaseDir, createDir, updateDir, deleteDir } from "@/api/dir";
@@ -304,12 +305,12 @@ export default {
         this.$store.commit('tree/RELOAD_STATE')
         this.$store.commit('tree/SET_PROJECT_ID', projectId)
         this.$store.commit('tree/SET_PROJECT_NAME', projectName)
+        this.$store.dispatch('config/getProjectTags', projectId)
       }).catch(() => {
         this.zTreeNodes = []
         this.$store.commit('entity/RELOAD_STATE')
         this.$store.commit('tree/RELOAD_STATE')
       })
-      this.$store.dispatch('config/getProjectTags', projectId)
     },
     zTreeOnCreated(zTreeObj) {
       this.zTreeObj = zTreeObj
@@ -508,10 +509,18 @@ export default {
       this.nodeDialogTitle = ''
       this.nodeDialogForm = {}
     },
+    handlerCreateNode(parentNode, childNode) {
+      if (parentNode.open) {
+        this.zTreeObj.addNodes(parentNode, -1, childNode)
+      } else {
+        this.zTreeOnExpand('event', parentNode.treeId, parentNode)
+      }
+    },
     // rename project, create or update dir/suite/case
     commitNodeDialog(newNodeName) {
       const that = this
-      const node = this.nodeParams.meta_data
+      // const node = this.nodeParams.meta_data
+      const node = this.$store.state.tree.selectedNode
       if (this.nodeParams.desc === NODE.NodeDesc.ROOT) {
         if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // rename project, not use temporarily
@@ -528,12 +537,7 @@ export default {
           // create dir
           const params = {'name': newNodeName, 'parent_dir_id': node.mid, 'project_id': this.projectId}
           createDir(params).then(response => {
-            if (node.open) {
-              // const dirNode = handlerNode(response.data, node.id, NODE.NodeDesc.DIR)
-              that.zTreeObj.addNodes(node, -1, response.data)
-            } else {
-              that.zTreeOnExpand('expand', node.treeId, node)
-            }
+            that.handlerCreateNode(node, response.data)
             that.closeNodeDialog()
           })
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
@@ -550,12 +554,7 @@ export default {
         if (this.nodeParams.action_type === NODE.ActionType.CREATE) {
           const params = {'name': newNodeName, 'suite_dir_id': node.mid, 'project_id': this.projectId}
           createSuite(params).then(response => {
-            if (node.open) {
-              // const suiteNode = handlerNode(response.data, node.id, NODE.NodeDesc.SUITE)
-              that.zTreeObj.addNodes(node, -1, response.data)
-            } else {
-              that.zTreeOnExpand('expand', node.treeId, node)
-            }
+            that.handlerCreateNode(node, response.data)
             that.closeNodeDialog()
           })
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
@@ -572,13 +571,12 @@ export default {
           // create case
           const params = {'name': newNodeName, 'test_suite_id': node.mid, 'project_id': this.projectId}
           createCase(params).then(response => {
-            if (node.open) {
-              // const caseNode = handlerNode(response.data, node.id, NODE.NodeDesc.CASE)
-              that.zTreeObj.addNodes(node, -1, response.data)
-            } else {
-              that.zTreeOnExpand('expand', node.treeId, node)
-            }
+            that.handlerCreateNode(node, response.data)
             that.closeNodeDialog()
+            // update platform keyword
+            if (node.type === NODE.NodeCategory.KEYWORD) {
+              that.$store.commit('keyword/SET_UPDATE_USER_KEYWORD', guid())
+            }
           })
         } else if (this.nodeParams.action_type === NODE.ActionType.UPDATE) {
           // update case
@@ -587,21 +585,26 @@ export default {
             node.name = response.data.name
             that.updateTreeNode(node)
             that.closeNodeDialog()
+            // update platform keyword
+            if (node.type === NODE.NodeCategory.KEYWORD) {
+              that.$store.commit('keyword/SET_UPDATE_USER_KEYWORD', guid())
+            }
           })
         }
       }
     },
     uploadProjectFile(files) {
       let formData = new FormData()
-      let node = this.nodeParams.meta_data
+      // let node = this.nodeParams.meta_data
+      const node = this.$store.state.tree.selectedNode
       formData.append('dir_id', node.mid)
       files.forEach(file => {
         formData.append('file', file)
       })
       uploadFile(formData).then((response) => {
         const newNodes = response.data
-        this.zTreeObj.addNodes(node, -1, newNodes)
         this.$message.success(`上传${newNodes.length}个文件成功`)
+        this.handlerCreateNode(node, newNodes)
         this.closeNodeDialog()
       })
     },
@@ -694,8 +697,9 @@ export default {
     renameNode(nodeTId, actionInfo) {
       const node = this.zTreeObj.getNodeByTId(nodeTId)
       const params = {
-        'action_type': NODE.ActionType.UPDATE, 'desc': node.desc,
-        'meta_data': node
+        'action_type': NODE.ActionType.UPDATE,
+        'desc': node.desc,
+        // 'meta_data': node
       }
       actionInfo.name = node.name
       this.initNodeDialog(params, actionInfo)
@@ -748,6 +752,10 @@ export default {
             that.$store.commit('tree/SET_SELECT_NODE', {})
             that.$store.commit('tree/SET_CURRENT_NODE_ID', '')
             that.$store.commit('entity/RESET_STATE')
+            // update platform keyword
+            if (node.type === NODE.NodeCategory.KEYWORD) {
+              this.$store.commit('keyword/SET_UPDATE_USER_KEYWORD', guid())
+            }
           })
         }
       }).catch(() => {})
@@ -767,7 +775,7 @@ export default {
           const params = {
             'action_type': hoverDomList[i].type,
             'desc': hoverDomList[i].desc,
-            'meta_data': treeNode
+            // 'meta_data': treeNode
           }
           that.initNodeDialog(params, hoverDomList[i])
         })

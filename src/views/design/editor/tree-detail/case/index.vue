@@ -33,6 +33,7 @@ import CaseConfig from "@/views/design/editor/tree-detail/case/components/CaseCo
 import KeywordConfig from "@/views/design/editor/tree-detail/case/components/KeywordConfig";
 import { updateCase } from "@/api/case";
 import { createTag, deleteTag } from "@/api/tag";
+import { guid } from "@/utils/other";
 
 export default {
   name: 'Case',
@@ -134,7 +135,7 @@ export default {
       updateCase(metaInfo.id, params).then((response) => {
         const newInfo = response.data
         for (const key in newInfo) {
-          // not allowed update node meta id
+          // ignore node meta id
           if (key === 'id') {
             continue
           }
@@ -144,6 +145,10 @@ export default {
           }
         }
         this.updateTreeNode(metaInfo)
+        // update platform keyword
+        if (nodeInfo.type === NODE.NodeCategory.KEYWORD) {
+          this.$store.commit('keyword/SET_UPDATE_USER_KEYWORD', guid())
+        }
       })
     },
     updateCaseTag(params) {
