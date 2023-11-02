@@ -71,7 +71,7 @@
           </el-descriptions>
         </div>
         <div class="related-record">
-          <p class="record-desc">最近执行记录</p>
+          <p class="record-desc">最近构建记录</p>
           <el-table
             :data="planDetailData['record']"
             :header-cell-style="{fontSize:'13px'}"

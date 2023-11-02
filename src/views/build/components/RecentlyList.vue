@@ -3,7 +3,7 @@
     <p class="recently-header">
       <span class="desc">最近构建</span>
       <span class="refresh">
-        <el-icon @click="refreshRecentlyRecordList" :size="16" style="margin-top: 7px"><RefreshLeft /></el-icon>
+        <el-icon @click="refreshRecentlyRecordList" :size="16" style="margin-top: 5px"><RefreshLeft /></el-icon>
       </span>
     </p>
     <div class="recently-list">

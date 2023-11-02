@@ -18,7 +18,7 @@
         </el-select>
       </div>
       <div class="header-item user-filter">
-        <span class="item-desc">执行用户：</span>
+        <span class="item-desc">构建用户：</span>
         <el-select
           v-model="queryParams.create_by"
           placeholder="选择用户"
@@ -34,14 +34,17 @@
         </el-select>
       </div>
       <div class="header-item time-filter">
-        <span class="item-desc">执行时间：</span>
+        <span class="item-desc">构建时间：</span>
         <el-date-picker
           v-model="queryParams.date_range"
           type="daterange"
+          :disabled-date="disabledDate"
+          value-format="YYYY-MM-DD"
           unlink-panels
           range-separator="至"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
+          @change="filterRecords"
         />
       </div>
     </div>
@@ -180,10 +183,17 @@ export default {
       }
       this.getRecordList(pageVal, params)
     },
+    disabledDate(time) {
+      return time.getTime() > Date.now() + 8.64e7 * 3
+    },
     filterRecords() {
       const params = deepCopy(this.queryParams)
       if (this.queryParams['project_id'] === 0) {
         delete params['project_id']
+      }
+      if (this.queryParams.date_range) {
+        params['s_date'] = this.queryParams.date_range[0]
+        params['e_date'] = this.queryParams.date_range[1]
       }
       this.getRecordList(1, params)
     },
@@ -210,13 +220,13 @@ export default {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
-    padding: 10px 0;
+    padding: 10px 0 0 10px;
     //box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
     border: 1px solid #e4e7ed;
     overflow: hidden;
     .header-item {
-      padding: 0 10px;
+      padding: 0 10px 10px 0;
       .item-desc {
         color: $textColor;
         font-size: 14px;

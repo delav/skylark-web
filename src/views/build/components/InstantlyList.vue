@@ -3,7 +3,7 @@
     <p class="instantly-header">
       <span class="desc">即将构建</span>
       <span class="refresh">
-        <el-icon @click="refreshInstantlyPlanList" :size="16" style="margin-top: 7px"><RefreshLeft /></el-icon>
+        <el-icon @click="refreshInstantlyPlanList" :size="16" style="margin-top: 5px"><RefreshLeft /></el-icon>
       </span>
     </p>
     <div class="instantly-list">

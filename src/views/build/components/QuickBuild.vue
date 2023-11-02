@@ -174,8 +174,9 @@ export default {
   },
   methods: {
     changeProject(project) {
-      this.$refs['ruleFormRef'].clearValidate()
-      Object.assign(this.$data, this.$options.data())
+      // Object.assign(this.$data, this.$options.data())
+      this.$refs['ruleFormRef'].resetFields()
+      this.branchList = []
       this.formData['project_id'] = project.id
       fetchVersion(project.id).then(response => {
         this.branchList = response.data
@@ -187,11 +188,18 @@ export default {
     },
     getBranchContent () {
       const index = this.branchIndex
+      if (index >= this.branchList.length) {
+        return []
+      }
       return JSON.parse(this.branchList[index]['nodes'])
     },
     openCheckCase() {
       if (this.formData.branch === '') {
         this.$message.warning('请先选择分支')
+        return
+      }
+      if (this.branchList.length === 0) {
+        this.$message.warning('获取分支数据失败')
         return
       }
       this.showCaseTree = true
@@ -234,8 +242,9 @@ export default {
       border-bottom: 1px solid #e4e7ed;
     }
     .card-body {
+      margin-top: 20px;
       padding: 20px;
-      margin-right: 40px;
+      max-width: 900px;
       .build-footer {
         margin-top: 30px;
         display: flex;
