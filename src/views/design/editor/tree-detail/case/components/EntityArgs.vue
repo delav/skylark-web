@@ -23,7 +23,7 @@
         </el-button>
       </div>
       <div v-if="expandInputArg" class="input-content">
-        <template v-if="inputType===getArgType('single')||inputType===getArgType('multi')">
+        <template v-if="inputType===getArgType('finite')">
           <p class="fixate-argument" v-for="(name, index) in entityArgs['inputNames']" :key="index">
             <el-tooltip
               popper-class="custom-tooltip"
@@ -205,10 +205,8 @@ export default {
     getArgType(v) {
       if (v === 'none') {
         return KEYWORD.KeywordArgType.NONE
-      } else if (v === 'single') {
-        return KEYWORD.KeywordArgType.SINGLE
-      } else if (v === 'multi') {
-        return KEYWORD.KeywordArgType.MULTI
+      } else if (v === 'finite') {
+        return KEYWORD.KeywordArgType.FINITE
       } else if (v === 'list') {
         return KEYWORD.KeywordArgType.LIST
       } else if (v === 'dict') {
@@ -243,6 +241,22 @@ export default {
       }
       return {}
     },
+    handleInputParams(keyword, entity) {
+      // input args
+      this.entityArgs['inputNames'] = this.getKeywordAttr('input_params', keyword).split(this.keywordSplitSep)
+      let values = entity['input_args'].split(this.entitySplitSep)
+      const diffValue = this.entityArgs['inputNames'].length - values.length
+      if (diffValue > 0) {
+        values = values.concat(Array(diffValue))
+      }
+      this.entityArgs['inputValues'] = values
+      let descList = this.getKeywordAttr('input_desc', keyword).split(this.keywordSplitSep)
+      const diffDesc = this.entityArgs['inputNames'].length - descList.length
+      if (diffDesc > 0) {
+        descList = descList.concat(Array(diffDesc))
+      }
+      this.entityArgs['inputDesc'] = descList
+    },
     getEntityArgs(entity) {
       if (JSON.stringify(entity) === '{}') {
         Object.assign(this.$data, this.$options.data())
@@ -257,39 +271,20 @@ export default {
         // not input args
         this.entityArgs['inputNames'] = []
         this.entityArgs['inputValues'] = []
-      } else if (this.inputType === this.getArgType('single')) {
-        // single input args
-        this.entityArgs['inputNames'] = [this.getKeywordAttr('input_params', keyword)]
-        this.entityArgs['inputValues'] = [entity['input_args']]
-        this.entityArgs['inputDesc'] = [this.getKeywordAttr('input_desc', keyword)]
-      } else if (this.inputType === this.getArgType('multi')) {
-        // multi input args
-        this.entityArgs['inputNames'] = this.getKeywordAttr('input_params', keyword).split(this.keywordSplitSep)
-        let values = entity['input_args'].split(this.entitySplitSep)
-        const diffValue = this.entityArgs['inputNames'].length - values.length
-        if (diffValue > 0) {
-          values = values.concat(Array(diffValue))
-        }
-        this.entityArgs['inputValues'] = values
-        let descList = this.getKeywordAttr('input_desc', keyword).split(this.keywordSplitSep)
-        const diffDesc = this.entityArgs['inputNames'].length - descList.length
-        if (diffDesc > 0) {
-          descList = descList.concat(Array(diffDesc))
-        }
-        this.entityArgs['inputDesc'] = descList
+      } else if (this.inputType === this.getArgType('finite')) {
+        // finite input args
+        this.handleInputParams(keyword, entity)
       } else if (this.inputType === this.getArgType('list')) {
         // list input args
-        this.entityArgs['inputNames'] = []
-        this.entityArgs['inputValues'] = entity['input_args'].split(this.entitySplitSep)
+        this.handleInputParams(keyword, entity)
       } else if (this.inputType === this.getArgType('dict')) {
         // dict input args
-        this.entityArgs['inputNames'] = []
-        this.entityArgs['inputValues'] = entity['input_args'].split(this.entitySplitSep)
+        this.handleInputParams(keyword, entity)
       }
       if (this.outputType === this.getArgType('none')) {
         this.entityArgs['outputNames'] = []
         this.entityArgs['outputValues'] = []
-      } else if (this.outputType === this.getArgType('single')) {
+      } else if (this.outputType === this.getArgType('finite')) {
         this.entityArgs['outputNames'] = ['result']
         this.entityArgs['outputValues'] = [entity['output_args']]
         this.entityArgs['outputDesc'] = [this.getKeywordAttr('output_desc', keyword)]

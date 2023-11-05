@@ -6,11 +6,40 @@
       <span class="item-desc team">团队：</span>
       <el-input class="item-value" v-model="teamName" :disabled="true"></el-input>
       <div class="group-button">
-        <el-button type="primary"><el-icon class="el-icon--left"><Search /></el-icon>扫描组件</el-button>
+        <el-button type="primary" @click="getReadyKeywordList"><el-icon class="el-icon--left"><Search /></el-icon>扫描组件</el-button>
         <el-button type="primary"><el-icon class="el-icon--left"><Plus /></el-icon>新建分组</el-button>
       </div>
     </div>
     <div class="card-body">
+      <div class="ready-keyword" v-if="readyKeywords.length!==0">
+        <div class="ready-content">
+          <p class="ready-title" @click="activeReady=!activeReady">
+            有{{ readyKeywords.length }}个组件待确认，点击查看
+          </p>
+          <el-table
+            v-if="activeReady"
+            :data="readyKeywords"
+            :header-cell-style="{padding: '4px', fontSize:'13px', background: '#f4f5f7'}"
+            :cell-style="{padding: '5px', color: '#666', fontSize:'13px'}"
+          >
+            <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
+            <el-table-column label="参数" min-width="100" prop="input_params" show-overflow-tooltip/>
+            <el-table-column label="返回值" min-width="100" prop="output_params" show-overflow-tooltip/>
+            <el-table-column label="来源" min-width="100" prop="source" show-overflow-tooltip/>
+            <el-table-column label="功能" min-width="120" prop="desc" show-overflow-tooltip/>
+            <el-table-column label="状态" min-width="80" prop="status">
+              <el-tag type="warning">待确认</el-tag>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="110">
+              <template #default="scope">
+                <el-button-group>
+                  <el-button type="primary" size="small" @click="showConfirm(scope.row)" link>确认</el-button>
+                </el-button-group>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
       <el-collapse
         v-model="activeNames"
         @change="handleChange"
@@ -49,17 +78,40 @@
         </el-collapse-item>
       </el-collapse>
     </div>
+    <div class="dialog">
+      <div class="ready-dialog">
+        <el-dialog
+          width="700px"
+          v-model="showReadyFlag"
+          title="保存组件"
+          :close-on-click-modal="false"
+        >
+          <div class="content">
+            <keyword-form
+              :keyword-data="keywordObject"
+              :keyword-group="keywordGroups"
+              @cancel="showReadyFlag=false"
+              @confirm="saveReadyKeyword"
+            />
+          </div>
+        </el-dialog>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import KeywordForm from "@/views/setting/keyword/components/KeywordForm";
 import { statusMap } from "@/constans/common";
 import { deepCopy } from "@/utils/dcopy";
 import { fetchKeywordGroup } from "@/api/kgroup";
-import { getLibKeywordByGroup } from "@/api/keyword";
+import { getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
 
 export default {
   name: 'Keyword',
+  components: {
+    KeywordForm
+  },
   data() {
     return {
       loading: true,
@@ -68,7 +120,11 @@ export default {
       rawActiveNames: [],
       activeNames: [],
       keywordGroups: [],
-      groupKeywordMap: {}
+      groupKeywordMap: {},
+      activeReady: false,
+      readyKeywords: [],
+      showReadyFlag: false,
+      keywordObject: {}
     }
   },
   mounted() {
@@ -92,6 +148,21 @@ export default {
         })
       }
       this.rawActiveNames = deepCopy(this.activeNames)
+    },
+    getReadyKeywordList() {
+      getReadyLibKeyword().then(response => {
+        this.readyKeywords = response.data
+        if (this.readyKeywords.length === 0) {
+          this.$message.warning('暂无新增组件')
+        }
+      })
+    },
+    showConfirm(row) {
+      this.keywordObject = row
+      this.showReadyFlag = true
+    },
+    saveReadyKeyword(data) {
+      console.log(data)
     },
     keywordStatusMap(status) {
       return statusMap(status)
@@ -134,6 +205,23 @@ export default {
     }
   }
   .card-body {
+    .ready-keyword {
+      border-bottom: 1px solid #e4e7ed;
+      background-color: #f6c475;
+      cursor: pointer;
+      .ready-content {
+        .ready-title {
+          color: #bd0000;
+          font-size: 16px;
+          font-weight: 500;
+          display: flex;
+          margin: 0;
+          line-height: 64px;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
     .collapse-title {
       color: $textColor;
       font-size: 14px;

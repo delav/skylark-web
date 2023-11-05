@@ -1,9 +1,8 @@
 const KeywordArgType = {
   NONE: 0,
-  SINGLE: 1,
-  MULTI: 2,
-  LIST: 3,
-  DICT: 4,
+  FINITE: 1,
+  LIST: 2,
+  DICT: 3,
 }
 
 const KeywordCategory = {

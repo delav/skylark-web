@@ -23,3 +23,10 @@ export function getLibKeywordByGroup(groupId) {
     params: { group: groupId }
   })
 }
+
+export function getReadyLibKeyword() {
+  return request({
+    url: '/keyword/lib_keyword/scan_keyword',
+    method: 'get',
+  })
+}

@@ -232,9 +232,7 @@ export default {
       if (keyword['input_type'] === KEYWORD.KeywordArgType.NONE) {
         this.showParams = false
         return
-      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.SINGLE) {
-        this.keywordParams.push(keyword['input_params'])
-      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.MULTI) {
+      } else if (keyword['input_type'] === KEYWORD.KeywordArgType.FINITE) {
         this.keywordParams = keyword['input_params'].split('|')
       } else if (keyword['input_type'] === KEYWORD.KeywordArgType.LIST
         || keyword['input_type'] === KEYWORD.KeywordArgType.DICT) {
