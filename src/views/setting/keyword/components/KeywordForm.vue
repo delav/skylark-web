@@ -111,11 +111,6 @@ export default {
       immediate: true
     },
   },
-  mounted() {
-  },
-  unmounted() {
-    this.$options.data()
-  },
   methods: {
     handleChangeFile(file) {
       this.iconList = [file]

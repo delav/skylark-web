@@ -8,6 +8,22 @@ export function getLibKeyword(projectId) {
   })
 }
 
+export function createKeyword(data) {
+  return request({
+    url: `/keyword/lib_keyword`,
+    method: 'post',
+    data: data
+  })
+}
+
+export function updateKeyword(keywordId, data) {
+  return request({
+    url: `/keyword/lib_keyword/${keywordId}`,
+    method: 'post',
+    data: data
+  })
+}
+
 export function getUserKeyword(projectId) {
   return request({
     url: '/keyword/user_keyword',

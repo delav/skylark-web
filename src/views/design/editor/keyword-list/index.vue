@@ -169,7 +169,7 @@ export default {
         'keyword_id': original['id'],
         'keyword_type': original['keyword_type'],
         'input_args': '',
-        'output_args': '',
+        'output_args': original['output_params'],
         'uuid': guid()
       }
     },

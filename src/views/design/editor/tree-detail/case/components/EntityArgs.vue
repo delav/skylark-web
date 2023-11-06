@@ -3,7 +3,7 @@
     <div class="entity-desc">
       <p>{{entityArgs['keywordDesc']}}</p>
     </div>
-    <div class="entity-input" v-if="inputType!==getArgType('none')">
+    <div class="entity-input" v-if="ShowInput">
       <div class="input-title">
         <span class="title-desc" @click="expandInputArg=!expandInputArg">
           <span class="input-icon">
@@ -14,7 +14,7 @@
         </span>
         <el-button
           class="input-button"
-          v-if="inputType===getArgType('list')||inputType===getArgType('dict')"
+          v-if="showAddButton"
           size="small"
           @click="addInputArg"
           plain
@@ -23,9 +23,10 @@
         </el-button>
       </div>
       <div v-if="expandInputArg" class="input-content">
-        <template v-if="inputType===getArgType('finite')">
+        <template v-if="fixedParams">
           <p class="fixate-argument" v-for="(name, index) in entityArgs['inputNames']" :key="index">
             <el-tooltip
+              v-if="index<entityArgs['inputDesc'].length"
               popper-class="custom-tooltip"
               placement="top-start"
               effect="dark"
@@ -34,6 +35,7 @@
             >
               <span class="argument-name">{{name}}</span>
             </el-tooltip>
+            <span v-else class="argument-name">{{name}}</span>
             <el-input
               class="argument-value"
               type="text"
@@ -50,7 +52,7 @@
             </el-tooltip>
           </p>
         </template>
-        <template v-if="inputType===getArgType('list')||inputType===getArgType('dict')">
+        <template v-else-if="allowDrag">
           <draggable
             id="case-entity"
             v-model="entityArgs['inputValues']"
@@ -85,9 +87,48 @@
             </template>
           </draggable>
         </template>
+        <template v-else-if="mixedParams">
+          <p class="fixate-argument" v-for="(name, index) in entityArgs['inputNames']" :key="index">
+            <el-tooltip
+              v-if="index<entityArgs['inputDesc'].length"
+              popper-class="custom-tooltip"
+              placement="top-start"
+              effect="dark"
+              :hide-after="50"
+              :content="entityArgs['inputDesc'][index]"
+            >
+              <span class="argument-name">{{name}}</span>
+            </el-tooltip>
+            <span v-else class="argument-name">{{name}}</span>
+            <el-input
+              class="argument-value"
+              type="text"
+              @change="updateCaseEntities"
+              v-model="entityArgs['inputValues'][index]">
+            </el-input>
+            <el-tooltip
+              v-if="name!==''"
+              popper-class="custom-tooltip"
+              placement="top-start"
+              effect="dark"
+              content="删除"
+            >
+              <el-icon class="argument-icon" color="#f56c6c" @click="delInputArg(index)"><Delete /></el-icon>
+            </el-tooltip>
+            <el-tooltip
+              v-else
+              popper-class="custom-tooltip"
+              placement="top-start"
+              effect="dark"
+              content="格式化编辑"
+            >
+              <el-icon class="argument-icon" color="#00acc1" @click="formatEditJson(index)"><Crop /></el-icon>
+            </el-tooltip>
+          </p>
+        </template>
       </div>
     </div>
-    <div class="entity-output" v-if="outputType!==getArgType('none')">
+    <div class="entity-output" v-if="showOutput">
       <div class="output-title" @click="expandOutputArg=!expandOutputArg">
         <span class="output-icon">
           <el-icon v-if="expandOutputArg"><CaretBottom /></el-icon>
@@ -162,8 +203,6 @@ export default {
   },
   data() {
     return {
-      entitySplitSep: '#@#',
-      keywordSplitSep: '|',
       inputType: 0,
       outputType: 0,
       entityArgs: {},
@@ -191,6 +230,30 @@ export default {
     },
     keywordDict() {
       return this.$store.state.keyword.keywordObjects
+    },
+    ShowInput() {
+      return this.inputType !== this.getArgType('none')
+    },
+    fixedParams() {
+      return this.inputType === this.getArgType('finite')
+    },
+    mixedParams() {
+      return this.inputType === this.getArgType('mixed')
+    },
+    showAddButton() {
+      const AddButtonType = [
+        this.getArgType('list'),
+        this.getArgType('dict'),
+        this.getArgType('mixed')
+      ]
+      return AddButtonType.indexOf(this.inputType) !== -1
+    },
+    allowDrag() {
+      return this.inputType === this.getArgType('list')
+        || this.inputType === this.getArgType('dict')
+    },
+    showOutput() {
+      return this.outputType !== this.getArgType('none')
     }
   },
   watch: {
@@ -211,13 +274,15 @@ export default {
         return KEYWORD.KeywordArgType.LIST
       } else if (v === 'dict') {
         return KEYWORD.KeywordArgType.DICT
+      } else if (v === 'mixed') {
+        return KEYWORD.KeywordArgType.MIXED
       }
       return null
     },
     updateCaseEntities() {
       const entities = this.$store.state.entity.caseEntities
-      const newInputArgs = this.entityArgs['inputValues'].join(this.entitySplitSep)
-      const newOutputArgs = this.entityArgs['outputValues'].join(this.entitySplitSep)
+      const newInputArgs = this.entityArgs['inputValues'].join(KEYWORD.EntitySplitSep)
+      const newOutputArgs = this.entityArgs['outputValues'].join(KEYWORD.EntitySplitSep)
       for (let i = 0; i < entities.length; i++) {
         if (entities[i]['uuid'] === this.entityArgs['meta']['uuid']) {
           entities[i]['input_args'] = newInputArgs
@@ -243,19 +308,20 @@ export default {
     },
     handleInputParams(keyword, entity) {
       // input args
-      this.entityArgs['inputNames'] = this.getKeywordAttr('input_params', keyword).split(this.keywordSplitSep)
-      let values = entity['input_args'].split(this.entitySplitSep)
-      const diffValue = this.entityArgs['inputNames'].length - values.length
+      let inputs = this.getKeywordAttr('input_params', keyword).split(KEYWORD.KeywordSplitSep)
+      inputs = inputs.filter((item) => {
+        return item !== KEYWORD.ListFreeArg && item !== KEYWORD.DictFreeArg
+      })
+      let values = entity['input_args'].split(KEYWORD.EntitySplitSep)
+      const diffValue = inputs.length - values.length
       if (diffValue > 0) {
         values = values.concat(Array(diffValue))
+      } else if (diffValue < 0) {
+        inputs = inputs.concat(Array(-diffValue))
       }
+      this.entityArgs['inputNames'] = inputs
       this.entityArgs['inputValues'] = values
-      let descList = this.getKeywordAttr('input_desc', keyword).split(this.keywordSplitSep)
-      const diffDesc = this.entityArgs['inputNames'].length - descList.length
-      if (diffDesc > 0) {
-        descList = descList.concat(Array(diffDesc))
-      }
-      this.entityArgs['inputDesc'] = descList
+      this.entityArgs['inputDesc'] = this.getKeywordAttr('input_desc', keyword).split(KEYWORD.KeywordSplitSep)
     },
     getEntityArgs(entity) {
       if (JSON.stringify(entity) === '{}') {
@@ -276,10 +342,17 @@ export default {
         this.handleInputParams(keyword, entity)
       } else if (this.inputType === this.getArgType('list')) {
         // list input args
-        this.handleInputParams(keyword, entity)
+        this.entityArgs['inputNames'] = []
+        this.entityArgs['inputValues'] = entity['input_args'].split(KEYWORD.EntitySplitSep)
       } else if (this.inputType === this.getArgType('dict')) {
         // dict input args
+        this.entityArgs['inputNames'] = []
+        this.entityArgs['inputValues'] = entity['input_args'].split(KEYWORD.EntitySplitSep)
+      } else if (this.inputType === this.getArgType('mixed')) {
         this.handleInputParams(keyword, entity)
+      } else {
+        this.entityArgs['inputNames'] = []
+        this.entityArgs['inputValues'] = []
       }
       if (this.outputType === this.getArgType('none')) {
         this.entityArgs['outputNames'] = []
@@ -288,12 +361,18 @@ export default {
         this.entityArgs['outputNames'] = ['result']
         this.entityArgs['outputValues'] = [entity['output_args']]
         this.entityArgs['outputDesc'] = [this.getKeywordAttr('output_desc', keyword)]
+      } else {
+        this.entityArgs['outputNames'] = []
+        this.entityArgs['outputValues'] = []
       }
     },
     addInputArg() {
-      const addInputArgs = this.entityArgs['inputValues']
-      addInputArgs.push('')
-      this.entityArgs['inputValues'] = addInputArgs
+      if (this.mixedParams) {
+        this.entityArgs['inputValues'].push('')
+        this.entityArgs['inputNames'].push('')
+      } else if (this.allowDrag) {
+        this.entityArgs['inputValues'].push('')
+      }
       this.updateCaseEntities()
     },
     delInputArg(index) {

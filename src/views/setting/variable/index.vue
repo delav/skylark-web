@@ -122,10 +122,10 @@
               <el-table-column fixed="right" label="操作" width="175" align="center">
                 <template #default="scope">
                   <el-link type="warning" style="font-size: 13px" :underline="false" v-if="!scope.row.edit" @click="editVariableAction(scope.row)">
-                    <el-icon><Edit /></el-icon>编辑
+                    <el-icon size="13"><Edit /></el-icon>编辑
                   </el-link>
-                  <el-link type="danger" style="font-size: 13px;margin-left: 10px" :underline="false" @click="delVariableAction(scope.row)">
-                    <el-icon><Delete /></el-icon>删除
+                  <el-link type="danger" style="font-size: 13px;margin-left: 10px;vertical-align: -5%" :underline="false" @click="delVariableAction(scope.row)">
+                    <el-icon size="13"><Delete /></el-icon>删除
                   </el-link>
                 </template>
               </el-table-column>

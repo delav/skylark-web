@@ -19,8 +19,8 @@
           <el-table
             v-if="activeReady"
             :data="readyKeywords"
-            :header-cell-style="{padding: '4px', fontSize:'13px', background: '#f4f5f7'}"
-            :cell-style="{padding: '5px', color: '#666', fontSize:'13px'}"
+            :header-cell-style="{padding: '5px', fontSize:'14px', background: '#f4f5f7'}"
+            :cell-style="{padding: '6px', color: '#666', fontSize:'14px'}"
           >
             <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
             <el-table-column label="参数" min-width="100" prop="input_params" show-overflow-tooltip/>
@@ -54,8 +54,8 @@
           </template>
           <el-table
             :data="groupKeywordMap[group['id']]"
-            :header-cell-style="{padding: '4px', fontSize:'13px', background: '#f4f5f7'}"
-            :cell-style="{padding: '4px', color: '#666', fontSize:'13px'}"
+            :header-cell-style="{padding: '5px', fontSize:'14px', background: '#f4f5f7'}"
+            :cell-style="{padding: '6px', color: '#666', fontSize:'14px'}"
           >
             <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
             <el-table-column label="组件名" min-width="100" prop="ext_name" show-overflow-tooltip/>
@@ -63,14 +63,14 @@
             <el-table-column label="功能" min-width="120" prop="desc" show-overflow-tooltip/>
             <el-table-column label="状态" min-width="80" prop="status">
               <template #default="scope">
-                <el-tag>{{keywordStatusMap(scope.row.status)}}</el-tag>
+                <el-tag type="success">{{keywordStatusMap(scope.row.status)}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="110">
               <template #default="scope">
                 <el-button-group>
-                  <el-button type="primary" size="small" @click="editKeyword(scope.row)" link>编辑</el-button>
-                  <el-button type="primary" size="small" @click="showKeywordDetail(scope.row)" link>详情</el-button>
+                  <el-button type="primary" @click="editKeyword(scope.row)" link>编辑</el-button>
+                  <el-button type="primary" @click="showKeywordDetail(scope.row)" link>详情</el-button>
                 </el-button-group>
               </template>
             </el-table-column>
@@ -96,6 +96,23 @@
           </div>
         </el-dialog>
       </div>
+      <div class="edit-dialog">
+        <el-dialog
+          width="700px"
+          v-model="showKeywordEdit"
+          title="编辑组件"
+          :close-on-click-modal="false"
+        >
+          <div class="content">
+            <keyword-form
+              :keyword-data="keywordObject"
+              :keyword-group="keywordGroups"
+              @cancel="showKeywordEdit=false"
+              @confirm="saveReadyKeyword"
+            />
+          </div>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>
@@ -105,7 +122,7 @@ import KeywordForm from "@/views/setting/keyword/components/KeywordForm";
 import { statusMap } from "@/constans/common";
 import { deepCopy } from "@/utils/dcopy";
 import { fetchKeywordGroup } from "@/api/kgroup";
-import { getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
+import { createKeyword, getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
 
 export default {
   name: 'Keyword',
@@ -124,7 +141,8 @@ export default {
       activeReady: false,
       readyKeywords: [],
       showReadyFlag: false,
-      keywordObject: {}
+      keywordObject: {},
+      showKeywordEdit: false
     }
   },
   mounted() {
@@ -162,12 +180,24 @@ export default {
       this.showReadyFlag = true
     },
     saveReadyKeyword(data) {
-      console.log(data)
+      createKeyword(data).then(response => {
+        this.showReadyFlag = false
+        for (let i = 0; i < this.readyKeywords.length; i++) {
+          if (response.data.name === this.readyKeywords[i]['name']) {
+            this.readyKeywords.splice(i, 1)
+            break
+          }
+        }
+        this.$message.success('操作成功')
+      })
     },
     keywordStatusMap(status) {
       return statusMap(status)
     },
-    editKeyword() {},
+    editKeyword(row) {
+      this.keywordObject = row
+      this.showKeywordEdit = true
+    },
     showKeywordDetail() {}
   }
 }
@@ -206,10 +236,10 @@ export default {
   }
   .card-body {
     .ready-keyword {
-      border-bottom: 1px solid #e4e7ed;
-      background-color: #f6c475;
+      //border-bottom: 1px solid #e4e7ed;
       cursor: pointer;
       .ready-content {
+        background-color: #fff995;
         .ready-title {
           color: #bd0000;
           font-size: 16px;
@@ -225,7 +255,13 @@ export default {
     .collapse-title {
       color: $textColor;
       font-size: 14px;
+      font-weight: 500;
     }
+  }
+}
+:deep(.el-collapse) {
+  .el-collapse-item__content {
+    padding-bottom: 0;
   }
 }
 </style>

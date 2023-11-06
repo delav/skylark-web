@@ -1,8 +1,15 @@
+
+const EntitySplitSep = '#@#'
+const KeywordSplitSep = '|'
+const ListFreeArg = '*args'
+const DictFreeArg = '**kwargs'
+
 const KeywordArgType = {
   NONE: 0,
   FINITE: 1,
   LIST: 2,
   DICT: 3,
+  MIXED: 4,
 }
 
 const KeywordCategory = {
@@ -14,6 +21,10 @@ const KeywordCategory = {
 }
 
 export default {
+  EntitySplitSep,
+  KeywordSplitSep,
+  ListFreeArg,
+  DictFreeArg,
   KeywordArgType,
   KeywordCategory
 }
