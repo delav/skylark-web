@@ -1,5 +1,5 @@
 <template>
-  <div class="keyword-form">
+  <div class="ready-form">
     <div class="body">
       <el-form
         ref="ruleFormRef"
@@ -12,7 +12,7 @@
           <el-input v-model="formData.ext_name"></el-input>
         </el-form-item>
         <el-form-item label="函数名称" prop="name">
-          <el-input v-model="formData.name"></el-input>
+          <el-input v-model="formData.name" disabled></el-input>
         </el-form-item>
         <el-form-item label="分组" prop="group_id">
           <el-select
@@ -32,19 +32,19 @@
           <el-input :rows="3" type="textarea" v-model="formData.desc"></el-input>
         </el-form-item>
         <el-form-item label="参数" prop="input_params">
-          <el-input v-model="formData.input_params"></el-input>
+          <el-input v-model="formData.input_params" disabled></el-input>
         </el-form-item>
         <el-form-item label="参数说明" prop="input_desc">
           <el-input v-model="formData.input_desc"></el-input>
         </el-form-item>
         <el-form-item label="返回值" prop="output_params">
-          <el-input v-model="formData.output_params"></el-input>
+          <el-input v-model="formData.output_params" disabled></el-input>
         </el-form-item>
         <el-form-item label="返回值说明" prop="output_desc">
           <el-input v-model="formData.output_desc"></el-input>
         </el-form-item>
         <el-form-item label="来源" prop="source">
-          <el-input v-model="formData.source"></el-input>
+          <el-input v-model="formData.source" disabled></el-input>
         </el-form-item>
         <el-form-item label="组件图标">
           <el-upload
@@ -83,7 +83,7 @@
 <script>
 
 export default {
-  name: 'KeywordForm',
+  name: 'ReadyForm',
   props: {
     keywordData: Object,
     keywordGroup: Array
@@ -150,7 +150,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.keyword-form {
+.ready-form {
   width: 100%;
   height: 100%;
   max-width: 800px;

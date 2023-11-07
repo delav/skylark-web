@@ -22,6 +22,7 @@
           v-model="queryParams.create_by"
           placeholder="选择用户"
           @change="filterPlans"
+          filterable
         >
           <el-option
             v-for="item in userList"

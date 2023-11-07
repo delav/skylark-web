@@ -70,7 +70,7 @@
               <template #default="scope">
                 <el-button-group>
                   <el-button type="primary" @click="editKeyword(scope.row)" link>编辑</el-button>
-                  <el-button type="primary" @click="showKeywordDetail(scope.row)" link>详情</el-button>
+                  <el-button type="primary" @click="keywordDetail(scope.row)" link>详情</el-button>
                 </el-button-group>
               </template>
             </el-table-column>
@@ -83,11 +83,11 @@
         <el-dialog
           width="700px"
           v-model="showReadyFlag"
-          title="保存组件"
+          title="确认组件"
           :close-on-click-modal="false"
         >
           <div class="content">
-            <keyword-form
+            <ready-form
               :keyword-data="keywordObject"
               :keyword-group="keywordGroups"
               @cancel="showReadyFlag=false"
@@ -113,12 +113,30 @@
           </div>
         </el-dialog>
       </div>
+      <div class="detail-dialog">
+        <el-dialog
+          width="75%"
+          v-model="showKeywordDetail"
+          title="组件详情"
+          :close-on-click-modal="false"
+        >
+          <div class="content">
+            <keyword-detail
+              :keyword-data="keywordObject"
+              :keyword-group="keywordGroups"
+              @cancel="showKeywordDetail=false"
+            />
+          </div>
+        </el-dialog>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ReadyForm from "@/views/setting/keyword/components/ReadyForm";
 import KeywordForm from "@/views/setting/keyword/components/KeywordForm";
+import KeywordDetail from "@/views/setting/keyword/components/KeywordDetail";
 import { statusMap } from "@/constans/common";
 import { deepCopy } from "@/utils/dcopy";
 import { fetchKeywordGroup } from "@/api/kgroup";
@@ -127,7 +145,9 @@ import { createKeyword, getLibKeywordByGroup, getReadyLibKeyword } from "@/api/k
 export default {
   name: 'Keyword',
   components: {
-    KeywordForm
+    ReadyForm,
+    KeywordForm,
+    KeywordDetail
   },
   data() {
     return {
@@ -142,7 +162,8 @@ export default {
       readyKeywords: [],
       showReadyFlag: false,
       keywordObject: {},
-      showKeywordEdit: false
+      showKeywordEdit: false,
+      showKeywordDetail: false
     }
   },
   mounted() {
@@ -198,7 +219,10 @@ export default {
       this.keywordObject = row
       this.showKeywordEdit = true
     },
-    showKeywordDetail() {}
+    keywordDetail(row) {
+      this.keywordObject = row
+      this.showKeywordDetail = true
+    }
   }
 }
 </script>
