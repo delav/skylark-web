@@ -271,6 +271,7 @@ export default {
 
 .info {
   width: $infoWidth;
+  margin-right: 24px;
   .content {
     height: 100%;
     font-weight: 500;

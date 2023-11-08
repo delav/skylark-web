@@ -9,16 +9,19 @@
       </el-menu>
     </div>
     <right />
+    <github-corner />
   </div>
 </template>
 
 <script>
+import GithubCorner from "@/components/GithubCorner";
 import Logo from "@/layout/components/NavbarItem/Logo";
 import Right from "@/layout/components/NavbarItem/Right";
 
 export default {
   name: 'Navbar',
   components: {
+    GithubCorner,
     Logo,
     Right
   },
