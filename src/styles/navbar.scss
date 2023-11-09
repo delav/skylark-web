@@ -16,10 +16,11 @@
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       .router {
         height: 100%;
         width: calc(100% - #{$logoWidth} - #{$infoWidth});
+        margin-right: auto;
         .menu {
           height: 100%;
           border: none;

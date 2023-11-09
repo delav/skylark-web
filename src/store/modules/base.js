@@ -17,7 +17,7 @@ const getBaseState = () => {
     containAllEnvList: [],
     containAllRegionList: [],
     userList: [],
-    sysNoticeList: [
+    sysMessageList: [
       {'title': '关于平台新功能通知', 'content': '平台新增了版本控制功能，欢迎大家体验', 'new': true},
       {'title': '关于平台维护时间通知', 'content': '由于升级更新功能，平台于2023-09-18 16:30:00起维护，届时平台将不可用，预计1小时', 'new': true}
     ]

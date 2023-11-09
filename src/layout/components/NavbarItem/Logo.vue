@@ -22,6 +22,7 @@ export default {
   width: $logoWidth;
   text-align: left;
   overflow: hidden;
+  margin-right: auto;
   .navbar-logo {
     width: auto;
     height: 45px;

@@ -8,22 +8,38 @@
         </el-menu-item>
       </el-menu>
     </div>
-    <right />
+    <guide />
+    <div class="divider"></div>
+    <feedback />
+    <div class="divider"></div>
+    <message />
+    <div class="divider"></div>
+    <language />
+    <div class="divider"></div>
+    <profile />
     <github-corner />
   </div>
 </template>
 
 <script>
-import GithubCorner from "@/components/GithubCorner";
 import Logo from "@/layout/components/NavbarItem/Logo";
-import Right from "@/layout/components/NavbarItem/Right";
+import Profile from "@/layout/components/NavbarItem/Profile";
+import Language from "@/layout/components/NavbarItem/Language";
+import Message from "@/layout/components/NavbarItem/Message";
+import Feedback from "@/layout/components/NavbarItem/Feedback";
+import Guide from "@/layout/components/NavbarItem/Guide";
+import GithubCorner from "@/layout/components/NavbarItem/GithubCorner";
 
 export default {
   name: 'Navbar',
   components: {
-    GithubCorner,
     Logo,
-    Right
+    Profile,
+    Language,
+    Message,
+    Feedback,
+    Guide,
+    GithubCorner,
   },
   computed: {
     routes() {
@@ -49,5 +65,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.divider {
+  margin: 0 8px;
+  width: 1px;
+  height: 16px;
+  border-left: 1px solid #dcdfe6;
+}
 </style>
