@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { getNotice, saveNotice } from "@/api/notice";
+import { getNotification, saveNotification } from "@/api/notify";
 
 export default {
   name: 'Notice',
@@ -160,14 +160,14 @@ export default {
     changeProject(projectId) {
       Object.assign(this.$data, this.$options.data())
       this.noticeForm['project_id'] = projectId
-      getNotice(projectId).then(response => {
+      getNotification(projectId).then(response => {
         if (JSON.stringify(response.data) !== '{}') {
           this.noticeForm = response.data
         }
       })
     },
     commitNotice() {
-      saveNotice(this.noticeForm).then(response => {
+      saveNotification(this.noticeForm).then(response => {
         this.noticeForm = response.data
         this.$message.success('保存成功')
       })

@@ -19,7 +19,8 @@
       justify-content: flex-start;
       .router {
         height: 100%;
-        width: calc(100% - #{$logoWidth} - #{$infoWidth});
+        padding-left: $logoWidth;
+        min-width: 800px;
         margin-right: auto;
         .menu {
           height: 100%;

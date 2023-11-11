@@ -23,6 +23,10 @@ export default {
   text-align: left;
   overflow: hidden;
   margin-right: auto;
+  position: absolute;
+  border: 0;
+  top: 0;
+  left: 0;
   .navbar-logo {
     width: auto;
     height: 45px;

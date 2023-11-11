@@ -1,7 +1,8 @@
 <template>
   <div class="feedback">
     <el-link :underline="false" @click="feedbackShow=true">
-      意见反馈<el-icon style="margin: 3px 0 0 2px"><EditPen /></el-icon>
+      {{ $t('Navbar._feedback') }}
+      <el-icon style="margin-left: 2px"><EditPen /></el-icon>
     </el-link>
     <el-dialog
       class="feedback-dialog"

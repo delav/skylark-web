@@ -24,7 +24,7 @@ export function reset(data) {
   })
 }
 
-export function getUsers() {
+export function fetchUsers() {
   return request({
     url: 'user/info',
     method: 'get',

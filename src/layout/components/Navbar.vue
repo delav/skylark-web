@@ -4,7 +4,7 @@
     <div class="router">
       <el-menu class="menu" :default-active="activeMenu" mode="horizontal" router>
         <el-menu-item v-for="(route, i) in routes" :key="i" :index="route.path">
-          {{ route.meta.title }}
+          {{ $t(route.meta.title) }}
         </el-menu-item>
       </el-menu>
     </div>
@@ -60,6 +60,10 @@ export default {
       }
       return path
     }
+  },
+  created() {
+    this.$store.dispatch('base/getUserList')
+    this.$store.dispatch('base/getSystemMessageList')
   }
 }
 </script>

@@ -5,6 +5,8 @@ const Navbar = {
   _build: '执行计划',
   _setting: '配置管理',
   _statistics: '数据统计',
+  _guide: '使用手册',
+  _feedback: '意见反馈'
 }
 
 const SettingNavBar = {
@@ -20,9 +22,21 @@ const BuildNavBar = {
   _record: '构建记录',
 }
 
+const BaseDesc = {
+  _env: '环境',
+  _region: '地区',
+  _project: '项目',
+}
+
+const OperatorDesc = {
+
+}
+
 
 export default {
   Navbar,
   SettingNavBar,
   BuildNavBar,
+  BaseDesc,
+  OperatorDesc
 }

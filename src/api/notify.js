@@ -1,17 +1,17 @@
 import request from "@/http/request";
 
 
-export function getNotice(projectId) {
+export function getNotification(projectId) {
   return request({
-    url: '/notice',
+    url: '/notification',
     method: 'get',
     params: { project: projectId }
   })
 }
 
-export function saveNotice(data) {
+export function saveNotification(data) {
   return request({
-    url: '/notice',
+    url: '/notification',
     method: 'post',
     data: data
   })

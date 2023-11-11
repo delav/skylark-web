@@ -5,7 +5,7 @@
         <el-menu :default-active="activeMenu" style="height: 100%" router>
           <el-menu-item v-for="(route, i) in settingRoutes" :key="i" :index="resolvePath(route)">
             <svg-icon class="icon-class" :icon-class="route.meta.icon" ></svg-icon>
-            <span>{{ route.meta.title }}</span>
+            <span>{{ $t(route.meta.title) }}</span>
           </el-menu-item>
         </el-menu>
       </div>

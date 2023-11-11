@@ -34,12 +34,11 @@ export default {
   },
   methods: {
     changeLanguage(val) {
-      console.log('切换语言')
       if (this.$i18n.locale === val) {
         return
       }
       this.$i18n.locale = val
-      this.$root.$i18n.locale = val
+      this.$store.commit('user/SET_LANG', val)
     },
   }
 }

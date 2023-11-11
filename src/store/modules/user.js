@@ -1,12 +1,14 @@
 import { login, register, getInfo } from "@/api/user";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { resetRouter } from "@/router";
+import { setLang, getLang } from "@/utils/local";
 
 const getUserState = () => {
   return {
     token: getToken(),
     name: '',
-    info: {}
+    info: {},
+    lang: getLang()
   }
 }
 
@@ -24,6 +26,10 @@ const mutations = {
   },
   SET_INFO: (state, info) => {
     state.info = info
+  },
+  SET_LANG: (state, lang) => {
+    setLang(lang)
+    state.lang = lang
   }
 }
 

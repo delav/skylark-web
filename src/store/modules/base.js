@@ -1,6 +1,7 @@
 import { fetchBaseInfo } from "@/api/base";
 import { fetchProjectList } from "@/api/project";
-import { getUsers } from "@/api/user";
+import { fetchUsers } from "@/api/user";
+import { fetchSystemMessage } from "@/api/system";
 
 const getBaseState = () => {
   return {
@@ -17,10 +18,7 @@ const getBaseState = () => {
     containAllEnvList: [],
     containAllRegionList: [],
     userList: [],
-    sysMessageList: [
-      {'title': '关于平台新功能通知', 'content': '平台新增了版本控制功能，欢迎大家体验', 'new': true},
-      {'title': '关于平台维护时间通知', 'content': '由于升级更新功能，平台于2023-09-18 16:30:00起维护，届时平台将不可用，预计1小时', 'new': true}
-    ]
+    sysMessageList: []
   }
 }
 
@@ -68,6 +66,9 @@ const mutations = {
   },
   SET_USER_LIST: (state, array) => {
     state.userList = array
+  },
+  SET_SYSTEM_MESSAGE_LIST: (state, array) => {
+    state.sysMessageList = array
   }
 }
 
@@ -93,11 +94,10 @@ const actions = {
       })
     })
   },
-  getBaseInfo({ dispatch, commit }) {
+  getBaseInfo({ commit }) {
     if (state.baseLoaded) {
       return
     }
-    dispatch('getUserList')
     return new Promise((resolve, reject) => {
       fetchBaseInfo().then(response => {
         const baseInfo = response.data
@@ -149,8 +149,18 @@ const actions = {
   },
   getUserList({ commit }) {
     return new Promise((resolve, reject) => {
-      getUsers().then(response => {
+      fetchUsers().then(response => {
         commit('SET_USER_LIST', response.data)
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getSystemMessageList({ commit }) {
+    return new Promise((resolve, reject) => {
+      fetchSystemMessage().then(response => {
+        commit('SET_SYSTEM_MESSAGE_LIST', response.data)
         resolve(response.data)
       }).catch(error => {
         reject(error)

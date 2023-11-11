@@ -2,7 +2,7 @@
   <div class="action">
     <div class="env-setting">
       <div class="env-list">
-        <span class="env-text">环境：</span>
+        <span class="env-text">{{ $t('BaseDesc._env') }}：</span>
         <el-dropdown @command="changeEnv" class="set-dropdown">
           <span class="set-name">
             {{ envName }}<el-icon :size="12" class="el-icon--right"><ArrowDown /></el-icon>
@@ -21,7 +21,7 @@
         </el-dropdown>
       </div>
       <div class="region-list" v-show="showRegion">
-        <span class="region-text">地区：</span>
+        <span class="region-text">{{ $t('BaseDesc._region') }}：</span>
         <el-dropdown @command="changeRegion" class="set-dropdown">
           <span class="set-name">
             {{ regionName }}<el-icon :size="12" class="el-icon--right"><ArrowDown /></el-icon>

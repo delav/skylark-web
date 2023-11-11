@@ -1,8 +1,8 @@
 <template>
   <div class="message">
     <el-badge
-      :value="messageList.length"
-      :hidden="hideBadge"
+      :value="bellNumber"
+      :hidden="bellNumber===0"
       :max="9"
     >
       <el-popover
@@ -27,9 +27,10 @@
                class="message-item"
                v-for="(item, index) in messageList"
                :key="index"
-               @click="showMessageContent(item)"
+               :style="{ color: item.read ? '#8f8f8f' : '' }"
             >
-              {{item.title}}
+              <span class="title" @click="showMessageContent(item)">{{item.title}}</span>
+              <el-icon class="close-icon" @click="removeMessage(item)"><Close /></el-icon>
             </p>
           </div>
         </template>
@@ -54,6 +55,7 @@
 </template>
 
 <script>
+import { readSystemMessage, removeSystemMessage } from "@/api/system";
 
 export default {
   name: 'Message',
@@ -61,12 +63,12 @@ export default {
     messageList() {
       return this.$store.state.base.sysMessageList
     },
-    hideBadge() {
-      const notices = this.$store.state.base.sysMessageList
-      const newNoticeList = notices.filter((item) => {
-        return item.new === true
+    bellNumber() {
+      const messages = this.$store.state.base.sysMessageList
+      const unread = messages.filter((item) => {
+        return item.read === false
       })
-      return newNoticeList.length === 0
+      return unread.length
     },
   },
   data() {
@@ -82,6 +84,29 @@ export default {
     showMessageContent(item) {
       this.messageItem = item
       this.messageShow = true
+      if (item.read) {
+        return
+      }
+      const params = {'message_id': item.id}
+      readSystemMessage(params).then(() => {
+        let newMessageList = this.messageList
+        for (let i = 0; i < newMessageList.length; i++) {
+          if (newMessageList[i]['id'] === item.id) {
+            newMessageList[i]['read'] = true
+          }
+        }
+        this.$store.commit('base/SET_SYSTEM_MESSAGE_LIST', newMessageList)
+      })
+    },
+    removeMessage(item) {
+      const params = {'message_id': item.id}
+      removeSystemMessage(params).then(() => {
+        let newMessageList = this.messageList
+        newMessageList = newMessageList.filter((m) => {
+          return m.id === item.id
+        })
+        this.$store.commit('base/SET_SYSTEM_MESSAGE_LIST', newMessageList)
+      })
     }
   }
 }
@@ -91,7 +116,7 @@ export default {
 @import "src/styles/variables.module.scss";
 
 .message {
-  width: 32px;
+  padding: 0 6px;
 }
 .message-popover {
   .message-list {
@@ -102,12 +127,25 @@ export default {
     }
     .message-item {
       font-size:13px;
-      cursor: pointer;
       margin: 10px 0 0 0;
-      color: #8a8a8a;
+      //color: #8a8a8a;
       border-bottom: 1px solid #e4e3e3;
-      &:hover {
-        color: $mainColor;
+      .title {
+        cursor: pointer;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &:hover {
+          color: $mainColor;
+        }
+      }
+      .close-icon {
+        float: right;
+        cursor: pointer;
+        &:hover {
+          color: $mainColor;
+        }
       }
     }
   }

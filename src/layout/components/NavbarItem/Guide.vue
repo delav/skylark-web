@@ -1,7 +1,8 @@
 <template>
   <div class="guide">
     <el-link :underline="false" @click="routeToGuide">
-      使用手册<el-icon style="margin: 3px 0 0 2px"><Document /></el-icon>
+      {{ $t('Navbar._guide') }}
+      <el-icon style="margin-left: 2px"><Document /></el-icon>
     </el-link>
   </div>
 </template>
@@ -18,5 +19,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

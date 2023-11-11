@@ -13,7 +13,7 @@ export const routes = [
     path: '/design',
     name: 'Design',
     component: Layout,
-    meta: { navbar: true, title: i18n.global.t('Navbar._design') },
+    meta: { navbar: true, title: 'Navbar._design' },
     children: [
       {
         path: '',
@@ -27,7 +27,7 @@ export const routes = [
     path: '/build',
     name: 'Build',
     component: Layout,
-    meta: { navbar: true, title: i18n.global.t('Navbar._build') },
+    meta: { navbar: true, title: 'Navbar._build' },
     children: [
       {
         path: '',
@@ -44,13 +44,13 @@ export const routes = [
             path: '/build/record/list',
             name: 'RecordList',
             component: () => import('@/views/build/record/RecordList'),
-            meta: { sidebar: true, title: i18n.global.t('BuildNavBar._record'), icon: 'record', activeMenu: '/build', secondActiveMenu: '/build/record/list' }
+            meta: { sidebar: true, title: 'BuildNavBar._record', icon: 'record', activeMenu: '/build', secondActiveMenu: '/build/record/list' }
           },
           {
             path: '/build/quick/start',
             name: 'QuickBuild',
             component: () => import('@/views/build/components/QuickBuild'),
-            meta: { sidebar: true, title: i18n.global.t('BuildNavBar._quick'), icon: 'quick-build', activeMenu: '/build', secondActiveMenu: '/build/quick/start' }
+            meta: { sidebar: true, title: 'BuildNavBar._quick', icon: 'quick-build', activeMenu: '/build', secondActiveMenu: '/build/quick/start' }
           },
           {
             path: '/build/plan/detail/:id',
@@ -72,7 +72,7 @@ export const routes = [
     path: '/setting',
     name: 'Setting',
     component: Layout,
-    meta: { navbar: true, title: i18n.global.t('Navbar._setting') },
+    meta: { navbar: true, title: 'Navbar._setting' },
     children: [
       {
         path: '',
@@ -83,25 +83,25 @@ export const routes = [
             path: '/setting/variable',
             name: 'Variable',
             component: () => import('@/views/setting/variable/index'),
-            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._variable'), icon: 'setting-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
+            meta: { sidebar: true, title: 'SettingNavBar._variable', icon: 'setting-variable', activeMenu: '/setting', secondActiveMenu: '/setting/variable' }
           },
           {
             path: '/setting/notice',
             name: 'Notice',
             component: () => import('@/views/setting/notice/index'),
-            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._notice'), icon: 'setting-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notice' }
+            meta: { sidebar: true, title: 'SettingNavBar._notice', icon: 'setting-notice', activeMenu: '/setting', secondActiveMenu: '/setting/notice' }
           },
           {
             path: '/setting/keyword',
             name: 'Keyword',
             component: () => import('@/views/setting/keyword/index'),
-            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._keyword'), icon: 'setting-component', activeMenu: '/setting', secondActiveMenu: '/setting/keyword' }
+            meta: { sidebar: true, title: 'SettingNavBar._keyword', icon: 'setting-component', activeMenu: '/setting', secondActiveMenu: '/setting/keyword' }
           },
           {
             path: '/setting/access',
             name: 'Access',
             component: () => import('@/views/setting/access/index'),
-            meta: { sidebar: true, title: i18n.global.t('SettingNavBar._access'), icon: 'setting-access', activeMenu: '/setting', secondActiveMenu: '/setting/access' }
+            meta: { sidebar: true, title: 'SettingNavBar._access', icon: 'setting-access', activeMenu: '/setting', secondActiveMenu: '/setting/access' }
           },
         ]
       },
@@ -112,7 +112,7 @@ export const routes = [
     name: 'Statistics',
     redirect: '/statistics/overview',
     component: Layout,
-    meta: { navbar: true, title: i18n.global.t('Navbar._statistics') },
+    meta: { navbar: true, title: 'Navbar._statistics' },
     children: [
       {
         path: '/statistics/overview',

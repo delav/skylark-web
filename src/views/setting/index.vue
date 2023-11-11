@@ -8,7 +8,7 @@
           :index="resolvePath(route)"
         >
           <svg-icon class="icon-class" :icon-class="route.meta.icon" ></svg-icon>
-          <span>{{ route.meta.title }}</span>
+          <span>{{ $t(route.meta.title) }}</span>
         </el-menu-item>
       </el-menu>
     </div>
