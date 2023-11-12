@@ -96,7 +96,8 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="commitNotice">保存</el-button>
+              <el-button @click="cancelChange">取消</el-button>
+              <el-button type="primary" @click="saveNotice">保存</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -148,6 +149,7 @@ export default {
         'email_switch': false,
         'rcv_email': []
       },
+      cacheNoticeForm: '',
       formRules: {},
       noticeModeList: [
         { mode: 1, name: '企业微信' },
@@ -163,12 +165,17 @@ export default {
       getNotification(projectId).then(response => {
         if (JSON.stringify(response.data) !== '{}') {
           this.noticeForm = response.data
+          this.cacheNoticeForm = JSON.stringify(this.noticeForm)
         }
       })
     },
-    commitNotice() {
+    cancelChange() {
+      this.noticeForm = JSON.parse(this.cacheNoticeForm)
+    },
+    saveNotice() {
       saveNotification(this.noticeForm).then(response => {
         this.noticeForm = response.data
+        this.cacheNoticeForm = JSON.stringify(this.noticeForm)
         this.$message.success('保存成功')
       })
     }

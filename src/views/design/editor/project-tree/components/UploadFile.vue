@@ -15,7 +15,7 @@
       :file-list="uploadFiles"
     >
       <template #trigger>
-        <el-button type="info">选择文件</el-button>
+        <el-button type="primary" link><el-icon><Upload /></el-icon>选择文件</el-button>
       </template>
     </el-upload>
     <div class="upload-footer">

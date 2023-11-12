@@ -46,11 +46,12 @@ $itemHeight: 50px;
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #ebeef5;
-  cursor: pointer;
   .item-image {
     padding: 5px 0;
+    cursor: move;
   }
   .item-name {
+    cursor: pointer;
     width: 150px;
     margin-right: 15px;
     line-height: $itemHeight;
@@ -61,6 +62,26 @@ $itemHeight: 50px;
     line-height: $itemHeight;
     vertical-align: -5%;
     margin-right: 5px;
+  }
+}
+#et-case .custom-ghost {
+  background-color: #8ee5f3;
+  .item-image {
+    height: 50px;
+    margin: 0;
+    padding: 20px 0 0 0;
+  }
+  .item-name {
+    color: #606266;
+    font-size: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 0 3px;
+    position: absolute;
+    overflow: hidden;
+  }
+  .item-tip {
+    display: none;
   }
 }
 </style>

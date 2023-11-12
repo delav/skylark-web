@@ -14,6 +14,7 @@ const SettingNavBar = {
   _notice: 'Notice Setting',
   _keyword: 'Component Setting',
   _access: 'Access Setting',
+  _hook: 'Hook Setting'
 }
 
 const BuildNavBar = {

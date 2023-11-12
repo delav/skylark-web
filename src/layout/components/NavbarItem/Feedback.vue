@@ -44,7 +44,10 @@
             :on-remove="handleRemoveFile"
             :on-exceed="handleNumberLimit"
           >
-            <el-button type="primary">选择图片</el-button>
+<!--            <el-button type="primary">选择图片</el-button>-->
+            <template #trigger>
+              <el-button style="margin-top: 6px" type="primary" link><el-icon><Upload /></el-icon>选择图片</el-button>
+            </template>
             <template #tip>
               <div class="el-upload__tip">
                 仅支持上传.jpg, .png, .jpeg, .gif格式文件，文件大小不能超过5M，一次最多添加3个。

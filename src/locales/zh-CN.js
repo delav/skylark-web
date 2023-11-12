@@ -14,6 +14,7 @@ const SettingNavBar = {
   _notice: '通知配置',
   _keyword: '组件配置',
   _access: '权限配置',
+  _hook: '构建Hook'
 }
 
 const BuildNavBar = {

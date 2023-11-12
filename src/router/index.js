@@ -103,6 +103,12 @@ export const routes = [
             component: () => import('@/views/setting/access/index'),
             meta: { sidebar: true, title: 'SettingNavBar._access', icon: 'setting-access', activeMenu: '/setting', secondActiveMenu: '/setting/access' }
           },
+          {
+            path: '/setting/hook',
+            name: 'Hook',
+            component: () => import('@/views/setting/hook/index'),
+            meta: { sidebar: true, title: 'SettingNavBar._hook', icon: 'setting-hook', activeMenu: '/setting', secondActiveMenu: '/setting/hook' }
+          },
         ]
       },
     ]

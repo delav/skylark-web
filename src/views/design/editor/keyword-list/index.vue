@@ -37,14 +37,14 @@
               :list="group['keywords']"
               :group="dragSetting"
               :clone="cloneKeyword"
-              :force-fallback="true"
-              fallback-class="custom-fallback"
+              drag-class="custom-drag"
               ghost-class="custom-ghost"
               chosen-class="custom-chosen"
+              handle=".item-image"
               item-key="id"
             >
               <template #item="{ element }">
-                <keyword-item :keyword-data="element" />
+                <keyword-item :keyword-data="element" @dblclick="addEntity(element)" />
               </template>
             </draggable>
           </el-collapse-item>
@@ -72,12 +72,17 @@ import KeywordItem from "@/views/design/editor/keyword-list/components/KeywordIt
 import { getLibKeyword, getUserKeyword } from "@/api/keyword";
 import { guid } from "@/utils/other";
 import { getKeywordUid } from "@/utils/keyword";
+import { deepCopy } from "@/utils/dcopy";
 
 export default {
   name: 'KeywordList',
   components: {
     draggable,
     KeywordItem,
+  },
+  // debug
+  mounted() {
+    this.keywordGroups = this.$store.state.keyword.keywordGroupList
   },
   data() {
     return {
@@ -89,8 +94,7 @@ export default {
         pull: 'clone',
       },
       groupNames: [],
-      searchInput: '',
-      keywordGroupsCache: ''
+      searchInput: ''
     }
   },
   computed: {
@@ -122,7 +126,7 @@ export default {
       axios.all([getLibKeyword(projectId), getUserKeyword(projectId)]).then(
         axios.spread((r1, r2) => {
           this.keywordGroups = r1.data.concat(r2.data)
-          this.keywordGroupsCache = JSON.stringify(this.keywordGroups)
+          this.$store.commit('keyword/SET_KEYWORD_GROUPS', this.keywordGroups)
           let keywordDict = {}
           for (let i = 0; i < this.keywordGroups.length; i++) {
             const keywords = this.keywordGroups[i]['keywords']
@@ -160,7 +164,7 @@ export default {
           }
         }
         this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)
-        this.keywordGroupsCache = JSON.stringify(this.keywordGroups)
+        this.$store.commit('keyword/SET_KEYWORD_GROUPS', this.keywordGroups)
       })
     },
     cloneKeyword(original) {
@@ -172,6 +176,20 @@ export default {
         'output_args': original['output_params'],
         'uuid': guid()
       }
+    },
+    addEntity(original) {
+      const newEntity = {
+        'keyword_id': original['id'],
+        'keyword_type': original['keyword_type'],
+        'input_args': '',
+        'output_args': original['output_params'],
+        'uuid': guid()
+      }
+      const caseEntities = deepCopy(this.$store.state.entity.caseEntities)
+      caseEntities.push(newEntity)
+      this.$store.commit('entity/SET_CASE_ENTITIES', caseEntities)
+      this.$store.commit('entity/SET_SYNC_ENTITY_FLAG', guid())
+      this.$store.commit('entity/SET_ENTITY_CHANGE', true)
     },
     hideOrShowKeywordArea(isHide) {
       this.$store.commit('keyword/SET_HIDE_KEYWORD', isHide)
@@ -185,19 +203,12 @@ export default {
         left.style.width = `calc(100% - ${variables.keywordWidth} - ${variables.rightResizeWidth})`
       }
     },
-    dragStart(event) {
-      console.log(event)
-      let img = new Image()
-      img.src = 'https://www.google.no/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'
-      event.item = img
-      // event.originalEvent.dataTransfer.setDragImage(img, 0, 0)
-    },
     filterKeyword () {
       const expandGroups = []
-      if (this.keywordGroupsCache === '') {
+      if (this.$store.state.keyword.keywordGroupList.length === 0) {
         return
       }
-      const keywordArr = JSON.parse(this.keywordGroupsCache)
+      const keywordArr = this.$store.state.keyword.keywordGroupList
       if (this.searchInput.trim() === '') {
         this.keywordGroups = keywordArr
         this.groupNames = expandGroups
@@ -264,83 +275,36 @@ $foldExpandIconSize: 32px;
 }
 .custom-chosen {
 }
-.custom-ghost {
+#et-keyword .custom-ghost {
+  display: flex;
+  position: static;
+  height: 50px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+#et-case .custom-ghost {
   width: calc(#{$entityGridWidth} - 4px);
   height: calc(#{$entityGridHeight} - 4px);
   margin: 2px;
+  text-align: center;
   position: relative;
   overflow: hidden;
   display: inline-block;
   border-bottom: none;
-  background-color: #7a869a;
-  .item-content {
-    width: 100%;
-    text-align: center;
-    position: absolute;
-    display: inline-block;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    .item-image {
-      padding: 5px 0;
-    }
-    .item-name {
-      padding: 0 3px;
-      height: 20px;
-      font-size: 12px;
-    }
-    .item-out {
-      height: 20px;
-      margin-top: 5px;
-      font-size: 12px;
-    }
-  }
-  .item-tip {
-    top: 0;
-    left: 0;
-    position: absolute;
-  }
 }
-.custom-fallback {
-  width: calc(#{$entityGridWidth} - 4px);
-  height: calc(#{$entityGridHeight} - 4px);
-  display: inline-block;
-  background-color: #D3D3D3;
+.custom-drag {
+  width: 50px;
+  padding: 0 5px;
+  background-color: #ebeef5;
   cursor: move;
   overflow: hidden;
+  border-bottom: none;
   position: relative;
-  .item-content {
-    width: 100%;
-    text-align: center;
-    position: absolute;
-    display: inline-block;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    .item-image {
-      position: absolute;
-      text-align: center;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    .item-name {
-      text-align: center;
-      display: none;
-      .text-name {
-        font-size: 14px;
-        margin: 0;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-
-    .item-tip {
-      display: none;
-    }
-  }
+  display: inline-block;
 }
+
 :deep(.el-collapse) {
   .el-collapse-item__header {
     font-size: 13px;

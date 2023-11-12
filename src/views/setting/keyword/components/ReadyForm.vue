@@ -57,7 +57,7 @@
             :on-change="handleChangeFile"
           >
             <template #trigger>
-              <el-button type="primary" link><el-icon><Upload /></el-icon>上传</el-button>
+              <el-button style="margin-top: 6px" type="primary" link><el-icon><Upload /></el-icon>上传</el-button>
             </template>
             <span style="margin-left: 25px" v-if="iconList.length!==0">
               <el-tag type="info" @close="handleRemoveFile" closable>

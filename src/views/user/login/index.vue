@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="image-viewer">
       <el-image
-        style="width: 700px; height: auto"
+        style="width: 85%; height: auto"
         :src="loginImage"
         fit="contain"
       />

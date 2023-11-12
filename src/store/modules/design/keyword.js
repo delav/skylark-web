@@ -2,7 +2,8 @@ const getKeywordState = () => {
   return {
     keywordObjects: {},
     hideKeyword: false,
-    updateUserKeyword: ''
+    updateUserKeyword: '',
+    keywordGroupList: []
   }
 }
 
@@ -11,6 +12,9 @@ const state = getKeywordState()
 const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getKeywordState())
+  },
+  SET_KEYWORD_GROUPS: (state, groupList) => {
+    state.keywordGroupList = groupList
   },
   SET_KEYWORD_OBJECTS: (state, keywordObj) => {
     state.keywordObjects = keywordObj

@@ -233,7 +233,7 @@ export default {
   }
 }
 .custom-ghost {
-  background-color: #e4e7ed;
+  background-color: #8ee5f3;
 }
 .custom-drag {
   background-color: #ebeef5;
