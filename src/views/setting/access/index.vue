@@ -5,7 +5,7 @@
         v-loading="loading"
         :data="accessProjectList"
         :header-cell-style="{fontSize:'14px', background: '#f4f5f7'}"
-        :cell-style="{color: '#666', fontSize:'14px'}"
+        :cell-style="{color: '#666', fontSize:'14px', padding: '12px 0'}"
         stripe
         style="width: 100%"
       >
@@ -14,8 +14,8 @@
             <div class="user-list">
               <el-table
                 :data="props.row['user_list']"
-                :header-cell-style="{padding: '4px', fontSize:'13px'}"
-                :cell-style="{padding: '4px', color: '#666', fontSize:'13px'}"
+                :header-cell-style="{padding: '4px 0', fontSize:'13px'}"
+                :cell-style="{color: '#666', fontSize:'13px', padding: '4px 0'}"
               >
                 <el-table-column label="用户名" min-width="100" prop="username" />
                 <el-table-column label="邮箱地址" min-width="120" prop="email" />

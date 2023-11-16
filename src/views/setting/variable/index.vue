@@ -51,8 +51,8 @@
             stripe
             style="width: 100%"
             :row-style="{height: '0'}"
-            :cell-style="{padding: '4px'}"
-            :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
+            :cell-style="{padding: '4px 0'}"
+            :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px 0' }"
           >
             <el-table-column fixed prop="name" label="变量名" width="250" sortable>
               <template #default="scope">
@@ -98,8 +98,8 @@
               :show-header="commonVariables.length===0"
               style="width: 100%"
               :row-style="{height: '0'}"
-              :cell-style="{padding: '4px'}"
-              :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px' }"
+              :cell-style="{padding: '4px 0'}"
+              :header-cell-style="{ background: '#f4f5f7', fontSize:'13px', color: '#606266', padding: '6px 0' }"
             >
               <el-table-column fixed prop="name" label="变量名" width="250" sortable>
                 <template #default="scope">

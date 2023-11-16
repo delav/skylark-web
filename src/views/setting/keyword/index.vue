@@ -19,8 +19,8 @@
           <el-table
             v-if="activeReady"
             :data="readyKeywords"
-            :header-cell-style="{padding: '5px', fontSize:'14px', background: '#f4f5f7'}"
-            :cell-style="{padding: '6px', color: '#666', fontSize:'14px'}"
+            :header-cell-style="{padding: '5px 0', fontSize:'14px', background: '#f4f5f7'}"
+            :cell-style="{color: '#666', fontSize:'14px', padding: '6px 0'}"
           >
             <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
             <el-table-column label="参数" min-width="100" prop="input_params" show-overflow-tooltip/>
@@ -54,8 +54,8 @@
           </template>
           <el-table
             :data="groupKeywordMap[group['id']]"
-            :header-cell-style="{padding: '5px', fontSize:'14px', background: '#f4f5f7'}"
-            :cell-style="{padding: '6px', color: '#666', fontSize:'14px'}"
+            :header-cell-style="{padding: '5px 0', fontSize:'14px', background: '#f4f5f7'}"
+            :cell-style="{color: '#666', fontSize:'14px', padding: '6px 0'}"
           >
             <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
             <el-table-column label="组件名" min-width="100" prop="ext_name" show-overflow-tooltip/>

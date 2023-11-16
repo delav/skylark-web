@@ -69,7 +69,7 @@
         @selection-change="selectChangeVariable"
         @select-all="selectAllVariable"
         :row-style="{height: '0'}"
-        :cell-style="{padding: '2px 0', fontSize: '13px'}"
+        :cell-style="{fontSize: '13px', padding: '2px 0'}"
         :header-cell-style="{ background: '#f4f5f7', fontWeight: 500, color: '#606266', padding: '3px 0' }"
       >
         <el-table-column type="selection" width="50" />
