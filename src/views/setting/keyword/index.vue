@@ -115,7 +115,7 @@
       </div>
       <div class="detail-dialog">
         <el-dialog
-          width="75%"
+          width="60%"
           v-model="showKeywordDetail"
           title="组件详情"
           :close-on-click-modal="false"

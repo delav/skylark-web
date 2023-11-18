@@ -1,23 +1,23 @@
 import request from "@/http/request";
 
-export function fetchWebhookList() {
+export function fetchWebhooks() {
   return request({
-    url: '/webhook/get_webhook_list',
+    url: '/webhook',
     method: 'get'
   })
 }
 
-export function getBuildWebhook() {
+export function createWebhook(data) {
   return request({
-    url: '/webhook/build_webhook',
-    method: 'get'
-  })
-}
-
-export function createBuildWebhook(data) {
-  return request({
-    url: '/webhook/create_webhook',
+    url: '/webhook',
     method: 'post',
     data: data
+  })
+}
+
+export function deleteWebhook(hookId) {
+  return request({
+    url: `/webhook/${hookId}`,
+    method: 'delete',
   })
 }
