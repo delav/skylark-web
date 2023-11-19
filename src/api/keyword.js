@@ -19,7 +19,7 @@ export function createKeyword(data) {
 export function updateKeyword(keywordId, data) {
   return request({
     url: `/keyword/lib_keyword/${keywordId}`,
-    method: 'post',
+    method: 'patch',
     data: data
   })
 }

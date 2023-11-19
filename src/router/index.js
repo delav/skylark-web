@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import i18n from "@/locales/index";
 import Layout from "@/layout";
 
 export const routes = [
@@ -38,7 +37,7 @@ export const routes = [
             path: '/build/plan/list',
             name: 'PlanList',
             component: () => import('@/views/build/plan/PlanList'),
-            meta: { sidebar: true, title: i18n.global.t('BuildNavBar._plan'), icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/list' }
+            meta: { sidebar: true, title: 'BuildNavBar._plan', icon: 'plan', activeMenu: '/build', secondActiveMenu: '/build/plan/list' }
           },
           {
             path: '/build/record/list',

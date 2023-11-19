@@ -65,6 +65,9 @@ export default {
     },
     bellNumber() {
       const messages = this.$store.state.base.sysMessageList
+      if (messages.length === 0) {
+        return 0
+      }
       const unread = messages.filter((item) => {
         return item.read === false
       })

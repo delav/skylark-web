@@ -7,9 +7,9 @@ export function fetchProjectList() {
   })
 }
 
-export function updateProject(pId, data) {
+export function updateProject(projectId, data) {
   return request({
-    url: `/project/${pId}`,
+    url: `/project/${projectId}`,
     method: 'patch',
     data: data
   })

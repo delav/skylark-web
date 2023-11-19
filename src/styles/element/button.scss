@@ -15,6 +15,16 @@ $warningButtonText: #ffffff;
 $warningButtonHoverBg: #ffffff;
 $warningButtonHoverText: #fa7d03;
 
+$successButtonBg: #7ad835;
+$successButtonText: #ffffff;
+$successButtonHoverBg: #ffffff;
+$successButtonHoverText: #7ad835;
+
+$dangerButtonBg: #ff484c;
+$dangerButtonText: #ffffff;
+$dangerButtonHoverBg: #ffffff;
+$dangerButtonHoverText: #ff484c;
+
 $infoButtonBg: #6c757d;
 $infoButtonText: #ffffff;
 $infoButtonHoverBg: #ffffff;
@@ -73,6 +83,42 @@ $infoButtonHoverText: #6c757d;
   color: $warningButtonHoverText;
   background: $warningButtonHoverBg;
   border-color: $warningButtonBg;
+}
+
+.el-button--success {
+  color: $successButtonText;
+  background-color: $successButtonBg;
+  border-color: $successButtonBg;
+}
+.el-button--success.is-active,
+.el-button--success:active {
+  color: $successButtonText;
+  background: $successButtonHoverBg;
+  border-color: $successButtonHoverBg;
+}
+.el-button--success:focus,
+.el-button--success:hover {
+  color: $successButtonHoverText;
+  background: $successButtonHoverBg;
+  border-color: $successButtonBg;
+}
+
+.el-button--danger {
+  color: $dangerButtonText;
+  background-color: $dangerButtonBg;
+  border-color: $dangerButtonBg;
+}
+.el-button--danger.is-active,
+.el-button--danger:active {
+  color: $dangerButtonText;
+  background: $dangerButtonHoverBg;
+  border-color: $dangerButtonHoverBg;
+}
+.el-button--success:focus,
+.el-button--success:hover {
+  color: $dangerButtonHoverText;
+  background: $dangerButtonHoverBg;
+  border-color: $dangerButtonBg;
 }
 
 .el-button--info {

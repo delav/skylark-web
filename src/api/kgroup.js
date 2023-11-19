@@ -7,3 +7,25 @@ export function fetchKeywordGroup() {
   })
 }
 
+export function createKeywordGroup(data) {
+  return request({
+    url: '/keyword_group',
+    method: 'post',
+    data: data
+  })
+}
+
+export function updateKeywordGroup(groupId, data) {
+  return request({
+    url: `/keyword_group/${groupId}`,
+    method: 'patch',
+    data: data
+  })
+}
+
+export function deleteKeywordGroup(groupId) {
+  return request({
+    url: `/keyword_group/${groupId}`,
+    method: 'delete'
+  })
+}

@@ -104,7 +104,7 @@
               <template #default="scope">
                 <el-button-group>
                   <el-button type="primary" size="small" @click="getReportFile(scope.row.id, 'log')" link>日志</el-button>
-                  <el-button style="margin-left: 10px" type="primary" size="small" @click="getReportFile(scope.row.id, 'report')" link>报告</el-button>
+                  <el-button type="primary" size="small" @click="getReportFile(scope.row.id, 'report')" link>报告</el-button>
                 </el-button-group>
               </template>
             </el-table-column>

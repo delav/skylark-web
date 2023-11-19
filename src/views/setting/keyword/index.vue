@@ -6,8 +6,18 @@
       <span class="item-desc team">团队：</span>
       <el-input class="item-value" v-model="teamName" :disabled="true"></el-input>
       <div class="group-button">
-        <el-button type="primary" @click="getReadyKeywordList"><el-icon class="el-icon--left"><Search /></el-icon>扫描组件</el-button>
-        <el-button type="primary"><el-icon class="el-icon--left"><Plus /></el-icon>新建分组</el-button>
+        <el-button type="success" @click="getReadyKeywordList">
+          <el-icon><Search /></el-icon>
+          扫描组件
+        </el-button>
+        <el-button type="warning" @click="showGroupUpdate=true">
+          <el-icon><Edit /></el-icon>
+          编辑分组
+        </el-button>
+        <el-button type="primary" @click="showGroupForm=true">
+          <el-icon><Plus /></el-icon>
+          新建分组
+        </el-button>
       </div>
     </div>
     <div class="card-body">
@@ -33,7 +43,7 @@
             <el-table-column fixed="right" label="操作" width="110">
               <template #default="scope">
                 <el-button-group>
-                  <el-button type="primary" size="small" @click="showConfirm(scope.row)" link>确认</el-button>
+                  <el-button type="primary" size="small" @click="showReadyConfirm(scope.row)" link>确认</el-button>
                 </el-button-group>
               </template>
             </el-table-column>
@@ -79,72 +89,99 @@
       </el-collapse>
     </div>
     <div class="dialog">
-      <div class="ready-dialog">
-        <el-dialog
-          width="700px"
-          v-model="showReadyFlag"
-          title="确认组件"
-          :close-on-click-modal="false"
-        >
-          <div class="content">
-            <ready-form
-              :keyword-data="keywordObject"
-              :keyword-group="keywordGroups"
-              @cancel="showReadyFlag=false"
-              @confirm="saveReadyKeyword"
-            />
-          </div>
-        </el-dialog>
-      </div>
-      <div class="edit-dialog">
-        <el-dialog
-          width="700px"
-          v-model="showKeywordEdit"
-          title="编辑组件"
-          :close-on-click-modal="false"
-        >
-          <div class="content">
-            <keyword-form
-              :keyword-data="keywordObject"
-              :keyword-group="keywordGroups"
-              @cancel="showKeywordEdit=false"
-              @confirm="saveReadyKeyword"
-            />
-          </div>
-        </el-dialog>
-      </div>
-      <div class="detail-dialog">
-        <el-dialog
-          width="60%"
-          v-model="showKeywordDetail"
-          title="组件详情"
-          :close-on-click-modal="false"
-        >
-          <div class="content">
-            <keyword-detail
-              :keyword-data="keywordObject"
-              :keyword-group="keywordGroups"
-              @cancel="showKeywordDetail=false"
-            />
-          </div>
-        </el-dialog>
-      </div>
+      <el-dialog
+        width="600px"
+        v-model="showGroupForm"
+        title="新建分组"
+        :close-on-click-modal="false"
+      >
+        <div class="content">
+          <group-form
+            @cancel="showGroupForm=false"
+            @confirm="createGroup"
+          />
+        </div>
+      </el-dialog>
+      <el-dialog
+        width="600px"
+        v-model="showGroupUpdate"
+        title="编辑分组"
+        :close-on-click-modal="false"
+        :destroy-on-close="true"
+      >
+        <div class="content">
+          <group-update
+            :group-list="keywordGroups"
+            @cancel="showGroupUpdate=false"
+            @delete="deleteGroup"
+            @confirm="updateGroup"
+          />
+        </div>
+      </el-dialog>
+      <el-dialog
+        width="700px"
+        v-model="showReadyFlag"
+        title="确认组件"
+        :close-on-click-modal="false"
+      >
+        <div class="content">
+          <ready-form
+            :keyword-data="keywordObject"
+            :keyword-group="keywordGroups"
+            @cancel="showReadyFlag=false"
+            @confirm="saveReadyKeyword"
+          />
+        </div>
+      </el-dialog>
+      <el-dialog
+        width="700px"
+        v-model="showKeywordEdit"
+        title="编辑组件"
+        :close-on-click-modal="false"
+      >
+        <div class="content">
+          <keyword-form
+            :keyword-data="keywordObject"
+            :keyword-group="keywordGroups"
+            @cancel="showKeywordEdit=false"
+            @confirm="saveReadyKeyword"
+          />
+        </div>
+      </el-dialog>
+      <el-dialog
+        width="60%"
+        v-model="showKeywordDetail"
+        title="组件详情"
+        :close-on-click-modal="false"
+      >
+        <div class="content">
+          <keyword-detail
+            :keyword-data="keywordObject"
+            :keyword-group="keywordGroups"
+            @cancel="showKeywordDetail=false"
+          />
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
+import GroupForm from "@/views/setting/keyword/components/GroupForm";
+import GroupUpdate from "@/views/setting/keyword/components/GroupUpdate";
 import ReadyForm from "@/views/setting/keyword/components/ReadyForm";
 import KeywordForm from "@/views/setting/keyword/components/KeywordForm";
 import KeywordDetail from "@/views/setting/keyword/components/KeywordDetail";
 import { statusMap } from "@/constans/common";
 import { deepCopy } from "@/utils/dcopy";
-import { fetchKeywordGroup } from "@/api/kgroup";
+import { fetchKeywordGroup, createKeywordGroup, updateKeywordGroup, deleteKeywordGroup } from "@/api/kgroup";
 import { createKeyword, getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
 
 export default {
   name: 'Keyword',
   components: {
+    GroupForm,
+    GroupUpdate,
     ReadyForm,
     KeywordForm,
     KeywordDetail
@@ -158,6 +195,8 @@ export default {
       activeNames: [],
       keywordGroups: [],
       groupKeywordMap: {},
+      showGroupForm: false,
+      showGroupUpdate: false,
       activeReady: false,
       readyKeywords: [],
       showReadyFlag: false,
@@ -180,13 +219,33 @@ export default {
     },
     handleChange() {
       if (this.activeNames.length > this.rawActiveNames.length) {
-        // 展开
+        // expand
         const [newOpenGroupId] = this.activeNames.slice(-1)
         getLibKeywordByGroup(newOpenGroupId).then(response => {
           this.groupKeywordMap[newOpenGroupId] = response.data
         })
       }
       this.rawActiveNames = deepCopy(this.activeNames)
+    },
+    createGroup(data) {
+      createKeywordGroup(data).then(() => {
+        this.showGroupForm = false
+        this.getKeywordGroup()
+      })
+    },
+    updateGroup(data) {
+      const groupId = data.id
+      delete data['id']
+      updateKeywordGroup(groupId, data).then(() => {
+        this.showGroupUpdate = false
+        this.getKeywordGroup()
+      })
+    },
+    deleteGroup(groupId) {
+      deleteKeywordGroup(groupId).then(() => {
+        this.showGroupUpdate = false
+        this.getKeywordGroup()
+      })
     },
     getReadyKeywordList() {
       getReadyLibKeyword().then(response => {
@@ -196,7 +255,7 @@ export default {
         }
       })
     },
-    showConfirm(row) {
+    showReadyConfirm(row) {
       this.keywordObject = row
       this.showReadyFlag = true
     },
@@ -263,7 +322,7 @@ export default {
       //border-bottom: 1px solid #e4e7ed;
       cursor: pointer;
       .ready-content {
-        background-color: #fff995;
+        background-color: #ffde9c;
         .ready-title {
           color: #bd0000;
           font-size: 16px;

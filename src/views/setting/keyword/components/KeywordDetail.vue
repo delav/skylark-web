@@ -1,7 +1,7 @@
 <template>
   <div class="keyword-detail">
     <div class="content">
-      <el-descriptions column="2">
+      <el-descriptions :column="2">
         <el-descriptions-item label="组件名称：">{{keywordData['ext_name']}}</el-descriptions-item>
         <el-descriptions-item label="函数名：">{{keywordData['name']}}</el-descriptions-item>
         <el-descriptions-item label="创建时间：">{{keywordData['create_at']}}</el-descriptions-item>

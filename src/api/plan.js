@@ -11,7 +11,7 @@ export function createPlan(data) {
 export function updatePlan(planId, data) {
   return request({
     url: `/build/plan/${planId}`,
-    method: 'post',
+    method: 'patch',
     data: data
   })
 }

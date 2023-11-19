@@ -54,7 +54,7 @@
           <el-table-column fixed="right" label="操作" width="110">
             <template #default="scope">
               <el-button-group>
-                <el-button type="primary" size="small" @click="showHookDetailAction(scope.row)" link>详情</el-button>
+                <el-button type="primary" @click="showHookDetailAction(scope.row)" link>详情</el-button>
                 <el-popconfirm
                   confirm-button-text="确定"
                   cancel-button-text="取消"
@@ -64,7 +64,7 @@
                   @confirm="confirmDeleteHook(scope.row.id)"
                 >
                   <template #reference>
-                    <el-button type="danger" size="small" link>删除</el-button>
+                    <el-button type="danger" link>删除</el-button>
                   </template>
                 </el-popconfirm>
               </el-button-group>

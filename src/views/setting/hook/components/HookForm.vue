@@ -50,15 +50,20 @@ export default {
       this.$emit('cancel')
     },
     confirmCreate() {
-      const extraDataObj = {
-        plan_list: this.hookFormData.plans
-      }
-      const params = {
-        name: this.hookFormData.name,
-        desc: this.hookFormData.desc,
-        extra_data: JSON.stringify(extraDataObj)
-      }
-      this.$emit('confirm', params)
+      this.$refs['buildHookRef'].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        const extraDataObj = {
+          plan_list: this.hookFormData.plans
+        }
+        const params = {
+          name: this.hookFormData.name,
+          desc: this.hookFormData.desc,
+          extra_data: JSON.stringify(extraDataObj)
+        }
+        this.$emit('confirm', params)
+      })
     }
   }
 }
