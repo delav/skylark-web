@@ -92,6 +92,11 @@ export default {
     saveFileInfo(params) {
       saveFileContent(params).then(response => {
         this.fileData = response.data
+        this.$message({
+          type: 'success',
+          message: '保存成功',
+          duration: 1500
+        })
       })
     }
   }

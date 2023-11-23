@@ -1,54 +1,17 @@
 <template>
   <div class="action">
-    <div class="env-setting">
-      <div class="env-list">
-        <span class="env-text">{{ $t('BaseDesc._env') }}：</span>
-        <el-dropdown @command="changeEnv" class="set-dropdown">
-          <span class="set-name">
-            {{ envName }}<el-icon :size="12" class="el-icon--right"><ArrowDown /></el-icon>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item
-                v-for="(item, index) in envList"
-                :command="item"
-                :key="index"
-              >
-                {{ item.name }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
-      <div class="region-list" v-show="showRegion">
-        <span class="region-text">{{ $t('BaseDesc._region') }}：</span>
-        <el-dropdown @command="changeRegion" class="set-dropdown">
-          <span class="set-name">
-            {{ regionName }}<el-icon :size="12" class="el-icon--right"><ArrowDown /></el-icon>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item
-                v-for="(item, index) in regionList"
-                :command="item"
-                :key="index"
-              >
-                {{ item.name }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
-    </div>
-    <div class="action-content">
-      <div class="icon-list">
-        <icon-item :condition="canRun" i-class="action-run" @func="startBuild" description="执行用例"></icon-item>
-        <icon-item :condition="canStop" i-class="action-stop" @func="stopBuild" description="终止执行"></icon-item>
-        <icon-item :condition="seeLog" i-class="action-log" @func="showReport" description="查看日志"></icon-item>
-        <icon-item :condition="canSave" i-class="action-save" @func="saveEntity" description="保存修改"></icon-item>
-        <icon-item :condition="isSelect" i-class="action-copy" @func="copyEntity" description="复制组件"></icon-item>
-        <icon-item :condition="isSelect" i-class="action-delete" @func="deleteEntity" description="删除组件"></icon-item>
-        <icon-item :condition="canPush" i-class="action-push" @func="showPushDialog=true" description="推送项目"></icon-item>
+    <div class="content">
+      <env-setting />
+      <div class="action-content">
+        <div class="icon-list">
+          <icon-item :condition="canRun" i-class="action-run" @func="startBuild" description="执行用例"></icon-item>
+          <icon-item :condition="canStop" i-class="action-stop" @func="stopBuild" description="终止执行"></icon-item>
+          <icon-item :condition="seeLog" i-class="action-log" @func="showReport" description="查看日志"></icon-item>
+          <icon-item :condition="canSave" i-class="action-save" @func="saveEntity" description="保存修改"></icon-item>
+          <icon-item :condition="isSelect" i-class="action-copy" @func="copyEntity" description="复制组件"></icon-item>
+          <icon-item :condition="isSelect" i-class="action-delete" @func="deleteEntity" description="删除组件"></icon-item>
+          <icon-item :condition="canPush" i-class="action-push" @func="showPushDialog=true" description="推送项目"></icon-item>
+        </div>
       </div>
     </div>
     <div class="dialog">
@@ -84,6 +47,7 @@
 
 <script>
 import jquery from "jquery";
+import EnvSetting from "@/views/design/action/components/EnvSetting";
 import IconItem from "@/views/design/action/components/IconItem";
 import PushInfo from "@/views/design/action/components/PushInfo";
 import ReportViewer from "@/views/design/action/components/ReportViewer";
@@ -98,14 +62,13 @@ import { buildDebug, getBuildProgress, getDebugLog } from "@/api/builder";
 export default {
   name: 'Action',
   components: {
+    EnvSetting,
     IconItem,
     PushInfo,
     ReportViewer
   },
   data() {
     return {
-      envName: '',
-      regionName: '',
       hadRunCases: {},
       buildId: '',
       runFinish: false,
@@ -138,22 +101,6 @@ export default {
     showRegion() {
       return this.$store.state.base.showRegion
     },
-    envList() {
-      return this.$store.state.base.envList
-    },
-    regionList() {
-      return this.$store.state.base.regionList
-    }
-  },
-  watch: {
-    '$store.state.base.baseLoaded': {
-      handler(value) {
-        if (!value) return
-        this.setDefaultEnv()
-        this.setDefaultRegion()
-      },
-      immediate: true
-    },
   },
   mounted() {
     this.addMouseEvent()
@@ -180,28 +127,6 @@ export default {
       document.onmousedown = function () {
         return true
       }
-    },
-    setDefaultEnv() {
-      const envs = this.$store.state.base.envList
-      if (envs.length === 0) {
-        return
-      }
-      this.changeEnv(envs[0])
-    },
-    setDefaultRegion() {
-      const regions = this.$store.state.base.regionList
-      if (regions.length === 0) {
-        return
-      }
-      this.changeRegion(regions[0])
-    },
-    changeEnv(item) {
-      this.envName = item.name
-      this.$store.commit('action/SET_CURRENT_ENV', item.id)
-    },
-    changeRegion(item) {
-      this.regionName = item.name
-      this.$store.commit('action/SET_CURRENT_REGION', item.id)
     },
     changeNodeColor(treeObj, mid, color) {
       let node = treeObj.getNodesByFilter(function (node) {
@@ -287,6 +212,7 @@ export default {
         'project_id': this.$store.state.tree.projectId,
         'project_name': this.$store.state.tree.projectName,
         'run_data': this.$store.state.tree.checkedNodes,
+        'parameters': this.$store.state.action.executeParams
       }
       if (this.showRegion) {
         const regionMap = this.$store.state.base.regionMap
@@ -311,9 +237,12 @@ export default {
     showReport() {
       // this.showLogDialog = true
       getDebugLog(this.buildId).then(response => {
+        const logUrl = `http://localhost:8091/#/${this.buildId}/log.html`
         window.localStorage.removeItem('callbackHTML')
         window.localStorage.setItem('callbackHTML', response.data)
-        const newTab = window.open(this.buildId, '_blank')
+        const newTab = window.open()
+        newTab.location.href = logUrl
+        newTab.document.open()
         newTab.document.write(localStorage.getItem('callbackHTML'))
         newTab.document.close()
       })
@@ -370,49 +299,20 @@ export default {
 .action {
   height: $toolbarHeight;
   background-color: $toolbarBg;
-  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   //border-top: 1px solid $toolbarBg;
   //border-bottom: 1px solid $toolbarBg;
-  .env-setting {
+  .content {
     display: flex;
-    width: 300px;
-    height: 100%;
-    padding-left: 7px;
-    padding-top: -1px;
-    line-height: $toolbarHeight;
-    .env-list {
-      min-width: 120px;
-      .env-text {
-        font-size: 14px;
-        color: $textColor;
+    justify-content: flex-start;
+    .action-content {
+      margin-right: auto;
+      height: 100%;
+      text-align: center;
+      .icon-list {
+        display: inline-block;
       }
-    }
-    .region-list {
-      margin-left: 25px;
-      min-width: 120px;
-      .region-text {
-        font-size: 14px;
-        color: $textColor;
-      }
-    }
-    .set-dropdown {
-      line-height: $toolbarHeight;
-      cursor: pointer;
-      .set-name {
-        color: $mainColor;
-        .el-icon {
-          color: $textColor;
-        }
-      }
-    }
-  }
-  .action-content {
-    float: left;
-    width: calc(100% - 300px);
-    height: 100%;
-    text-align: center;
-    .icon-list {
-      display: inline-block;
     }
   }
 }

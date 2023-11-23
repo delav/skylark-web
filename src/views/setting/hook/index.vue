@@ -96,6 +96,7 @@
       >
         <div class="content">
           <hook-detail
+            :type-map="hookTypeDict"
             :hook-data="hookDetailData"
           />
         </div>
@@ -121,6 +122,10 @@ export default {
       loading: true,
       webhookList: [],
       hookTypeList: [],
+      hookTypeDict: {
+        BUILD: 1,
+        GIT: 2
+      },
       hookType: 0,
       showHookCreate: false,
       showHookDetail: false,
@@ -147,8 +152,10 @@ export default {
         this.$message.warning('请选择Hook类型')
         return
       }
-      if (this.hookType === 1) {
+      if (this.hookType === this.hookTypeDict.BUILD) {
         this.showHookCreate = true
+      } else {
+        this.$message.warning('该类型Hook暂未开放')
       }
     },
     saveWebhook(data) {
@@ -184,9 +191,17 @@ export default {
         this.getWebhookList()
       })
     },
+    getPlanIdListByExtraData(extraData) {
+      const extraDataObj = JSON.parse(extraData)
+      if ('plan_list' in extraDataObj) {
+        return extraDataObj['plan_list']
+      }
+      return null
+    },
     showHookDetailAction(hookData) {
       this.hookDetailData = deepCopy(hookData)
       this.hookDetailData['hook_type'] = this.getTypeNameById(this.hookDetailData['hook_type'])
+      this.hookDetailData['plan_list'] = this.getPlanIdListByExtraData(this.hookDetailData['extra_data'])
       this.showHookDetail = true
     }
   }

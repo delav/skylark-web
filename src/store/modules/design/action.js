@@ -3,7 +3,8 @@ const getExecuteState = () => {
     currentEnv: '',
     currentRegion: '',
     isRunning: false,
-    runFinish: false
+    runFinish: false,
+    executeParams: '',
   }
 }
 
@@ -24,7 +25,10 @@ const mutations = {
   },
   SET_RUN_FINISH: (state, finishFlag) => {
     state.runFinish = finishFlag
-  }
+  },
+  SET_EXECUTE_PARAMS: (state, varParams) => {
+    state.executeParams = varParams
+  },
 }
 
 const actions = {

@@ -14,6 +14,7 @@
           effect="dark"
           content="收起"
           placement="bottom"
+          :hide-after="50"
         >
           <el-icon class="fold-expand-icon" @click="hideOrShowKeywordArea(true)"><Expand /></el-icon>
         </el-tooltip>
@@ -57,6 +58,7 @@
         effect="dark"
         content="展开"
         placement="bottom"
+        :hide-after="50"
       >
         <el-icon class="fold-expand-icon" @click="hideOrShowKeywordArea(false)"><Fold /></el-icon>
       </el-tooltip>
@@ -242,7 +244,6 @@ $foldExpandIconSize: 32px;
 
 .keyword-list {
   height: 100%;
-  overflow-y: scroll;
   .keyword-show {
     height: 100%;
     .head {
@@ -260,6 +261,7 @@ $foldExpandIconSize: 32px;
     .content {
       height: calc(100% - #{$searchHeight});
       padding: 0 5px;
+      overflow-y: scroll;
     }
   }
   .keyword-hide {

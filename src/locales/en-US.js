@@ -27,6 +27,7 @@ const BaseDesc = {
   _env: 'Env',
   _region: 'Region',
   _project: 'Project',
+  _parameters: 'Parameters'
 }
 
 const OperatorDesc = {

@@ -114,8 +114,8 @@ $infoButtonHoverText: #6c757d;
   background: $dangerButtonHoverBg;
   border-color: $dangerButtonHoverBg;
 }
-.el-button--success:focus,
-.el-button--success:hover {
+.el-button--danger:focus,
+.el-button--danger:hover {
   color: $dangerButtonHoverText;
   background: $dangerButtonHoverBg;
   border-color: $dangerButtonBg;

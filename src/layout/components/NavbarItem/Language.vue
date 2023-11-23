@@ -1,7 +1,7 @@
 <template>
   <div class="language">
     <el-dropdown trigger="hover" :command="changeLanguage">
-      <span>
+      <span style="outline: none">
         {{ $t('Navbar._language') }}
         <el-icon><ArrowDown /></el-icon>
       </span>

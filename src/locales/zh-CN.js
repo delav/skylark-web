@@ -27,6 +27,7 @@ const BaseDesc = {
   _env: '环境',
   _region: '地区',
   _project: '项目',
+  _parameters: '执行参数'
 }
 
 const OperatorDesc = {

@@ -17,6 +17,7 @@
           effect="dark"
           content="收起"
           placement="bottom"
+          :hide-after="50"
         >
           <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(true)"><Fold /></el-icon>
         </el-tooltip>
@@ -54,6 +55,7 @@
           effect="dark"
           content="展开"
           placement="right"
+          :hide-after="50"
         >
           <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(false)"><Expand /></el-icon>
         </el-tooltip>

@@ -1,10 +1,10 @@
 <template>
   <div class="profile">
     <el-dropdown>
-          <span>
-            {{ userName }}
-            <el-icon><ArrowDown /></el-icon>
-          </span>
+      <span style="outline: none">
+        {{ userName }}
+        <el-icon><ArrowDown /></el-icon>
+      </span>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item @click.native="logout" icon="Right">
