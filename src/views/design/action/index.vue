@@ -269,9 +269,9 @@ export default {
     },
     showReport() {
       // this.showLogDialog = true
-      getDebugLog(this.buildId).then(response => {
-        const logUrl = `http://localhost:8091/#/${this.buildId}/log.html`
-        const newTab = window.open(logUrl)
+      const logUrl = `${window.location.origin}/#/log/${this.buildId}/log.html`
+      const newTab = window.open(logUrl)
+      getDebugLog(this.buildId).then((response) => {
         newTab.document.open()
         newTab.document.write(response.data)
         newTab.document.close()

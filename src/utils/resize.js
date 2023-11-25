@@ -1,7 +1,7 @@
 import store from "@/store";
 import variables from "@/styles/variables.module.scss";
 
-const treeMinWidth = 200
+const treeMinWidth = 240
 const caseMinWidth = 500
 const caseMinHeight = 150
 const argMinHeight = 50
@@ -39,7 +39,7 @@ export function dragWController(leftId, rightId, boxId, resizeId) {
       // 设置左侧区域的宽度
       resizeW.style.left = moveLen
       left.style.width = (moveLen/boxWidth)*100 + '%'
-      right.style.width = ((boxWidth - moveLen - resizeWidth)/boxWidth)*100 + '%'
+      right.style.width = Math.floor(((boxWidth - moveLen - resizeWidth)/boxWidth)*100) + '%'
     }
     // 鼠标松开事件
     document.onmouseup = function () {

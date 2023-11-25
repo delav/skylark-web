@@ -176,11 +176,11 @@ export default {
       }
     },
     getReportFile(historyId, reportType) {
+      const htmlUrl = `${window.location.origin}/#/${reportType}/${this.buildId}/${reportType}.html`
+      const newTab = window.open(htmlUrl)
       getHistoryReport(historyId, reportType).then(response => {
-        window.localStorage.removeItem('callbackHTML')
-        window.localStorage.setItem('callbackHTML', response.data)
-        const newTab = window.open(this.buildId, '_blank')
-        newTab.document.write(localStorage.getItem('callbackHTML'))
+        newTab.document.open()
+        newTab.document.write(response.data)
         newTab.document.close()
       })
     }

@@ -11,16 +11,6 @@
           @change="changeProject"
           placeholder="选择项目"
         />
-        <el-tooltip
-          popper-class="custom-tooltip"
-          class="tooltip-icon"
-          effect="dark"
-          content="收起"
-          placement="bottom"
-          :hide-after="50"
-        >
-          <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(true)"><Fold /></el-icon>
-        </el-tooltip>
       </div>
       <div class="tree">
         <tree
@@ -40,45 +30,72 @@
         </div>
       </div>
       <div class="tool">
-        <span class="setting-button">
-          <el-button type="primary" size="small" @click="envSetting"><el-icon><Setting /></el-icon>变量配置</el-button>
-        </span>
-        <span class="setting-button">
-          <el-button type="primary" size="small" @click="showNewDialog=true"><el-icon><Plus /></el-icon>新建项目</el-button>
-        </span>
+        <div class="setting-button">
+          <el-button type="primary" size="small" @click="envSetting">
+            <el-icon><Setting /></el-icon>
+            变量配置
+          </el-button>
+        </div>
+        <div class="setting-button">
+          <el-button type="primary" size="small" @click="showNewDialog=true">
+            <el-icon><Plus /></el-icon>
+            新建项目
+          </el-button>
+        </div>
+        <div class="tooltip-icon">
+          <el-tooltip
+            effect="dark"
+            content="收起"
+            placement="bottom"
+            :hide-after="50"
+          >
+            <span class="fold-expand-icon">
+              <svg-icon
+                class="real-icon"
+                icon-class="project-fold"
+                @click="hideOrShowTreeArea(true)"
+              >
+            </svg-icon>
+            </span>
+          </el-tooltip>
+        </div>
       </div>
     </div>
     <div v-show="hideTree" class="project-hide">
       <div class="top-tool">
-        <el-tooltip
-          popper-class="custom-tooltip"
-          effect="dark"
-          content="展开"
-          placement="right"
-          :hide-after="50"
-        >
-          <el-icon class="fold-expand-icon" @click="hideOrShowTreeArea(false)"><Expand /></el-icon>
-        </el-tooltip>
-      </div>
-      <div class="bottom-tool">
-        <div class="bottom-flex">
+        <div class="top-flex">
           <el-tooltip
-            popper-class="custom-tooltip"
-            effect="dark"
-            content="新建项目"
-            placement="right"
-          >
-            <el-icon class="tool-icon" @click="showNewDialog=true"><FolderAdd /></el-icon>
-          </el-tooltip>
-          <el-tooltip
-            popper-class="custom-tooltip"
             effect="dark"
             content="变量配置"
             placement="right"
           >
             <el-icon class="tool-icon" @click="showEnvDialog=true"><Setting /></el-icon>
           </el-tooltip>
+          <el-tooltip
+            effect="dark"
+            content="新建项目"
+            placement="right"
+          >
+            <el-icon class="tool-icon" @click="showNewDialog=true"><FolderAdd /></el-icon>
+          </el-tooltip>
         </div>
+      </div>
+      <div class="bottom-tool">
+        <el-tooltip
+          effect="dark"
+          content="展开"
+          placement="right"
+          :hide-after="50"
+        >
+          <span class="fold-expand-icon">
+            <svg-icon
+              class="real-icon"
+              icon-class="project-expand"
+              @click="hideOrShowTreeArea(false)"
+            >
+          </svg-icon>
+          </span>
+        </el-tooltip>
       </div>
     </div>
     <div class="dialog">
@@ -824,7 +841,7 @@ export default {
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
 $selectorHeight: 40px;
-$toolHeight: 40px;
+$toolHeight: 42px;
 
 .project-tree {
   height: 100%;
@@ -833,13 +850,10 @@ $toolHeight: 40px;
     .head {
       height: $selectorHeight;
       width: 100%;
-      padding: 5px 0 0 5px;
+      padding: 5px;
       display: flex;
       :deep(.el-cascader) {
-        width: calc(100% - #{$foldWidth});
-      }
-      .tooltip-icon {
-        width: $foldWidth;
+        width: 100%;
       }
     }
     .tree {
@@ -887,11 +901,13 @@ $toolHeight: 40px;
       }
     }
     .tool {
+      background-color: $toolbarBg;
       height: $toolHeight;
       line-height: $toolHeight;
       display: flex;
       align-items: center;
       justify-content: left;
+      flex-wrap: nowrap;
       .setting-button {
         padding-left: 10px;
         .svg-icon {
@@ -900,32 +916,35 @@ $toolHeight: 40px;
           margin-right: 5px;
         }
       }
+      .tooltip-icon {
+        height: $toolHeight;
+        font-size: 32px;
+        margin-left: auto;
+      }
     }
   }
   .project-hide {
     .top-tool {
-    }
-    .bottom-tool {
-      position: fixed;
-      bottom: 0;
-      .bottom-flex {
+      .top-flex {
         display: flex;
         flex-direction: column-reverse;
         align-items: center;
         justify-content: center;
-        padding-left: 5px;
         .tool-icon {
-          margin-bottom: 12px;
+          margin-top: 12px;
           font-size: 22px;
           color: $foldIconColor;
           cursor: pointer;
-          font-weight: bold;
           text-align: center;
           :hover {
             color: $foldIconHoverColor;
           }
         }
       }
+    }
+    .bottom-tool {
+      position: fixed;
+      bottom: 0;
     }
   }
   .dialog {
@@ -937,9 +956,12 @@ $toolHeight: 40px;
     }
   }
   .fold-expand-icon {
-    font-size: $foldWidth;
+    outline: none;
     color: $foldIconColor;
     cursor: pointer;
+    .real-icon {
+      font-size: $foldWidth;
+    }
     :hover {
       color: $foldIconHoverColor;
     }

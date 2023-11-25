@@ -16,7 +16,9 @@
           placement="bottom"
           :hide-after="50"
         >
-          <el-icon class="fold-expand-icon" @click="hideOrShowKeywordArea(true)"><Expand /></el-icon>
+          <span class="fold-expand-icon">
+            <svg-icon class="real-icon" icon-class="project-expand" @click="hideOrShowKeywordArea(true)"></svg-icon>
+          </span>
         </el-tooltip>
       </div>
       <div class="content" id="et-keyword">
@@ -60,7 +62,9 @@
         placement="bottom"
         :hide-after="50"
       >
-        <el-icon class="fold-expand-icon" @click="hideOrShowKeywordArea(false)"><Fold /></el-icon>
+        <span class="fold-expand-icon">
+          <svg-icon class="real-icon" icon-class="project-fold" @click="hideOrShowKeywordArea(false)"></svg-icon>
+        </span>
       </el-tooltip>
     </div>
   </div>
@@ -240,7 +244,6 @@ export default {
 <style lang="scss" scoped>
 @import "src/styles/variables.module.scss";
 $searchHeight: 40px;
-$foldExpandIconSize: 32px;
 
 .keyword-list {
   height: 100%;
@@ -251,11 +254,11 @@ $foldExpandIconSize: 32px;
       padding: 5px 0 0 5px;
       .tooltip-icon {
         float: right;
-        width: $foldExpandIconSize;
+        width: $foldWidth;
       }
       .keyword-search {
         float: left;
-        width: calc(100% - #{$foldExpandIconSize});
+        width: calc(100% - #{$foldWidth});
       }
     }
     .content {
@@ -267,9 +270,12 @@ $foldExpandIconSize: 32px;
   .keyword-hide {
   }
   .fold-expand-icon {
-    font-size: $foldExpandIconSize;
+    outline: none;
     color: $foldIconColor;
     cursor: pointer;
+    .real-icon {
+      font-size: $foldWidth;
+    }
     :hover {
       color: $foldIconHoverColor;
     }
