@@ -49,9 +49,21 @@ export default {
   created() {
     this.$store.dispatch('plan/getInstantlyPlanList')
   },
+  mounted() {
+    this.refreshInstantlyPlanList()
+  },
+  unmounted() {
+    clearInterval(this.timer)
+  },
   methods: {
     refreshInstantlyPlanList() {
-      this.$store.dispatch('plan/getInstantlyPlanList')
+      const that = this
+      this.timer = setInterval(() => {
+        setTimeout(() => {
+          that.$store.dispatch('plan/getInstantlyPlanList')
+        }, 0)
+      }, 15000)
+      return setInterval
     },
     gotoPlanDetail(planId) {
       this.$router.push(`/build/plan/detail/${planId}`)

@@ -71,6 +71,7 @@ export default {
     return {
       hadRunCases: {},
       buildId: '',
+      progressHistory: [],
       runFinish: false,
       showPushDialog:false,
       showLogDialog:false,
@@ -168,22 +169,53 @@ export default {
           const caseIdList = Object.keys(buildResult)
           for (let i = 0; i < caseIdList.length; i++) {
             const caseId = caseIdList[i]
-            if (Object.prototype.hasOwnProperty.call(that.hadRunCases, caseId)) continue
+            if (Object.prototype.hasOwnProperty.call(that.hadRunCases, caseId)) {
+              continue
+            }
             const caseResult = JSON.parse(buildResult[caseId]).result
             that.changeNodeColor(treeObj, caseId, that.getNodeTextColor(caseResult))
           }
           that.hadRunCases = buildResult
-          if (Object.keys(buildResult).length === totalCase) {
+          that.progressHistory.push(caseIdList.length)
+          if (caseIdList.length === totalCase) {
             clearInterval(interval)
             that.$store.commit('action/SET_RUNNING', false)
             that.$store.commit('action/SET_RUN_FINISH', true)
-            that.$message.success({duration: 1000, message: 'Test Complete!'})
+            that.$message.success({
+              duration: 1000,
+              message: '执行完成!'
+            })
+          } else if (that.executeOneTimeout()) {
+            clearInterval(interval)
+            that.$store.commit('action/SET_RUNNING', false)
+            that.$message.error({
+              duration: 0,
+              showClose: true,
+              message: '执行超时!'
+            })
           }
         }).catch(() => {
           clearInterval(interval)
           that.$store.commit('action/SET_RUNNING', false)
         })
-      }, 2000)
+      }, CASE.QueryPeriod)
+    },
+    executeOneTimeout() {
+      const lastIndex = this.progressHistory.length - 1
+      if (lastIndex === -1) {
+        return false
+      }
+      let count = 0
+      const lastRunNumber = this.progressHistory[lastIndex]
+      for (let i = lastIndex; i >= 0; i--) {
+        if (this.progressHistory[i] === lastRunNumber) {
+          count += 1
+        } else {
+          break
+        }
+      }
+      return  CASE.QueryPeriod * count > CASE.CaseTimeout
+
     },
     recoverStat () {
       const treeId = this.$store.state.tree.treeId
@@ -195,6 +227,7 @@ export default {
       }
       this.$store.commit('action/SET_RUN_FINISH', false)
       this.hadRunCases = []
+      this.progressHistory = []
     },
     startBuild() {
       this.recoverStat()
@@ -238,12 +271,9 @@ export default {
       // this.showLogDialog = true
       getDebugLog(this.buildId).then(response => {
         const logUrl = `http://localhost:8091/#/${this.buildId}/log.html`
-        window.localStorage.removeItem('callbackHTML')
-        window.localStorage.setItem('callbackHTML', response.data)
-        const newTab = window.open()
-        newTab.location.href = logUrl
+        const newTab = window.open(logUrl)
         newTab.document.open()
-        newTab.document.write(localStorage.getItem('callbackHTML'))
+        newTab.document.write(response.data)
         newTab.document.close()
       })
     },

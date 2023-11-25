@@ -16,14 +16,6 @@ export function createParameter(data) {
   })
 }
 
-export function updateParameter(parameterId, data) {
-  return request({
-    url: `/execute_param/${parameterId}`,
-    method: 'patch',
-    data: data
-  })
-}
-
 export function deleteParameter(parameterId) {
   return request({
     url: `/execute_param/${parameterId}`,

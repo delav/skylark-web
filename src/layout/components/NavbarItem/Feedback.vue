@@ -130,6 +130,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.feedback {
+  min-width: 72px;
+}
 </style>

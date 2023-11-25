@@ -37,6 +37,6 @@ export default {
 
 <style lang="scss" scoped>
 .profile {
-  margin-right: 36px;
+  margin-right: 48px;
 }
 </style>

@@ -77,6 +77,9 @@
             </el-input>
             <el-button style="float: left;margin-left: 20px" type="primary" @click="openCheckCase">选择用例</el-button>
           </el-form-item>
+          <el-form-item label="执行参数" prop="parameters">
+            <el-input v-model="formData.parameters" />
+          </el-form-item>
         </el-form>
         <div class="build-footer">
           <el-button type="primary" @click="createQuickBuild">立即构建</el-button>

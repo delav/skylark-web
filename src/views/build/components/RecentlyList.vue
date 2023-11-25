@@ -55,9 +55,20 @@ export default {
   created() {
     this.$store.dispatch('record/getRecentlyRecordList')
   },
+  mounted() {
+    this.refreshRecentlyRecordList()
+  },
+  unmounted() {
+    clearInterval(this.timer)
+  },
   methods: {
     refreshRecentlyRecordList() {
-      this.$store.dispatch('record/getRecentlyRecordList')
+      const that = this
+      this.timer = setInterval(() => {
+        setTimeout(() => {
+          that.$store.dispatch('record/getRecentlyRecordList')
+        }, 0)
+      }, 15000)
     },
     gotoRecordDetail(recordId) {
       this.$router.push(`/build/record/detail/${recordId}`)

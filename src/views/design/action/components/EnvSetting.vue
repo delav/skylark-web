@@ -40,19 +40,25 @@
     </div>
     <div class="execute-arg">
       <span class="params-text">{{ $t('BaseDesc._parameters') }}：</span>
-      <el-popover :hide-after="50" placement="bottom" :width="400" trigger="click">
+      <el-popover :hide-after="50" placement="bottom-start" :width="400" trigger="click">
         <template #reference>
           <svg-icon class-name="param-icon" icon-class="action-expand"></svg-icon>
         </template>
         <div class="params-content">
           <p class="add-line">
-            <el-input class="param-input" v-model="executeArgs"></el-input>
-            <el-button class="param-button" type="primary">保存</el-button>
+            <el-input class="param-input" v-model="executeArgs" clearable></el-input>
+            <el-button class="param-button" type="primary" @click="saveParameter">保存</el-button>
           </p>
           <div class="select-radio">
             <el-radio-group v-model="executeArgs">
-              <el-radio label="1" size="large">Option 1</el-radio>
-              <el-radio label="2" size="large">Option 2</el-radio>
+              <el-radio
+                v-for="item in parameterList"
+                :key="item.id"
+                :label="item.parameters"
+              >
+                <span class="param-value">{{ item.parameters }}</span>
+                <el-icon class="remove-icon" @click="removeParameter(item.id)"><Close /></el-icon>
+              </el-radio>
             </el-radio-group>
           </div>
         </div>
@@ -62,7 +68,7 @@
 </template>
 
 <script>
-import {fetchParametersByProject} from "@/api/parameter";
+import { fetchParametersByProject, createParameter, deleteParameter } from "@/api/parameter";
 
 export default {
   name: 'EnvSetting',
@@ -92,6 +98,11 @@ export default {
         this.getExecuteParams()
       }
     },
+    executeArgs: {
+      handler(value) {
+        this.$store.commit('action/SET_EXECUTE_PARAMS', value)
+      }
+    }
   },
   data() {
     return {
@@ -136,6 +147,37 @@ export default {
     changeExecuteArg(item) {
       this.executeArgs = item.parameters
       this.$store.commit('action/SET_EXECUTE_PARAMS', item.parameters)
+    },
+    saveParameter() {
+      const params = {
+        parameters: this.executeArgs,
+        project_id: this.$store.state.tree.projectId
+      }
+      if (params.parameters === '' || params.project_id === '') {
+        return
+      }
+      createParameter(params).then(response => {
+        if (response.data) {
+          this.parameterList.unshift(response.data)
+        } else {
+          this.$message.warning('无需重复保存')
+        }
+      })
+    },
+    removeParameter(parameterId) {
+      for (let i = 0; i < this.parameterList.length; i++) {
+        if (this.parameterList[i].id === parameterId) {
+          this.parameterList.splice(i, 1)
+        }
+      }
+      deleteParameter(parameterId).then(response => {
+        const removeId = response.data
+        for (let i = 0; i < this.parameterList.length; i++) {
+          if (this.parameterList[i].id === removeId) {
+            this.parameterList.splice(i, 1)
+          }
+        }
+      })
     }
   }
 }
@@ -204,13 +246,38 @@ export default {
     }
   }
   .select-radio {
+    max-height: 600px;
     margin-top: 10px;
+    .param-value {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .remove-icon {
+      font-size: 16px;
+      //margin-left: 10px;
+      position: absolute;
+      right: 0;
+      &:hover {
+        color: #ff484c;
+      }
+    }
   }
 }
 :deep(.el-radio-group) {
   display: block;
 }
 :deep(.el-radio) {
-  display: block;
+  line-height: 32px;
+  margin-right: 0;
+  border-bottom: 1px solid #e4e3e3;
+  width: 100%;
+  .el-radio__label {
+    width: calc(100% - 32px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+  }
 }
 </style>

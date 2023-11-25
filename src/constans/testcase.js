@@ -1,3 +1,6 @@
+const CaseTimeout = 20000
+const QueryPeriod = 2000
+
 const CaseStatus = {
   PASSED: 'PASS',
   FAILED: 'FAIL',
@@ -12,6 +15,8 @@ const StatusColor = {
 }
 
 export default {
+  CaseTimeout,
+  QueryPeriod,
   CaseStatus,
   StatusColor
 }

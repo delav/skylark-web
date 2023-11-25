@@ -196,11 +196,11 @@ export default {
       this.projectList = this.allProjectList.filter((item) => {
         return item['group_id'] === groupId
       })
-      this.$router.push({
-        path: this.overviewPath,
-        query:{type : this.componentType.group, id: groupId}
-      })
-      this.setComponent(this.componentType.group)
+      // this.$router.push({
+      //   path: this.overviewPath,
+      //   query:{type : this.componentType.group, id: groupId}
+      // })
+      // this.setComponent(this.componentType.group)
     },
     changeProject(projectId) {
       this.$router.push({

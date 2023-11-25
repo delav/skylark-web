@@ -7,12 +7,30 @@
       <div class="card-body">
         <div class="detail">
           <el-descriptions>
-            <el-descriptions-item label="计划名称：">{{planDetailData['title']}}</el-descriptions-item>
-            <el-descriptions-item label="创建用户：">{{planDetailData['create_by']}}</el-descriptions-item>
-            <el-descriptions-item label="创建时间：">{{planDetailData['create_at']}}</el-descriptions-item>
-            <el-descriptions-item label="更新用户：">{{planDetailData['update_by']}}</el-descriptions-item>
-            <el-descriptions-item label="更新时间：">{{planDetailData['update_at']}}</el-descriptions-item>
-            <el-descriptions-item label="用例总数：">{{planDetailData['total_case']}}</el-descriptions-item>
+            <el-descriptions-item label="计划名称：">
+              {{planDetailData['title']}}
+            </el-descriptions-item>
+            <el-descriptions-item label="关联项目：">
+              {{getProjectNameById(planDetailData['project_id'])}}
+            </el-descriptions-item>
+            <el-descriptions-item label="项目分支：">
+              {{planDetailData['branch']}}
+            </el-descriptions-item>
+            <el-descriptions-item label="创建用户：">
+              {{planDetailData['create_by']}}
+            </el-descriptions-item>
+            <el-descriptions-item label="创建时间：">
+              {{planDetailData['create_at']}}
+            </el-descriptions-item>
+            <el-descriptions-item label="更新用户：">
+              {{planDetailData['update_by']}}
+            </el-descriptions-item>
+            <el-descriptions-item label="更新时间：">
+              {{planDetailData['update_at']}}
+            </el-descriptions-item>
+            <el-descriptions-item label="用例总数：">
+              {{planDetailData['total_case']}}
+            </el-descriptions-item>
             <el-descriptions-item label="定时任务：">
               <el-switch
                 v-model="planDetailData['periodic_switch']"
@@ -21,7 +39,9 @@
                 disabled
               />
             </el-descriptions-item>
-            <el-descriptions-item label="定时配置：">{{planDetailData['periodic_expr']}}</el-descriptions-item>
+            <el-descriptions-item label="定时配置：">
+              {{planDetailData['periodic_expr']}}
+            </el-descriptions-item>
             <el-descriptions-item label="执行环境：">
               <el-tag
                 v-for="(id, index) in planDetailData['env_list']"
@@ -44,8 +64,6 @@
                 {{ regionMap[id] }}
               </el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="关联项目：">{{planDetailData['project_name']}}</el-descriptions-item>
-            <el-descriptions-item label="项目分支：">{{planDetailData['branch']}}</el-descriptions-item>
             <el-descriptions-item label="通知开关：">
               <el-switch
                 v-model="planDetailData['notice_switch']"
@@ -61,6 +79,9 @@
                 inactive-text="关闭"
                 disabled
               />
+            </el-descriptions-item>
+            <el-descriptions-item label="执行参数：">
+              {{planDetailData['parameters']}}
             </el-descriptions-item>
             <el-descriptions-item label="预期通过率：">
               <el-progress
@@ -120,6 +141,8 @@
             </el-table-column>
             <el-table-column prop="create_at" label="执行时间" width="180" show-overflow-tooltip >
             </el-table-column>
+            <el-table-column prop="parameters" label="执行参数" width="150" show-overflow-tooltip >
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -160,6 +183,13 @@ export default {
     },
     routeToRecordDetail(recordId) {
       this.$router.push(`/build/record/detail/${recordId}`)
+    },
+    getProjectNameById(projectId) {
+      const projectMap = this.$store.state.base.projectMap
+      if (projectId in projectMap) {
+        return projectMap[projectId]
+      }
+      return ''
     }
   }
 }

@@ -44,6 +44,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.language {
+  min-width: 46px;
+}
 </style>

@@ -18,5 +18,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.guide {
+  min-width: 72px;
+}
 </style>
