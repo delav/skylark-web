@@ -53,9 +53,9 @@
               <template #default="scope">
                 <el-tag type="info" v-if="scope.row.status===-1">等待中</el-tag>
                 <el-tag type="warning" v-if="scope.row.status===0">执行中</el-tag>
-                <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
-                <el-tag type="success" v-if="scope.row.status===2">执行成功</el-tag>
-                <el-tag type="danger" v-if="scope.row.status===3">执行失败</el-tag>
+                <el-tag type="success" v-if="scope.row.status===1">完成</el-tag>
+                <el-tag type="success" v-if="scope.row.status===2">成功</el-tag>
+                <el-tag type="danger" v-if="scope.row.status===3">失败</el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="env_id" label="环境" min-width="100" show-overflow-tooltip >

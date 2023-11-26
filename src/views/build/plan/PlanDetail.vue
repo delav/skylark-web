@@ -100,7 +100,7 @@
             border
             style="width: 100%">
             <el-table-column prop="id" label="编号" width="70" />
-            <el-table-column prop="desc" label="标题" min-width="15%" show-overflow-tooltip>
+            <el-table-column prop="desc" label="标题" min-width="150" show-overflow-tooltip>
               <template #default="scope">
                 <el-link @click="routeToRecordDetail(scope.row.id)" :underline="false">{{ scope.row.desc }}</el-link>
               </template>
@@ -111,7 +111,7 @@
                 <span v-if="scope.row.status===1">已完成</span>
               </template>
             </el-table-column>
-            <el-table-column prop="env_list" label="执行环境" min-width="10%" show-overflow-tooltip >
+            <el-table-column prop="env_list" label="执行环境" min-width="100" show-overflow-tooltip >
               <template #default="scope">
                 <el-tag
                   v-for="(id, index) in scope.row.env_list"
@@ -124,7 +124,7 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="region_list" label="执行地区" min-width="10%" show-overflow-tooltip v-if="showRegion">
+            <el-table-column prop="region_list" label="执行地区" min-width="100" show-overflow-tooltip v-if="showRegion">
               <template #default="scope">
                 <el-tag
                   v-for="(id, index) in scope.row.region_list"
@@ -137,11 +137,11 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="create_by" label="执行用户" min-width="10%" show-overflow-tooltip >
+            <el-table-column prop="create_by" label="执行用户" min-width="100" show-overflow-tooltip >
             </el-table-column>
-            <el-table-column prop="create_at" label="执行时间" width="180" show-overflow-tooltip >
+            <el-table-column prop="create_at" label="执行时间" min-width="100" show-overflow-tooltip >
             </el-table-column>
-            <el-table-column prop="parameters" label="执行参数" width="150" show-overflow-tooltip >
+            <el-table-column prop="parameters" label="执行参数" width="120" show-overflow-tooltip >
             </el-table-column>
           </el-table>
         </div>

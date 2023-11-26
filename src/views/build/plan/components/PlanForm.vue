@@ -15,7 +15,8 @@
           <el-select
             style="width: 100%"
             v-model="formData.project_id"
-            placeholder="选择项目">
+            placeholder="选择项目"
+          >
             <el-option
               v-for="(item, index) in projectList"
               :key="index"
@@ -29,7 +30,8 @@
           <el-select
             style="width: 100%"
             v-model="formData.branch"
-            placeholder="选择分支">
+            placeholder="选择分支"
+          >
             <el-option
               v-for="(item, index) in versionList"
               :key="index"
@@ -44,7 +46,8 @@
             style="width: 100%"
             v-model="formData.env_list"
             multiple
-            placeholder="选择环境">
+            placeholder="选择环境"
+          >
             <el-option
               v-for="item in envList"
               :key="item.id"
@@ -58,7 +61,8 @@
             style="width: 100%"
             v-model="formData.region_list"
             multiple
-            placeholder="选择地区">
+            placeholder="选择地区"
+          >
             <el-option
               v-for="item in regionList"
               :key="item.id"
@@ -85,6 +89,23 @@
         </el-form-item>
         <el-form-item label="定时配置" prop="periodic_expr" v-show="formData.periodic_switch">
           <el-input v-model="formData.periodic_expr" />
+        </el-form-item>
+        <el-form-item label="执行参数" prop="parameters">
+          <el-select
+            style="width: 100%"
+            v-model="formData.parameters"
+            placeholder="执行参数"
+            filterable
+            clearable
+            allow-create
+          >
+            <el-option
+              v-for="(item, index) in parameterList"
+              :key="index"
+              :label="item.parameters"
+              :value="item.parameters"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="期望通过率" prop="expect_pass">
           <drag-progress
@@ -128,6 +149,7 @@
 import CaseTree from "@/views/build/components/CaseTree";
 import DragProgress from "@/components/DragProgress";
 import { fetchVersion } from "@/api/version";
+import { fetchParametersByProject } from "@/api/parameter";
 
 export default {
   name: 'PlanForm',
@@ -152,6 +174,7 @@ export default {
     return {
       versionList: [],
       planList: [],
+      parameterList: [],
       formData: {},
       formRules: {
         title: [
@@ -211,15 +234,19 @@ export default {
       if (formData['id'] === undefined) {
         return
       }
-      fetchVersion(formData['project_id']).then(response => {
-        this.versionList = response.data
-      })
+      this.getPlanRequiredData(formData['project_id'])
     },
     changeProject(project) {
       this.versionList = []
-      const projectId = project.id
+      this.parameterList = []
+      this.getPlanRequiredData(project.id)
+    },
+    getPlanRequiredData(projectId) {
       fetchVersion(projectId).then(response => {
         this.versionList = response.data
+      })
+      fetchParametersByProject(projectId).then(response => {
+        this.parameterList = response.data
       })
     },
     setBranch(index) {

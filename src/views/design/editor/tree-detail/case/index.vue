@@ -24,13 +24,13 @@
 </template>
 
 <script>
-import { dragHController } from "@/utils/resize";
 import NODE from "@/constans/node";
 import SvgIcon from "@/components/SvgIcon";
 import CaseEntity from "@/views/design/editor/tree-detail/case/components/CaseEntity";
 import EntityArgs from "@/views/design/editor/tree-detail/case/components/EntityArgs";
 import CaseConfig from "@/views/design/editor/tree-detail/case/components/CaseConfig";
 import KeywordConfig from "@/views/design/editor/tree-detail/case/components/KeywordConfig";
+import { addDragHController } from "@/utils/resize";
 import { updateCase } from "@/api/case";
 import { createTag, deleteTag } from "@/api/tag";
 import { guid } from "@/utils/other";
@@ -86,7 +86,7 @@ export default {
     },
   },
   mounted() {
-    dragHController('infos', 'args', 'resize-y')
+    addDragHController('infos', 'args', 'resize-y')
   },
   unmounted() {
     this.$store.commit('entity/RELOAD_STATE')

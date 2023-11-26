@@ -23,7 +23,7 @@ import ProjectTree from "@/views/design/editor/project-tree";
 import TreeDetail from "@/views/design/editor/tree-detail";
 import KeywordList from "@/views/design/editor/keyword-list";
 import SvgIcon from "@/components/SvgIcon";
-import { dragWController } from "@/utils/resize";
+import { addDragWController, addResizeDetector } from "@/utils/resize";
 
 export default {
   name: 'Editor',
@@ -34,7 +34,8 @@ export default {
     KeywordList
   },
   mounted() {
-    dragWController('left', 'middle', 'left-and-middle', 'resize-x1')
+    addResizeDetector('left', 'middle')
+    addDragWController('left', 'middle', 'left-and-middle', 'resize-x1')
   }
 }
 </script>

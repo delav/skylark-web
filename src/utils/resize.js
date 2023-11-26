@@ -1,4 +1,5 @@
 import store from "@/store";
+import elementResizeDetectorMaker from "element-resize-detector";
 import variables from "@/styles/variables.module.scss";
 
 const treeMinWidth = 240
@@ -6,7 +7,7 @@ const caseMinWidth = 500
 const caseMinHeight = 150
 const argMinHeight = 50
 
-export function dragWController(leftId, rightId, boxId, resizeId) {
+export function addDragWController(leftId, rightId, boxId, resizeId) {
 
   const left = document.getElementById(leftId)
   const right = document.getElementById(rightId)
@@ -39,7 +40,7 @@ export function dragWController(leftId, rightId, boxId, resizeId) {
       // 设置左侧区域的宽度
       resizeW.style.left = moveLen
       left.style.width = (moveLen/boxWidth)*100 + '%'
-      right.style.width = Math.floor(((boxWidth - moveLen - resizeWidth)/boxWidth)*100) + '%'
+      right.style.width = Math.floor(((boxWidth - moveLen - resizeWidth)/boxWidth) * 1000000) / 10000 + '%'
     }
     // 鼠标松开事件
     document.onmouseup = function () {
@@ -56,7 +57,7 @@ export function dragWController(leftId, rightId, boxId, resizeId) {
   }
 }
 
-export function dragHController(topId, bottomId, resizeId) {
+export function addDragHController(topId, bottomId, resizeId) {
 
   const top = document.getElementById(topId)
   const bottom = document.getElementById(bottomId)
@@ -96,4 +97,19 @@ export function dragHController(topId, bottomId, resizeId) {
     resizeH.setCapture && resizeH.setCapture()
     return false
   }
+}
+
+export function addResizeDetector(leftId, middleId) {
+  let erd = elementResizeDetectorMaker()
+  erd.listenTo(document.getElementById(leftId), function(element) {
+    const width = element.offsetWidth
+    const hideTree = store.state.tree.hideTree
+    if (!hideTree && width < treeMinWidth) {
+      store.commit('tree/SET_HIDE_TREE', true)
+      const left = document.getElementById(leftId)
+      const middle = document.getElementById(middleId)
+      left.style.width = variables.foldWidth
+      middle.style.width = `calc(100% - ${variables.foldWidth} - ${variables.leftResizeWidth})`
+    }
+  })
 }

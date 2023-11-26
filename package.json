@@ -24,6 +24,7 @@
     "crypto-js": "^4.1.1",
     "echarts": "^5.4.3",
     "element-plus": "^2.3.12",
+    "element-resize-detector": "^1.2.4",
     "jquery": "^3.6.1",
     "js-cookie": "^3.0.1",
     "jshint": "^2.13.6",

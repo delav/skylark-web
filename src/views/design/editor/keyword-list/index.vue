@@ -199,14 +199,19 @@ export default {
     },
     hideOrShowKeywordArea(isHide) {
       this.$store.commit('keyword/SET_HIDE_KEYWORD', isHide)
-      const left = document.getElementById('left-and-middle')
+      const leftAndMiddle = document.getElementById('left-and-middle')
       const right = document.getElementById('right')
       if (isHide) {
         right.style.width = variables.foldWidth
-        left.style.width = `calc(100% - ${variables.foldWidth} - ${variables.rightResizeWidth})`
+        leftAndMiddle.style.width = `calc(100% - ${variables.foldWidth} - ${variables.rightResizeWidth})`
       } else {
         right.style.width = variables.keywordWidth
-        left.style.width = `calc(100% - ${variables.keywordWidth} - ${variables.rightResizeWidth})`
+        leftAndMiddle.style.width = `calc(100% - ${variables.keywordWidth} - ${variables.rightResizeWidth})`
+        const middle = document.getElementById('middle')
+        if (middle.style.width.toString().indexOf('%') !== -1) {
+          const middlePercent = parseFloat(middle.style.width) / 100
+          middle.style.width = `calc(${leftAndMiddle.style.width} * ${middlePercent})`
+        }
       }
     },
     filterKeyword () {

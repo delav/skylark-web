@@ -918,7 +918,7 @@ $toolHeight: 42px;
       }
       .tooltip-icon {
         height: $toolHeight;
-        font-size: 32px;
+        font-size: $foldWidth;
         margin-left: auto;
       }
     }
