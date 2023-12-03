@@ -632,7 +632,8 @@ export default {
       let formData = new FormData()
       formData.append('suite', node.mid)
       downloadFile(formData).then((response) => {
-        let blob = new Blob([response.data])
+        const headerType = 'application/octet-stream;charset=utf-8'
+        let blob = new Blob([response.data], {type: headerType})
         let fileName = response.headers['content-disposition'].split(';')[1].split('=')[1]
         const link = document.createElement('a')
         link.style.display = 'none'
@@ -833,6 +834,7 @@ export default {
       await this.getProjectTreeList()
       this.projectId = projectInfo['id']
       this.loadProjectData(projectInfo['id'], projectInfo['name'])
+      this.$store.dispatch('base/getProjectList')
     }
   }
 }

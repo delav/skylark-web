@@ -43,8 +43,8 @@
         <el-form-item label="返回值说明" prop="output_desc">
           <el-input v-model="formData.output_desc"></el-input>
         </el-form-item>
-        <el-form-item label="来源" prop="source">
-          <el-input v-model="formData.source"></el-input>
+        <el-form-item label="来源" prop="library_name">
+          <el-input v-model="formData.library_name"></el-input>
         </el-form-item>
         <el-form-item label="组件图标">
           <el-upload

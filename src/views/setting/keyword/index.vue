@@ -35,10 +35,12 @@
             <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
             <el-table-column label="参数" min-width="100" prop="input_params" show-overflow-tooltip/>
             <el-table-column label="返回值" min-width="100" prop="output_params" show-overflow-tooltip/>
-            <el-table-column label="来源" min-width="100" prop="source" show-overflow-tooltip/>
+            <el-table-column label="来源" min-width="100" prop="library_name" show-overflow-tooltip/>
             <el-table-column label="功能" min-width="120" prop="desc" show-overflow-tooltip/>
-            <el-table-column label="状态" min-width="80" prop="status">
-              <el-tag type="warning">待确认</el-tag>
+            <el-table-column label="状态" min-width="80" prop="status_desc">
+              <template #default="scope">
+                <el-tag type="warning">{{scope.row.status_desc}}</el-tag>
+              </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="110">
               <template #default="scope">
@@ -69,11 +71,11 @@
           >
             <el-table-column label="函数名" min-width="100" prop="name" show-overflow-tooltip/>
             <el-table-column label="组件名" min-width="100" prop="ext_name" show-overflow-tooltip/>
-            <el-table-column label="来源" min-width="100" prop="source" show-overflow-tooltip/>
+            <el-table-column label="来源" min-width="100" prop="library_name" show-overflow-tooltip/>
             <el-table-column label="功能" min-width="120" prop="desc" show-overflow-tooltip/>
-            <el-table-column label="状态" min-width="80" prop="status">
+            <el-table-column label="状态" min-width="80" prop="status_desc">
               <template #default="scope">
-                <el-tag type="success">{{keywordStatusMap(scope.row.status)}}</el-tag>
+                <el-tag type="success">{{scope.row.status_desc}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="110">
@@ -172,7 +174,6 @@ import GroupUpdate from "@/views/setting/keyword/components/GroupUpdate";
 import ReadyForm from "@/views/setting/keyword/components/ReadyForm";
 import KeywordForm from "@/views/setting/keyword/components/KeywordForm";
 import KeywordDetail from "@/views/setting/keyword/components/KeywordDetail";
-import { statusMap } from "@/constans/common";
 import { deepCopy } from "@/utils/dcopy";
 import { fetchKeywordGroup, createKeywordGroup, updateKeywordGroup, deleteKeywordGroup } from "@/api/kgroup";
 import { createKeyword, getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
@@ -270,9 +271,6 @@ export default {
         }
         this.$message.success('操作成功')
       })
-    },
-    keywordStatusMap(status) {
-      return statusMap(status)
     },
     editKeyword(row) {
       this.keywordObject = row

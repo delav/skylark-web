@@ -154,9 +154,13 @@ export default {
       const params = {}
       if (this.fileObject['env_id'] !== 0) {
         params['env_id'] = this.fileObject['env_id']
+      } else {
+        params['env_id'] = null
       }
       if (this.fileObject['region_id'] !== 0) {
         params['region_id'] = this.fileObject['region_id']
+      } else {
+        params['region_id'] = null
       }
       let node = this.$store.state.tree.selectedNode
       params['suite_id'] = node.mid

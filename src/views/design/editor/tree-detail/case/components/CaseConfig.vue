@@ -154,7 +154,7 @@ export default {
         {label: '分', value: 'minutes'}
       ],
       timeNum: '',
-      timeUnit: '',
+      timeUnit: 'seconds',
       priorityName: '',
       priorityColor: '#606266',
       orderNumber: ''

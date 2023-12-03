@@ -18,3 +18,12 @@ export function getRecordDetail(recordId) {
     method: 'get',
   })
 }
+
+export function queryRecordStatus(recordId) {
+  const params = { id: recordId }
+  return request({
+    url: '/build/record/query_status',
+    method: 'get',
+    params: params
+  })
+}

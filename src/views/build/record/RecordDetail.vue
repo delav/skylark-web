@@ -12,7 +12,10 @@
                 <el-link @click="routeToPlanDetail(scope.row.plan_id)">{{recordDetailData['plan_id']}}</el-link>
               </template>
             </el-descriptions-item>
+            <el-descriptions-item label="关联项目：">{{projectMap[recordDetailData['project_id']]}}</el-descriptions-item>
+            <el-descriptions-item label="项目分支：">{{recordDetailData['branch']}}</el-descriptions-item>
             <el-descriptions-item label="创建时间：">{{recordDetailData['create_at']}}</el-descriptions-item>
+            <el-descriptions-item label="结束时间：">{{recordDetailData['finish_at']}}</el-descriptions-item>
             <el-descriptions-item label="执行用户：">{{recordDetailData['create_by']}}</el-descriptions-item>
             <el-descriptions-item label="执行环境：">
               <el-tag
@@ -36,8 +39,22 @@
                 {{ regionMap[id] }}
               </el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="关联项目：">{{projectMap[recordDetailData['project_id']]}}</el-descriptions-item>
-            <el-descriptions-item label="项目分支：">{{recordDetailData['branch']}}</el-descriptions-item>
+            <el-descriptions-item label="定时执行：">
+              <el-tag
+                v-if="recordDetailData['periodic']"
+                type="success"
+                size="small"
+              >
+                是
+              </el-tag>
+              <el-tag
+                v-else
+                type="danger"
+                size="small"
+              >
+                否
+              </el-tag>
+            </el-descriptions-item>
           </el-descriptions>
         </div>
         <div class="related-history">
@@ -51,11 +68,11 @@
             <el-table-column prop="id" label="编号" width="70" />
             <el-table-column prop="status" label="状态" min-width="80">
               <template #default="scope">
-                <el-tag type="info" v-if="scope.row.status===-1">等待中</el-tag>
-                <el-tag type="warning" v-if="scope.row.status===0">执行中</el-tag>
-                <el-tag type="success" v-if="scope.row.status===1">完成</el-tag>
-                <el-tag type="success" v-if="scope.row.status===2">成功</el-tag>
-                <el-tag type="danger" v-if="scope.row.status===3">失败</el-tag>
+                <el-tag type="info" v-if="scope.row.status===-1">{{ scope.row.status_desc }}</el-tag>
+                <el-tag type="warning" v-if="scope.row.status===0">{{ scope.row.status_desc }}</el-tag>
+                <el-tag type="success" v-if="scope.row.status===1">{{ scope.row.status_desc }}</el-tag>
+                <el-tag type="success" v-if="scope.row.status===2">{{ scope.row.status_desc }}</el-tag>
+                <el-tag type="danger" v-if="scope.row.status===3">{{scope.row.status_desc}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="env_id" label="环境" min-width="100" show-overflow-tooltip >

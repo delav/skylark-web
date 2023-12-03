@@ -67,8 +67,8 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100" min-width="100">
           <template #default="scope">
-            <el-tag type="warning" v-if="scope.row.status===0">运行中</el-tag>
-            <el-tag type="success" v-if="scope.row.status===1">已完成</el-tag>
+            <el-tag type="warning" v-if="scope.row.status===0">{{ scope.row.status_desc }}</el-tag>
+            <el-tag type="success" v-if="scope.row.status===1">{{ scope.row.status_desc }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="env_list" label="环境" min-width="120" show-overflow-tooltip >
@@ -107,9 +107,12 @@
             <el-tag size="small" type="danger" v-else>否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="70">
+        <el-table-column fixed="right" label="操作" width="90">
           <template #default="scope">
             <el-button type="primary" size="small" @click="routeToRecordDetail(scope.row.id)" link>详情</el-button>
+            <el-button type="primary" @click="refreshRecord(scope.$index, scope.row.id)" link>
+              <el-icon><RefreshRight /></el-icon>
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -126,7 +129,7 @@
 </template>
 
 <script>
-import { fetchRecords } from "@/api/record";
+import { fetchRecords, queryRecordStatus } from "@/api/record";
 import { deepCopy } from "@/utils/dcopy";
 
 export default {
@@ -196,6 +199,11 @@ export default {
         params['e_date'] = this.queryParams.date_range[1]
       }
       this.getRecordList(1, params)
+    },
+    refreshRecord(index, recordId) {
+      queryRecordStatus(recordId).then(response => {
+        this.recordList[index] = response.data
+      })
     },
     routeToRecordDetail(recordId) {
       this.$router.push(`/build/record/detail/${recordId}`)

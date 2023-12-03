@@ -223,6 +223,7 @@ export default {
   width: 100%;
   height: 100%;
   //max-height: 500px;
+  min-height: 500px;
   .env-head {
     height: 35px;
     display: flex;

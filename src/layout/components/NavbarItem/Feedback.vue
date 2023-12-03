@@ -24,8 +24,8 @@
             <el-option
               v-for="(item, index) in routes"
               :key="index"
-              :label="item.meta.title"
-              :value="item.meta.title"
+              :label="$t(item.meta.title)"
+              :value="$t(item.meta.title)"
             />
           </el-select>
         </el-form-item>
@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import { userFeedback } from "@/api/system";
+
 export default {
   name: 'Feedback',
   computed: {
@@ -122,8 +124,16 @@ export default {
         if (!valid) {
           return
         }
-        this.feedbackShow = false
-        this.$message.success('提交反馈成功')
+        let formData = new FormData()
+        formData.append('info_type', 2)
+        formData.append('extra_data', JSON.stringify(this.feedbackForm))
+        for (let i = 0; i < this.fileList.length; i++) {
+          formData.append('file', this.fileList[i].raw)
+        }
+        userFeedback(formData).then(() => {
+          this.feedbackShow = false
+          this.$message.success('提交反馈成功')
+        })
       })
     }
   }

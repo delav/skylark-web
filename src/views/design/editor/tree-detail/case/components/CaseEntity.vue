@@ -91,11 +91,11 @@ export default {
               that.deleteEntity()
             }
             break
-          case 67:
-            if (status && that.keyboardOnKey === 'ctrl') {
-              that.copyEntity()
-            }
-            break
+          // case 67:
+          //   if (status && that.keyboardOnKey === 'ctrl') {
+          //     that.copyEntity()
+          //   }
+          //   break
         }
       }
     },

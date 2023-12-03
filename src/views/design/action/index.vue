@@ -168,12 +168,12 @@ export default {
           let buildResult = response.data
           const caseIdList = Object.keys(buildResult)
           for (let i = 0; i < caseIdList.length; i++) {
-            const caseId = caseIdList[i]
-            if (Object.prototype.hasOwnProperty.call(that.hadRunCases, caseId)) {
+            const caseStrId = caseIdList[i]
+            if (caseStrId in that.hadRunCases) {
               continue
             }
-            const caseResult = JSON.parse(buildResult[caseId]).result
-            that.changeNodeColor(treeObj, caseId, that.getNodeTextColor(caseResult))
+            const caseResult = JSON.parse(buildResult[caseStrId]).result
+            that.changeNodeColor(treeObj, caseStrId, that.getNodeTextColor(caseResult))
           }
           that.hadRunCases = buildResult
           that.progressHistory.push(caseIdList.length)
