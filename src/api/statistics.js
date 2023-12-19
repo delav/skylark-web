@@ -1,15 +1,23 @@
 import request from "@/http/request";
 
-export function fetchCaseInfo() {
+
+export function fetchOverview() {
   return request({
-    url: '/statistics/case_info',
+    url: '/statistics/overview',
     method: 'get',
   })
 }
 
-export function fetchBuildInfo() {
+export function fetchProjectInfo() {
   return request({
-    url: '/statistics/build_info',
+    url: '/statistics/project_info',
+    method: 'get',
+  })
+}
+
+export function fetchIncreaseInfo() {
+  return request({
+    url: '/statistics/increase_info',
     method: 'get',
   })
 }

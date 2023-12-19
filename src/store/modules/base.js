@@ -73,6 +73,9 @@ const mutations = {
 }
 
 const actions = {
+  resetBaseInfo({ commit }) {
+    commit('RESET_STATE')
+  },
   getProjectList({ commit }) {
     return new Promise((resolve, reject) => {
       fetchProjectList().then(response => {

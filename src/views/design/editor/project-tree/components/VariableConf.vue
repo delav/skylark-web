@@ -14,6 +14,7 @@
       </div>
       <div class="filter-search">
         <el-input
+          with="100%"
           v-model="searchKey"
           @change="filterVariable"
           placeholder="搜索">
@@ -233,7 +234,9 @@ export default {
       text-align: left;
     }
     .filter-search {
+      width: 300px;
       margin-left: 15px;
+      min-width: 150px;
     }
     .new-button {
       text-align: right;

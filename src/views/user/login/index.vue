@@ -95,6 +95,9 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    this.$store.dispatch('base/resetBaseInfo')
+  },
   methods: {
     showPwd() {
       if (this.passwordType === 'password') {

@@ -4,14 +4,37 @@
       <div class="count-view">
         <el-row :gutter="20">
           <el-col :span="6">
-            <count-card i-class="statistics-project" i-color="#7ad835" description="总项目数" :count="12"></count-card>
+            <count-card
+              i-class="statistics-project"
+              i-color="#7ad835"
+              description="总项目数"
+              :count="overviewData.projectCount"
+            ></count-card>
           </el-col>
           <el-col :span="6">
-            <count-card i-class="statistics-case" i-color="#fa7d03" description="总用例数" :count="358"></count-card></el-col>
+            <count-card
+              i-class="statistics-case"
+              i-color="#fa7d03"
+              description="总用例数"
+              :count="overviewData.caseCount"
+            ></count-card>
+          </el-col>
           <el-col :span="6">
-            <count-card i-class="statistics-build" i-color="#4886ff" description="总执行次数" :count="159"></count-card></el-col>
+            <count-card
+              i-class="statistics-build"
+              i-color="#4886ff"
+              description="总执行次数"
+              :count="overviewData.buildCount"
+            ></count-card>
+          </el-col>
           <el-col :span="6">
-            <count-card i-class="statistics-rate" i-color="#ff484c" description="总体通过率" :count="81.20"></count-card></el-col>
+            <count-card
+              i-class="statistics-periodic"
+              i-color="#ff484c"
+              description="定时任务数"
+              :count="overviewData.periodicCount"
+            ></count-card>
+          </el-col>
         </el-row>
       </div>
       <div class="chart-view">
@@ -40,7 +63,7 @@
 <script>
 import axios from "axios";
 import CountCard from "@/views/statistics/components/CountCard";
-import { fetchCaseInfo, fetchBuildInfo } from "@/api/statistics";
+import { fetchOverview, fetchProjectInfo, fetchIncreaseInfo } from "@/api/statistics";
 
 export default {
   name: 'Overview',
@@ -49,14 +72,30 @@ export default {
   },
   data() {
     return {
+      overviewData: {
+        projectCount: 0,
+        caseCount: 0,
+        buildCount: 0,
+        periodicCount: 0
+      }
     }
   },
   mounted() {
+    this.getOverviewData()
     this.$nextTick(() =>{
       this.loadAllCharts()
     })
   },
   methods: {
+    getOverviewData() {
+      fetchOverview().then(response => {
+        const data = response.data
+        this.overviewData.projectCount = data['project_count']
+        this.overviewData.caseCount = data['case_count']
+        this.overviewData.buildCount = data['build_count']
+        this.overviewData.periodicCount = data['periodic_count']
+      })
+    },
     loadAllCharts() {
       const that = this
       const mainChart = this.$echarts.init(document.getElementById('mainChart'))
@@ -69,21 +108,27 @@ export default {
       chart2.showLoading()
       chart3.showLoading()
       chart4.showLoading()
-      axios.all([fetchCaseInfo(), fetchBuildInfo()]).then(
+      axios.all([fetchProjectInfo(), fetchIncreaseInfo()]).then(
         axios.spread((r1, r2) => {
-          console.log(r1)
-          console.log(r2)
-          that.setMainChart(mainChart, [], [])
-          that.setChart1(chart1, [], [])
-          that.setChart2(chart2, [], [])
+          const caseIncreaseInfo = r2.data['case_increase']
+          const buildIncreaseInfo = r2.data['build_increase']
+          const projectNameList = []
+          const projectCaseList = []
+          const projectBuildList = []
+          for (let i = 0; i < r1.data.length; i++) {
+            projectNameList.push(r1.data[i]['project_name'])
+            projectCaseList.push(r1.data[i]['total_case'])
+            projectBuildList.push(r1.data[i]['total_build'])
+          }
+          that.setMainChart(mainChart, projectNameList, projectCaseList, projectBuildList)
+          that.setChart1(chart1, Object.keys(caseIncreaseInfo), Object.values(caseIncreaseInfo))
+          that.setChart2(chart2, Object.keys(buildIncreaseInfo), Object.values(buildIncreaseInfo))
           that.setChart3(chart3, [], [])
           that.setChart4(chart4, [], [])
         })
       )
     },
-    setMainChart(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [23, 24, 18, 25, 27, 28, 25]
+    setMainChart(chartObj, xData, yData1, yData2) {
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
@@ -99,24 +144,17 @@ export default {
           {
             name: '用例总数',
             type: 'bar',
-            data: yData
+            data: yData1
           },
           {
             name: '执行次数',
             type: 'bar',
-            data: [23, 24, 18, 25, 27, 28, 25]
-          },
-          {
-            name: '平均通过率',
-            type: 'bar',
-            data: [26, 21, 15, 28, 25, 28, 21]
-          },
+            data: yData2
+          }
         ]
       })
     },
     setChart1(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [23, 24, 18, 25, 27, 28, 25]
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
@@ -127,7 +165,8 @@ export default {
           data: xData
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          minInterval: 1
         },
         series: [
           {
@@ -138,8 +177,6 @@ export default {
       })
     },
     setChart2(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [23, 24, 18, 25, 27, 28, 25]
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
