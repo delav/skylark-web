@@ -63,7 +63,7 @@
 <script>
 import axios from "axios";
 import CountCard from "@/views/statistics/components/CountCard";
-import { fetchOverview, fetchProjectInfo, fetchIncreaseInfo } from "@/api/statistics";
+import { fetchOverview, fetchAllProjectInfo, fetchIncreaseInfo } from "@/api/statistics";
 
 export default {
   name: 'Overview',
@@ -108,7 +108,7 @@ export default {
       chart2.showLoading()
       chart3.showLoading()
       chart4.showLoading()
-      axios.all([fetchProjectInfo(), fetchIncreaseInfo()]).then(
+      axios.all([fetchAllProjectInfo(), fetchIncreaseInfo()]).then(
         axios.spread((r1, r2) => {
           const caseIncreaseInfo = r2.data['case_increase']
           const buildIncreaseInfo = r2.data['build_increase']

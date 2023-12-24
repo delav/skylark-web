@@ -1,7 +1,7 @@
 <template>
   <div class="statistics">
     <div class="header">
-      <div class="header-item department-filter">
+      <div class="header-item">
         <span class="item-label">部门：</span>
         <el-select
           v-model="queryParams.department_id"
@@ -16,7 +16,7 @@
           />
         </el-select>
       </div>
-      <div class="header-item department-filter">
+      <div class="header-item">
         <span class="item-label">团队：</span>
         <el-select
           v-model="queryParams.group_id"
@@ -31,7 +31,7 @@
           />
         </el-select>
       </div>
-      <div class="header-item department-filter">
+      <div class="header-item">
         <span class="item-label">项目：</span>
         <el-select
           v-model="queryParams.project_id"
@@ -46,6 +46,21 @@
           />
         </el-select>
       </div>
+<!--      <div class="header-item">-->
+<!--        <span class="item-label">环境：</span>-->
+<!--        <el-select-->
+<!--          v-model="queryParams.env_id"-->
+<!--          placeholder="选择环境"-->
+<!--          @change="changeProject"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="item in envList"-->
+<!--            :key="item.id"-->
+<!--            :label="item.name"-->
+<!--            :value="item.id"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </div>-->
       <div class="header-item overview-button">
         <el-button type="primary" @click="routeOverview">重置</el-button>
       </div>
@@ -73,6 +88,9 @@ export default {
   computed: {
     overviewPath() {
       return '/statistics/overview'
+    },
+    envList() {
+      return this.$store.state.base.envList
     }
   },
   data() {
@@ -98,6 +116,9 @@ export default {
   created() {
     this.getProjectInfo()
   },
+  mounted() {
+    this.$store.dispatch('base/getBaseInfo')
+  },
   methods: {
     setComponent(t) {
       if (t === this.componentType.group) {
@@ -115,7 +136,6 @@ export default {
         this.allGroupList = projectInfo['group_list']
         this.allProjectList = projectInfo['project_list']
         this.initQueryParams()
-
       })
     },
     initQueryParams() {
@@ -211,6 +231,12 @@ export default {
     },
     routeOverview() {
       Object.assign(this.$data, this.$options.data())
+      fetchProjectInfo().then(response => {
+        const projectInfo = response.data
+        this.departmentList = projectInfo['department_list']
+        this.allGroupList = projectInfo['group_list']
+        this.allProjectList = projectInfo['project_list']
+      })
       this.$router.push(this.overviewPath)
     },
   }
@@ -232,9 +258,9 @@ export default {
     margin-bottom: 10px;
     //border: 1px solid #e4e7ed;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, .08);
+    //border: 1px solid rgba(0, 0, 0, .08);
     //border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .12);
+    //box-shadow: 0 2px 5px rgba(0, 0, 0, .12);
     .header-item {
       padding: 0 10px;
       .item-label {

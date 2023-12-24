@@ -146,7 +146,7 @@
             :keyword-data="keywordObject"
             :keyword-group="keywordGroups"
             @cancel="showKeywordEdit=false"
-            @confirm="saveReadyKeyword"
+            @confirm="saveKeyword"
           />
         </div>
       </el-dialog>
@@ -176,7 +176,7 @@ import KeywordForm from "@/views/setting/keyword/components/KeywordForm";
 import KeywordDetail from "@/views/setting/keyword/components/KeywordDetail";
 import { deepCopy } from "@/utils/dcopy";
 import { fetchKeywordGroup, createKeywordGroup, updateKeywordGroup, deleteKeywordGroup } from "@/api/kgroup";
-import { createKeyword, getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
+import { createKeyword, updateKeyword, getLibKeywordByGroup, getReadyLibKeyword } from "@/api/keyword";
 
 export default {
   name: 'Keyword',
@@ -275,6 +275,13 @@ export default {
     editKeyword(row) {
       this.keywordObject = row
       this.showKeywordEdit = true
+    },
+    saveKeyword(keywordData) {
+      const keywordId = keywordData['id']
+      updateKeyword(keywordId, keywordData).then(() => {
+        this.showKeywordEdit = false
+        this.$message.success('保存成功')
+      })
     },
     keywordDetail(row) {
       this.keywordObject = row

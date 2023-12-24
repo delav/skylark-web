@@ -32,17 +32,25 @@
 
 <script>
 import axios from "axios";
-import { fetchBuildInfo, fetchCaseInfo } from "@/api/statistics";
+import { fetchProjectRecordInfo, fetchProjectBuildInfo } from "@/api/statistics";
 
 export default {
   name: 'ProjectView',
   mounted() {
     this.$nextTick(() =>{
-      this.loadAllCharts()
+      const projectId = this.$route.query.id
+      this.loadProjectCharts(projectId)
     })
   },
+  watch: {
+    '$route.query.id': {
+      handler(val) {
+        this.loadProjectCharts(val)
+      }
+    }
+  },
   methods: {
-    loadAllCharts() {
+    loadProjectCharts(projectId) {
       const that = this
       const chart1 = this.$echarts.init(document.getElementById('pro-chart1'))
       const chart2 = this.$echarts.init(document.getElementById('pro-chart2'))
@@ -58,59 +66,60 @@ export default {
       chart5.showLoading()
       chart6.showLoading()
       chart7.showLoading()
-      axios.all([fetchCaseInfo(), fetchBuildInfo()]).then(
+      axios.all([fetchProjectRecordInfo(projectId), fetchProjectBuildInfo(projectId)]).then(
         axios.spread((r1, r2) => {
-          console.log(r1)
-          console.log(r2)
-          that.setChart1(chart1, [], [])
-          that.setChart2(chart2, [], [])
-          that.setChart3(chart3, [], [])
-          that.setChart4(chart4, [], [])
+          console.log(r2.data)
+          const projectEnvRate = r1.data['env_rate']
+          const projectRegionRate = r1.data['region_rate']
+          const caseIncreaseInfo = r1.data['case_rate']
+          const envRateObjMap = Object.entries(projectEnvRate).map(
+            ([key, value]) => ({ name: key, value: value })
+          )
+          const buildPassRate = r2.data['pass_rate']
+          const buildDurationRate = r2.data['duration_rate']
+          that.setChart1(chart1, Object.keys(buildPassRate), buildPassRate)
+          that.setChart2(chart2, envRateObjMap)
+          that.setChart3(chart3, Object.keys(projectRegionRate), Object.values(projectRegionRate))
+          that.setChart4(chart4, Object.keys(caseIncreaseInfo), Object.values(caseIncreaseInfo))
           that.setChart5(chart5, [], [])
-          that.setChart6(chart6, [], [])
+          that.setChart6(chart6, Object.keys(buildDurationRate), buildDurationRate)
           that.setChart7(chart7, [], [])
         })
-      )
+      ).catch(() => {
+        chart1.hideLoading()
+        chart2.hideLoading()
+        chart3.hideLoading()
+        chart4.hideLoading()
+        chart5.hideLoading()
+        chart6.hideLoading()
+        chart7.hideLoading()
+      })
     },
-    setChart1(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [23, 24, 18, 25, 27, 28, 25]
+    setChart1(chartObj, xData, dataObj) {
       chartObj.hideLoading()
+      const seriesList = Object.entries(dataObj).map(
+        ([key, value]) => ({ name: key, data: value, type: 'line' })
+      )
       chartObj.setOption({
         title: {
-          text: '总体信息'
+          text: '执行通过率(%)'
         },
         xAxis: {
           type: 'category',
-          data: xData
+          data: []
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          max: 100
         },
-        series: [
-          {
-            data: yData,
-            type: 'line'
-          }
-        ]
+        legend: {
+          data: xData,
+          icon: 'rect'
+        },
+        series: seriesList
       })
     },
-    setChart2(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [
-        {
-          value: 335,
-          name: 'TEST'
-        },
-        {
-          value: 234,
-          name: 'UAT'
-        },
-        {
-          value: 1548,
-          name: 'STAG'
-        }
-      ]
+    setChart2(chartObj, data) {
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
@@ -119,14 +128,12 @@ export default {
         series: [
           {
             type: 'pie',
-            data: yData
+            data: data
           }
         ]
       })
     },
     setChart3(chartObj, xData, yData) {
-      xData = ['BR', 'CO', 'SG', 'MY', 'CL', 'ID', 'PH']
-      yData = [23, 24, 18, 25, 27, 28, 25]
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
@@ -147,61 +154,6 @@ export default {
       })
     },
     setChart4(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [89, 84, 89, 94, 92, 88, 86]
-      chartObj.hideLoading()
-      chartObj.setOption({
-        title: {
-          text: '通过率趋势'
-        },
-        xAxis: {
-          type: 'category',
-          data: xData
-        },
-        yAxis: {
-          type: 'value'
-        },
-        legend: {
-          data: ['BR', 'ID', 'CO', 'MY', 'PH', 'SG'],
-          icon: 'rect'
-        },
-        series: [
-          {
-            name: 'BR',
-            data: yData,
-            type: 'line'
-          },
-          {
-            name: 'ID',
-            data: [99, 94, 89, 91, 96, 89, 96],
-            type: 'line'
-          },
-          {
-            name: 'CO',
-            data: [94, 74, 99, 84, 92, 78, 89],
-            type: 'line'
-          },
-          {
-            name: 'MY',
-            data: [81, 79, 89, 84, 82, 88, 86],
-            type: 'line'
-          },
-          {
-            name: 'PH',
-            data: [90, 60, 85, 74, 78, 80, 95],
-            type: 'line'
-          },
-          {
-            name: 'SG',
-            data: [76, 75, 76, 93, 96, 83, 99],
-            type: 'line'
-          }
-        ]
-      })
-    },
-    setChart5(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [23, 24, 18, 25, 27, 28, 25]
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
@@ -212,7 +164,8 @@ export default {
           data: xData
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          minInterval: 1
         },
         series: [
           {
@@ -222,13 +175,14 @@ export default {
         ]
       })
     },
-    setChart6(chartObj, xData, yData) {
+    setChart5(chartObj, xData, yData1, yData2) {
       xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [23, 24, 18, 25, 27, 28, 25]
+      yData1 = [25, 4, 15, 30, 27, 28, 0]
+      yData2 = [5, 26, 15, 0, 3, 2, 30]
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
-          text: '项目执行耗时'
+          text: '用例失败率(%)'
         },
         xAxis: {
           type: 'category',
@@ -243,36 +197,39 @@ export default {
         },
         series: [
           {
-            name: 'BR',
-            data: yData,
-            type: 'line'
+            data: yData1,
+            type: 'bar',
+            stack: 'x'
           },
           {
-            name: 'ID',
-            data: [99, 94, 89, 91, 96, 89, 96],
-            type: 'line'
-          },
-          {
-            name: 'CO',
-            data: [94, 74, 99, 84, 92, 78, 89],
-            type: 'line'
-          },
-          {
-            name: 'MY',
-            data: [81, 79, 89, 84, 82, 88, 86],
-            type: 'line'
-          },
-          {
-            name: 'PH',
-            data: [90, 60, 85, 74, 78, 80, 95],
-            type: 'line'
-          },
-          {
-            name: 'SG',
-            data: [76, 75, 76, 93, 96, 83, 99],
-            type: 'line'
+            data: yData2,
+            type: 'bar',
+            stack: 'x'
           }
         ]
+      })
+    },
+    setChart6(chartObj, xData, dataObj) {
+      chartObj.hideLoading()
+      const seriesList = Object.entries(dataObj).map(
+        ([key, value]) => ({ name: key, data: value, type: 'line' })
+      )
+      chartObj.setOption({
+        title: {
+          text: '项目执行耗时(s)'
+        },
+        xAxis: {
+          type: 'category',
+          data: []
+        },
+        yAxis: {
+          type: 'value'
+        },
+        legend: {
+          data: xData,
+          icon: 'rect'
+        },
+        series: seriesList
       })
     },
     setChart7(chartObj, xData, yData) {
@@ -281,7 +238,7 @@ export default {
       chartObj.hideLoading()
       chartObj.setOption({
         title: {
-          text: '用例执行耗时'
+          text: '用例执行耗时(s)'
         },
         xAxis: {
           type: 'category',

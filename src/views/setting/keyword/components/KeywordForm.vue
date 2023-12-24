@@ -12,7 +12,7 @@
           <el-input v-model="formData.ext_name"></el-input>
         </el-form-item>
         <el-form-item label="函数名称" prop="name">
-          <el-input v-model="formData.name"></el-input>
+          <el-input v-model="formData.name" disabled></el-input>
         </el-form-item>
         <el-form-item label="分组" prop="group_id">
           <el-select
@@ -32,19 +32,19 @@
           <el-input :rows="3" type="textarea" v-model="formData.desc"></el-input>
         </el-form-item>
         <el-form-item label="参数" prop="input_params">
-          <el-input v-model="formData.input_params"></el-input>
+          <el-input v-model="formData.input_params" disabled></el-input>
         </el-form-item>
         <el-form-item label="参数说明" prop="input_desc">
           <el-input v-model="formData.input_desc"></el-input>
         </el-form-item>
         <el-form-item label="返回值" prop="output_params">
-          <el-input v-model="formData.output_params"></el-input>
+          <el-input v-model="formData.output_params" disabled></el-input>
         </el-form-item>
         <el-form-item label="返回值说明" prop="output_desc">
           <el-input v-model="formData.output_desc"></el-input>
         </el-form-item>
         <el-form-item label="来源" prop="library_name">
-          <el-input v-model="formData.library_name"></el-input>
+          <el-input v-model="formData.library_name" disabled></el-input>
         </el-form-item>
         <el-form-item label="组件图标">
           <el-upload
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { deepCopy } from "@/utils/dcopy";
 
 export default {
   name: 'KeywordForm',
@@ -133,6 +134,7 @@ export default {
         if (!valid) {
           return
         }
+        const confirmData = deepCopy(this.formData)
         if (this.iconList.length !== 0) {
           let file_str = ''
           const reader = new FileReader()
@@ -140,9 +142,11 @@ export default {
           reader.onload = function () {
             file_str = this.result
           }
-          this.formData['image'] = file_str
+          confirmData['image'] = file_str
+        } else {
+          delete confirmData['image']
         }
-        this.$emit('confirm', this.formData)
+        this.$emit('confirm', confirmData)
       })
     },
   }
