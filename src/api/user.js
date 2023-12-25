@@ -16,9 +16,17 @@ export function register(data) {
   })
 }
 
-export function reset(data) {
+export function resetPrecheck(data) {
   return request({
-    url: 'user/reset',
+    url: 'user/reset_precheck',
+    method: 'post',
+    data: data
+  })
+}
+
+export function resetConfirm(data) {
+  return request({
+    url: 'user/reset_confirm',
     method: 'post',
     data: data
   })

@@ -18,18 +18,18 @@
         </div>
         <p class="label-desc">Username</p>
         <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-          <el-input
-            ref="username"
-            v-model="loginForm.username"
-            placeholder="Username"
-            name="username"
-            type="text"
-            tabindex="1"
-            autocomplete="on"
-          />
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+            <el-input
+              ref="username"
+              v-model="loginForm.username"
+              placeholder="Username"
+              name="username"
+              type="text"
+              tabindex="1"
+              autocomplete="on"
+            />
         </el-form-item>
         <p class="label-desc" style="margin-top: 30px">Password</p>
         <el-form-item prop="password">
@@ -52,7 +52,7 @@
           </span>
         </el-form-item>
         <div class="forgot-password">
-          <el-button type="primary" link>Forgot password?</el-button>
+          <el-button type="primary" @click="routeToResetPage" link>Forgot password?</el-button>
         </div>
         <el-button :loading="loading" class="login-button" type="primary" @click.native.prevent="handleLogin">Login</el-button>
       </el-form>
@@ -127,6 +127,14 @@ export default {
           return false
         }
       })
+    },
+    routeToResetPage() {
+      let userEmail = ''
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (emailRegex.test(this.loginForm.username)) {
+        userEmail = this.loginForm.username
+      }
+      this.$router.push({name: 'Reset', params: {email: userEmail}})
     }
   }
 }

@@ -3,10 +3,26 @@ import Cookies from "js-cookie";
 
 const TokenKey = 'Authorization'
 
-export const NotAuthUrl = {
+export const NotAuthPath = {
   Login: '/login',
+  Register: '/register',
   Reset: '/reset',
-  Register: '/register'
+  Page401: '/401',
+  Page404: '/404'
+}
+
+export function isNotAuthPage(path) {
+  return Object.values(NotAuthPath).indexOf(path) !== -1
+}
+
+export function notAuthApi(url) {
+  const notAuthApi = [
+    '/user/login',
+    '/user/register',
+    '/user/reset_precheck',
+    '/user/reset_confirm'
+  ]
+  return notAuthApi.indexOf(url) !== -1
 }
 
 export function getToken() {
@@ -21,13 +37,6 @@ export function setToken(token) {
 export function removeToken() {
     return Cookies.remove(TokenKey)
 }
-
-export function notAuth(url) {
-  return url !== NotAuthUrl.Login
-    || url !== NotAuthUrl.Reset
-    || url !== NotAuthUrl.Register
-}
-
 
 export function encrypt (plaintext) {
   const keyStr = '20220427@)@@)$@&'

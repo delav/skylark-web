@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { NotAuthUrl } from "@/utils/auth";
+import { NotAuthPath } from "@/utils/auth";
 
 export default {
   name: 'Profile',
@@ -29,7 +29,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('user/logout')
-      return this.$router.push(`${NotAuthUrl.Login}?redirect=${this.$route.fullPath}`)
+      return this.$router.push(`${NotAuthPath.Login}?redirect=${this.$route.fullPath}`)
     },
   }
 }

@@ -129,18 +129,21 @@ export const routes = [
   },
   {
     path: '/login',
+    name: 'Login',
     meta: { navbar: false },
     component: () => import('@/views/user/login/index'),
     hidden: true
   },
   {
     path: '/register',
+    name: 'Register',
     meta: { navbar: false },
     component: () => import('@/views/user/register/index'),
     hidden: true
   },
   {
     path: '/reset',
+    name: 'Reset',
     meta: { navbar: false },
     component: () => import('@/views/user/reset/index'),
     hidden: true

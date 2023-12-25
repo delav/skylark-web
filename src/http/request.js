@@ -2,8 +2,8 @@ import axios from "axios";
 import store from "@/store";
 import router from "@/router";
 import { ElMessage } from "element-plus";
-import { NotAuthUrl } from "@/utils/auth";
-import { getToken, notAuth } from "@/utils/auth";
+import { NotAuthPath } from "@/utils/auth";
+import { getToken, notAuthApi } from "@/utils/auth";
 
 // create an axios instance
 const service = axios.create({
@@ -14,7 +14,7 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    if (store.getters.token && notAuth(config.url)) {
+    if (store.getters.token && !notAuthApi(config.url)) {
       config.headers['Authorization'] = getToken()
     }
     if (!(config.headers['Content-Type'])) {
@@ -59,7 +59,7 @@ service.interceptors.response.use(
       if (res.code === 40100) {
         // to re-login
         store.dispatch('user/resetToken')
-        router.push({ path: NotAuthUrl.Login })
+        router.push({ path: NotAuthPath.Login })
         return
       }
       let timeout = setTimeout(() => {
