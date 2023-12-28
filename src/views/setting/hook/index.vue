@@ -167,8 +167,8 @@ export default {
     },
     getTypeNameById(hookTypeId) {
       for (let i = 0; i < this.hookTypeList.length; i++) {
-        if (this.hookTypeList[0]['value'] === hookTypeId) {
-          return this.hookTypeList[0]['name']
+        if (this.hookTypeList[i]['value'] === hookTypeId) {
+          return this.hookTypeList[i]['name']
         }
       }
       return 'Unknown'

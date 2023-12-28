@@ -12,7 +12,7 @@ export default {
   name: 'Guide',
   methods: {
     routeToGuide() {
-      window.open('https://zephyer.top')
+      window.open('https://delav.github.io/skylark-doc/')
     }
   }
 }

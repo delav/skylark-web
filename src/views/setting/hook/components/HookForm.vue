@@ -60,6 +60,7 @@ export default {
         const params = {
           name: this.hookFormData.name,
           desc: this.hookFormData.desc,
+          hook_type: this.hookType,
           extra_data: JSON.stringify(extraDataObj)
         }
         this.$emit('confirm', params)

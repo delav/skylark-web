@@ -44,5 +44,6 @@ export function getReadyLibKeyword() {
   return request({
     url: '/keyword/lib_keyword/scan_keyword',
     method: 'get',
+    timeout: 10000
   })
 }

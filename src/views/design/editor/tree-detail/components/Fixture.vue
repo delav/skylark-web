@@ -161,10 +161,10 @@ export default {
     return {
       fixtureJoinSep: '|AND|',
       fixtureHelpShow: [
-        ['suite_setup', '套件前置', '运行测试套件之前执行，可用于准备数据'],
-        ['suite_teardown', '套件后置', '运行测试套件之前执行，可用于准备数据'],
-        ['test_setup', '用例前置', '运行测试套件之前执行，可用于准备数据'],
-        ['test_teardown', '用例后置', '运行测试套件之前执行，可用于准备数据'],
+        ['suite_setup', '套件前置', '测试套件执行之前执行，可用于准备数据'],
+        ['test_setup', '用例前置', '测试套件下每个用例执行之前都会执行'],
+        ['test_teardown', '用例后置', '测试套件下每个用例执行之后都会执行'],
+        ['suite_teardown', '套件后置', '测试套件执行之后执行，可用于清理数据'],
       ],
       fixtureObject: {
         'suite_setup': [],
@@ -242,9 +242,6 @@ export default {
       this.showParams = true
     },
     saveFixture() {
-      if (this.fixtureKeywords.length === 0) {
-        return
-      }
       const valueStr = this.fixtureKeywords.join(this.fixtureJoinSep)
       const postData = {[this.editField]: valueStr}
       const moduleInfo = this.getModuleInfo()

@@ -44,7 +44,7 @@
         </div>
         <div class="file-editor">
           <el-button size="small" v-if="!editMode" type="primary" @click="editFileContent" plain>编辑</el-button>
-          <el-button size="small" v-else type="primary" @click="restoreFileContent" plain>取消</el-button>
+          <el-button size="small" v-else @click="restoreFileContent" plain>取消</el-button>
           <el-button size="small" type="primary" @click="saveFileContent" plain>保存</el-button>
         </div>
       </div>
