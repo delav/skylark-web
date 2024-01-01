@@ -1,4 +1,4 @@
-import {deepCopy} from "@/utils/dcopy";
+import { deepCopy } from "@/utils/dcopy";
 
 const getTreeState = () => {
   return {

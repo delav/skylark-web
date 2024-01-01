@@ -86,22 +86,27 @@ export default {
     updateCaseKeyword(field) {
       if (field === 'inputs' || field === 'outputs') {
         const pattern = /\$\{.*\}/
-        const value = this.extraData[field]
+        let value = this.extraData[field]
         if (value === undefined) {
           return
-        } else if (value === null || value === '') {
+        }
+        if (value === null || value.trim() === '') {
           // nothing
         } else if (value.indexOf('|') !== -1) {
           const valueList = value.split('|')
-          for (let v in valueList) {
+          for (let i = 0; i < valueList.length; i++) {
+            const v = valueList[i].trim()
             if (!v.match(pattern)) {
               this.$message.error('参数格式错误')
               return
             }
           }
-        } else if (!value.match(pattern))  {
-          this.$message.error('参数格式错误')
-          return
+        } else {
+          value = value.trim()
+          if (!value.match(pattern)) {
+            this.$message.error('参数格式错误')
+            return
+          }
         }
       }
       const params = {

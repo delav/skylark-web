@@ -30,7 +30,6 @@
             style="width: 100%"
             v-model="searchKey"
             placeholder="搜索"
-            @keyup.enter.native="searchVariable"
           >
           </el-input>
         </div>
@@ -144,7 +143,7 @@
       >
         <variable-save
           :variable-form="variableForm"
-          @commit="commitSaveVariable"
+          @confirm="commitSaveVariable"
           @cancel="cancelSaveVariable"
         />
       </el-dialog>
@@ -159,7 +158,7 @@
       >
         <variable-copy
           :module-info="moduleInfo"
-          @commit="commitCopyVariable"
+          @confirm="commitCopyVariable"
           @cancel="cancelCopyVariable"
         />
       </el-dialog>
@@ -206,6 +205,11 @@ export default {
         }
       },
       immediate: true
+    },
+    searchKey: {
+      handler() {
+        this.searchVariable()
+      }
     }
   },
   data() {
@@ -397,7 +401,7 @@ export default {
     .card-header {
       padding: 10px 0;
       display: flex;
-      align-content: flex-start;
+      align-items: center;
       .env-radio {
       }
       .variable-search {

@@ -81,9 +81,9 @@ export default {
           that.setChart2(chart2, envRateObjMap)
           that.setChart3(chart3, Object.keys(projectRegionRate), Object.values(projectRegionRate))
           that.setChart4(chart4, Object.keys(caseIncreaseInfo), Object.values(caseIncreaseInfo))
-          that.setChart5(chart5, [], [])
+          that.setChart5(chart5, r2.data['case_ratio'])
           that.setChart6(chart6, Object.keys(buildDurationRate), buildDurationRate)
-          that.setChart7(chart7, [], [])
+          that.setChart7(chart7, r2.data['case_duration'])
         })
       ).catch(() => {
         chart1.hideLoading()
@@ -175,38 +175,32 @@ export default {
         ]
       })
     },
-    setChart5(chartObj, xData, yData1, yData2) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData1 = [25, 4, 15, 30, 27, 28, 0]
-      yData2 = [5, 26, 15, 0, 3, 2, 30]
+    setChart5(chartObj, dataList) {
       chartObj.hideLoading()
+      const xData = []
+      const yDataObj = {Passed: [], Failed: [], Skipped: []}
+      for (let i = 0; i < dataList.length; i++) {
+        xData.push(dataList[i]['name'])
+        yDataObj.Passed.push(dataList[i]['values'][0])
+        yDataObj.Failed.push(dataList[i]['values'][1])
+        yDataObj.Skipped.push(dataList[i]['values'][2])
+      }
+      const seriesList = Object.entries(yDataObj).map(
+        ([key, value]) => ({ name: key.toString(), data: value, type: 'bar', stack: 'x' })
+      )
       chartObj.setOption({
         title: {
-          text: '用例失败率(%)'
+          text: '用例失败占比'
         },
         xAxis: {
-          type: 'category',
-          data: xData
+          data: xData,
+          type: 'category'
         },
         yAxis: {
           type: 'value'
         },
-        legend: {
-          data: ['BR', 'ID', 'CO', 'MY', 'PH', 'SG'],
-          icon: 'rect'
-        },
-        series: [
-          {
-            data: yData1,
-            type: 'bar',
-            stack: 'x'
-          },
-          {
-            data: yData2,
-            type: 'bar',
-            stack: 'x'
-          }
-        ]
+        legend: {},
+        series: seriesList
       })
     },
     setChart6(chartObj, xData, dataObj) {
@@ -232,13 +226,17 @@ export default {
         series: seriesList
       })
     },
-    setChart7(chartObj, xData, yData) {
-      xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      yData = [220, 182, 191, 234, 290, 330, 310]
+    setChart7(chartObj, dataList) {
       chartObj.hideLoading()
+      const xData = []
+      const yData = []
+      for (let i = 0; i < dataList.length; i++) {
+        xData.push(dataList[i]['name'])
+        yData.push(dataList[i]['values'])
+      }
       chartObj.setOption({
         title: {
-          text: '用例执行耗时(s)'
+          text: '用例平均耗时(s)'
         },
         xAxis: {
           type: 'category',
@@ -247,8 +245,9 @@ export default {
         yAxis: {},
         series: [
           {
+            name: '执行耗时',
             data: yData,
-            type: 'scatter'
+            type: 'bar',
           }
         ]
       })

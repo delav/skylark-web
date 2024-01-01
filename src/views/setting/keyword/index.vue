@@ -304,6 +304,7 @@ export default {
     //border: 1px solid #e4e7ed;
     overflow: hidden;
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
     justify-content: center;
     .item-desc {

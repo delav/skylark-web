@@ -69,7 +69,7 @@ export default {
     return {
       loginImage: require('@/assets/login.jpg'),
       logoImage: require('@/assets/logo.png'),
-      login1Image: require('@/assets/login-1.png'),
+      login1Image: require('@/assets/login-1.jpg'),
       loginForm: {
         username: '123456@163.com',
         password: '123456'

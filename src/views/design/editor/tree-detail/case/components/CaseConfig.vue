@@ -162,6 +162,7 @@ export default {
   },
   methods: {
     initCaseExtraData(info) {
+      this.caseInfo = {}
       this.handlerPriority(info.priority_id)
       this.handlerTags(info.tag)
       this.handlerOrder(info.order)
@@ -184,12 +185,14 @@ export default {
       }
       const numUnit = timeoutStr.split(' ')
       if (numUnit.length !== 2) {
+        this.timeNum = ''
         return
       }
       this.timeNum = numUnit[0]
       this.timeUnit = numUnit[1]
     },
     handlerPriority(priorityId) {
+      this.priorityName = ''
       if (priorityId in this.priorityMap) {
         this.caseInfo.priority_id = priorityId
         this.priorityName = this.priorityMap[priorityId]
@@ -208,6 +211,7 @@ export default {
       }
     },
     handlerOrder(orderNumber) {
+      this.orderNumber = ''
       if (orderNumber) {
         this.orderNumber = orderNumber
       }

@@ -175,7 +175,7 @@ export default {
       this.copyParams['module_id'] = this.moduleInfo.module_id
       this.copyParams['module_type'] = this.moduleInfo.module_type
       copyVariableByEnv(this.copyParams).then(() => {
-        this.$emit('commit', this.copyParams.to_env_id)
+        this.$emit('confirm', this.copyParams.to_env_id)
       })
     },
   }

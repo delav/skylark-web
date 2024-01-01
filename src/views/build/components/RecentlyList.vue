@@ -3,7 +3,7 @@
     <p class="recently-header">
       <span class="desc">最近构建</span>
       <span class="refresh">
-        <el-icon @click="refreshRecentlyRecordList" :size="16" style="margin-top: 5px"><RefreshLeft /></el-icon>
+        <el-icon @click="manualRefreshRecordList" :size="16" style="margin-top: 5px"><RefreshLeft /></el-icon>
       </span>
     </p>
     <div class="recently-list">
@@ -69,6 +69,9 @@ export default {
           that.$store.dispatch('record/getRecentlyRecordList')
         }, 0)
       }, 15000)
+    },
+    manualRefreshRecordList() {
+      this.$store.dispatch('record/getRecentlyRecordList')
     },
     gotoRecordDetail(recordId) {
       this.$router.push(`/build/record/detail/${recordId}`)

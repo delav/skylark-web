@@ -42,6 +42,7 @@ export default {
       handler(val) {
         this.handlerSuiteInfo(val)
       },
+      deep: true,
       immediate: true
     },
   },

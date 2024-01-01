@@ -232,6 +232,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/styles/variables.module.scss";
+
 .quick-build {
   width: 100%;
   height: 100%;
@@ -243,6 +245,7 @@ export default {
     .card-header {
       padding: 18px 20px;
       border-bottom: 1px solid #e4e7ed;
+      color: $textColor;
     }
     .card-body {
       margin-top: 20px;

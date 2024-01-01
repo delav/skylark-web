@@ -62,7 +62,7 @@
 <!--        </el-select>-->
 <!--      </div>-->
       <div class="header-item overview-button">
-        <el-button type="primary" @click="routeOverview">重置</el-button>
+        <el-button @click="routeOverview">重置</el-button>
       </div>
     </div>
     <div class="body">

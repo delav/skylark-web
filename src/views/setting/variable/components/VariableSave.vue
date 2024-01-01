@@ -103,7 +103,19 @@ export default {
           { required: true, trigger: 'blur', message: '变量值不能为空' }
         ]
       },
-      postVariableForm: this.variableForm,
+      postVariableForm: {},
+    }
+  },
+  watch: {
+    variableForm: {
+      handler(val) {
+        if (val.region_id === null) {
+          val.region_id = 0
+        }
+        this.postVariableForm = val
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -115,14 +127,14 @@ export default {
         if (!valid) {
           return
         }
+        if (this.postVariableForm['region_id'] === 0) {
+          delete this.postVariableForm['region_id']
+        }
         if (this.postVariableForm['id']) {
           updateVariable(this.postVariableForm['id'], this.postVariableForm).then(() => {
             this.$emit('confirm')
           })
         } else {
-          if (this.postVariableForm['region_id'] === 0) {
-            delete this.postVariableForm['region_id']
-          }
           createVariable(this.postVariableForm).then(() => {
             this.$emit('confirm')
           })

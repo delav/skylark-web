@@ -150,23 +150,23 @@ export default {
       const projectId = this.$store.state.tree.projectId
       getUserKeyword(projectId).then(response => {
         const updateGroupList = response.data
-        const updateGroupMap = {}
-        // update keywordObject
         const keywordDict = this.$store.state.keyword.keywordObjects
         for (let i = 0; i < updateGroupList.length; i++) {
-          updateGroupMap[updateGroupList[i].id] = updateGroupList[i]
           const groupKeywordList = updateGroupList[i]['keywords']
+          // update keywordObject
           for (let j = 0; j < groupKeywordList.length; j++) {
             const keywordItem = groupKeywordList[j]
             const keywordUid = getKeywordUid(keywordItem.id, keywordItem.keyword_type)
             keywordDict[keywordUid] = keywordItem
           }
-        }
-        // update keywordGroups
-        for (let i = 0; i < this.keywordGroups.length; i++) {
-          const groupId = this.keywordGroups[i].id
-          if (groupId in updateGroupMap) {
-            this.keywordGroups.splice(i, 1, updateGroupMap[groupId])
+          // update keywordGroups
+          const index = this.keywordGroups.findIndex(item => {
+            return item.id === updateGroupList[i].id
+          })
+          if (index !== -1) {
+            this.keywordGroups.splice(index, 1, updateGroupList[i])
+          } else {
+            this.keywordGroups.push(updateGroupList[i])
           }
         }
         this.$store.commit('keyword/SET_KEYWORD_OBJECTS', keywordDict)

@@ -235,7 +235,7 @@ export default {
     }
     .filter-search {
       width: 300px;
-      margin-left: 15px;
+      margin-left: auto;
       min-width: 150px;
     }
     .new-button {

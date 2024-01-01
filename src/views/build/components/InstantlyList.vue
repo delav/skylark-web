@@ -3,7 +3,7 @@
     <p class="instantly-header">
       <span class="desc">即将构建</span>
       <span class="refresh">
-        <el-icon @click="refreshInstantlyPlanList" :size="16" style="margin-top: 5px"><RefreshLeft /></el-icon>
+        <el-icon @click="manualRefreshPlanList" :size="16" style="margin-top: 5px"><RefreshLeft /></el-icon>
       </span>
     </p>
     <div class="instantly-list">
@@ -64,6 +64,9 @@ export default {
         }, 0)
       }, 15000)
       return setInterval
+    },
+    manualRefreshPlanList() {
+      this.$store.dispatch('plan/getInstantlyPlanList')
     },
     gotoPlanDetail(planId) {
       this.$router.push(`/build/plan/detail/${planId}`)

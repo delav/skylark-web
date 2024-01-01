@@ -47,14 +47,14 @@
             <div class="chart-card" id="chart2" style="height: 240px;max-width: 100%; margin-top: 20px"></div>
           </el-col>
         </el-row>
-        <el-row :gutter="20" style="margin-top: 20px">
-          <el-col :span="12">
-            <div class="chart-card" id="chart3" style="height: 500px;max-width: 100%"></div>
-          </el-col>
-          <el-col :span="12">
-            <div class="chart-card" id="chart4" style="height: 500px;max-width: 100%"></div>
-          </el-col>
-        </el-row>
+<!--        <el-row :gutter="20" style="margin-top: 20px">-->
+<!--          <el-col :span="12">-->
+<!--            <div class="chart-card" id="chart3" style="height: 500px;max-width: 100%"></div>-->
+<!--          </el-col>-->
+<!--          <el-col :span="12">-->
+<!--            <div class="chart-card" id="chart4" style="height: 500px;max-width: 100%"></div>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
       </div>
     </div>
   </div>
@@ -101,13 +101,13 @@ export default {
       const mainChart = this.$echarts.init(document.getElementById('mainChart'))
       const chart1 = this.$echarts.init(document.getElementById('chart1'))
       const chart2 = this.$echarts.init(document.getElementById('chart2'))
-      const chart3 = this.$echarts.init(document.getElementById('chart3'))
-      const chart4 = this.$echarts.init(document.getElementById('chart4'))
+      // const chart3 = this.$echarts.init(document.getElementById('chart3'))
+      // const chart4 = this.$echarts.init(document.getElementById('chart4'))
       mainChart.showLoading()
       chart1.showLoading()
       chart2.showLoading()
-      chart3.showLoading()
-      chart4.showLoading()
+      // chart3.showLoading()
+      // chart4.showLoading()
       axios.all([fetchAllProjectInfo(), fetchIncreaseInfo()]).then(
         axios.spread((r1, r2) => {
           const caseIncreaseInfo = r2.data['case_increase']
@@ -123,8 +123,8 @@ export default {
           that.setMainChart(mainChart, projectNameList, projectCaseList, projectBuildList)
           that.setChart1(chart1, Object.keys(caseIncreaseInfo), Object.values(caseIncreaseInfo))
           that.setChart2(chart2, Object.keys(buildIncreaseInfo), Object.values(buildIncreaseInfo))
-          that.setChart3(chart3, [], [])
-          that.setChart4(chart4, [], [])
+          // that.setChart3(chart3, [], [])
+          // that.setChart4(chart4, [], [])
         })
       )
     },
@@ -187,7 +187,8 @@ export default {
           data: xData
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          minInterval: 1
         },
         series: [
           {
