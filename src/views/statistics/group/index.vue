@@ -6,13 +6,13 @@
 export default {
   name: 'GroupView',
   mounted() {
-    const groupId = this.$route.query.id
-    this.getGroupStatistics(groupId)
+    // const groupId = this.$route.query.id
+    // this.getGroupStatistics(groupId)
   },
   methods: {
-    getGroupStatistics(groupId) {
-      console.log(groupId)
-    }
+    // getGroupStatistics(groupId) {
+    //   console.log(groupId)
+    // }
   }
 }
 </script>

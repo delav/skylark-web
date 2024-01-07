@@ -221,8 +221,7 @@ export default {
         if (!valid) {
           return
         }
-        buildQuickTest(this.formData).then(response => {
-          console.log(response.data)
+        buildQuickTest(this.formData).then(() => {
           this.$router.push('/build/record/list')
         })
       })

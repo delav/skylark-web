@@ -8,7 +8,7 @@
       class="feedback-dialog"
       width="700px"
       v-model="feedbackShow"
-      title="意见反馈"
+      title="问题反馈"
     >
       <el-form
         ref="feedbackRef"

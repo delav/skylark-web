@@ -68,7 +68,6 @@ export default {
       chart7.showLoading()
       axios.all([fetchProjectRecordInfo(projectId), fetchProjectBuildInfo(projectId)]).then(
         axios.spread((r1, r2) => {
-          console.log(r2.data)
           const projectEnvRate = r1.data['env_rate']
           const projectRegionRate = r1.data['region_rate']
           const caseIncreaseInfo = r1.data['case_rate']

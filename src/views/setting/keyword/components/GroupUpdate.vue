@@ -7,7 +7,7 @@
         :rules="formRules"
         label-width="100px"
       >
-        <el-form-item label="分组" prop="plans" >
+        <el-form-item label="分组">
           <el-select
             style="width: 100%"
             v-model="selectGroup"
@@ -25,7 +25,7 @@
         <el-form-item label="分组名称" prop="name">
           <el-input v-model="groupFromData.name" />
         </el-form-item>
-        <el-form-item label="关联项目" prop="plans" >
+        <el-form-item label="关联项目" prop="project_id" >
           <el-select
             style="width: 100%"
             v-model="groupFromData.project_id"
