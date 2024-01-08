@@ -22,3 +22,26 @@ export function deleteTag(tagId) {
     method: 'delete',
   })
 }
+
+export function createModuleTag(data) {
+  return request({
+    url: '/module_tag',
+    method: 'post',
+    data: data
+  })
+}
+
+export function deleteModuleTag(tagId) {
+  return request({
+    url: `/module_tag/${tagId}`,
+    method: 'delete',
+  })
+}
+
+export function createTagModuleTag(data) {
+  return request({
+    url: '/module_tag/add_tag',
+    method: 'post',
+    data: data
+  })
+}

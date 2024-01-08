@@ -32,7 +32,7 @@ import CaseConfig from "@/views/design/editor/tree-detail/case/components/CaseCo
 import KeywordConfig from "@/views/design/editor/tree-detail/case/components/KeywordConfig";
 import { addDragHController } from "@/utils/resize";
 import { updateCase } from "@/api/case";
-import { createTag, deleteTag } from "@/api/tag";
+import { createModuleTag, createTagModuleTag, deleteModuleTag } from "@/api/tag";
 import { guid } from "@/utils/other";
 
 export default {
@@ -152,47 +152,72 @@ export default {
       })
     },
     updateCaseTag(params) {
-      if (params.operate === 'add') {
-        this.addCaseTag(params.tagName)
+      if (params.operate === 'new') {
+        this.newCaseTagModuleTag(params.tag)
+      } else if (params.operate === 'add') {
+        this.addCaseTag(params.tag)
       } else if (params.operate === 'del') {
-        this.deleteCaseTag(params.tagName)
+        this.deleteCaseTag(params.tag)
       }
     },
-    addCaseTag(newName) {
+    addCaseTag(tagId) {
+      const nodeInfo = this.$store.state.tree.selectedNode
+      const metaInfo = nodeInfo['meta']
+      const params = {
+        'tag_id': tagId,
+        'module_id': metaInfo.id,
+        'module_type': NODE.ModuleType.CASE
+      }
+      createModuleTag(params).then(response => {
+        const newTag = response.data
+        metaInfo['extra_data'][NODE.ExtraDataKey.TAG].push(newTag)
+        this.updateTreeNode(metaInfo)
+      })
+    },
+    newCaseTagModuleTag(newTagName) {
       const nodeInfo = this.$store.state.tree.selectedNode
       const metaInfo = nodeInfo['meta']
       const params = {
         'project_id': this.$store.state.tree.projectId,
-        'name': newName,
+        'tag_name': newTagName,
         'module_id': metaInfo.id,
         'module_type': NODE.ModuleType.CASE
       }
-      createTag(params).then((response) => {
-        const newTag = response.data
-        metaInfo['extra_data'][NODE.ExtraDataKey.TAG].push(newTag)
+      createTagModuleTag(params).then((response) => {
+        const newData = response.data
+        this.updateTagListAndMap(newData['tag'])
+        delete newData['tag']
+        metaInfo['extra_data'][NODE.ExtraDataKey.TAG].push(newData)
         this.updateTreeNode(metaInfo)
-        const projectId = this.$store.state.tree.projectId
-        this.$store.dispatch('config/getProjectTags', projectId)
+        this.$store.dispatch('config/getProjectTags', this.$store.state.tree.projectId)
       })
     },
-    deleteCaseTag(tagName) {
+    updateTagListAndMap(tagInfo) {
+      const tagList = this.$store.state.config.projectTags
+      const tagMap = this.$store.state.config.projectTagMap
+      tagList.push(tagInfo)
+      this.$store.commit('config/SET_PROJECT_TAGS', tagList)
+      tagMap[tagInfo['id']] = tagInfo['name']
+      this.$store.commit('config/SET_TAG_MAP', tagMap)
+    },
+    deleteCaseTag(tagId) {
       const nodeInfo = this.$store.state.tree.selectedNode
       const metaInfo = nodeInfo['meta']
       const caseTagList = metaInfo['extra_data'][NODE.ExtraDataKey.TAG]
-      let tagIndex = null
-      let tagId = null
+      let mTagIndex = null
+      let mTagId = null
       for (let i = 0; i < caseTagList.length; i++) {
-        if (caseTagList[i]['name'] === tagName) {
-          tagId = caseTagList[i]['id']
-          tagIndex = i
+        if (caseTagList[i]['tag_id'] === tagId) {
+          mTagId = caseTagList[i]['id']
+          mTagIndex = i
           break
         }
       }
-      if (tagIndex === null) {
+      if (mTagIndex === null) {
         return
       }
-      deleteTag(tagId).then(() => {
-        caseTagList.splice(tagIndex, 1)
+      deleteModuleTag(mTagId).then(() => {
+        caseTagList.splice(mTagIndex, 1)
         this.caseExtraInfo.tag = caseTagList
         this.updateTreeNode(metaInfo)
       })

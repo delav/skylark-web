@@ -19,8 +19,8 @@ export function notAuthApi(url) {
   const notAuthApi = [
     '/user/login',
     '/user/register',
-    '/user/reset_precheck',
-    '/user/reset_confirm'
+    '/user/precheck',
+    '/user/reset_password'
   ]
   return notAuthApi.indexOf(url) !== -1
 }

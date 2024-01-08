@@ -16,9 +16,9 @@ export function register(data) {
   })
 }
 
-export function resetPrecheck(data) {
+export function precheck(data) {
   return request({
-    url: 'user/reset_precheck',
+    url: 'user/precheck',
     method: 'post',
     data: data
   })
@@ -26,7 +26,7 @@ export function resetPrecheck(data) {
 
 export function resetConfirm(data) {
   return request({
-    url: 'user/reset_confirm',
+    url: 'user/reset_password',
     method: 'post',
     data: data
   })
@@ -34,14 +34,14 @@ export function resetConfirm(data) {
 
 export function fetchUsers() {
   return request({
-    url: 'user/info',
+    url: 'user/get_user_list',
     method: 'get',
   })
 }
 
 export function getInfo() {
   return request({
-    url: `/user/info/1`,
+    url: `/user/get_info`,
     method: 'get'
   })
 }

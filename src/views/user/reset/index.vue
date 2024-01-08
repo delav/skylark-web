@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { resetPrecheck, resetConfirm } from "@/api/user";
+import { precheck, resetConfirm } from "@/api/user";
 import {encrypt, NotAuthPath} from "@/utils/auth";
 
 export default {
@@ -88,7 +88,7 @@ export default {
         this.$message.error('请检查邮箱格式是否正确')
         return
       }
-      resetPrecheck(params).then(() => {
+      precheck(params).then(() => {
         this.disabledSend = true
         this.$message.success('验证码已发送到您的邮箱')
       })

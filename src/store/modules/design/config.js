@@ -4,6 +4,7 @@ import { fetchTagsByProject } from "@/api/tag";
 const getScalarState = () => {
   return {
     projectTags: [],
+    projectTagMap: {},
     priorities: [],
     priorityMap: {}
   }
@@ -17,6 +18,9 @@ const mutations = {
   },
   SET_PROJECT_TAGS: (state, tags) => {
     state.projectTags = tags
+  },
+  SET_TAG_MAP: (state, tagDict) => {
+    state.projectTagMap = tagDict
   },
   SET_CASE_PRIORITY: (state, priorities) => {
     state.priorities = priorities
@@ -48,6 +52,11 @@ const actions = {
       fetchTagsByProject(projectId).then(response => {
         const tagArr = response.data
         commit('SET_PROJECT_TAGS', tagArr)
+        let _map = {}
+        for (let i = 0; i < tagArr.length; i++) {
+          _map[tagArr[i]['id']] = tagArr[i]['name']
+        }
+        commit('SET_TAG_MAP', _map)
         resolve(tagArr)
       }).catch(error => {
         reject(error)

@@ -7,10 +7,10 @@
             <span class="title-pri" v-bind:style="'color:' + priorityColor">{{ priorityName }}</span>
             <el-tag
               class="title-tag"
-              v-for="(tagName, index) in selectTags"
+              v-for="(tagId, index) in selectTags"
               :key="index"
             >
-              {{ tagName }}
+              {{ getTagNameById(tagId) }}
             </el-tag>
           </div>
           <div v-else class="collapse-title"></div>
@@ -60,7 +60,7 @@
                   v-for="(item, index) in tagList"
                   :key="index"
                   :label="item.name"
-                  :value="item.name"
+                  :value="item.id"
                 />
               </el-select>
             </div>
@@ -127,6 +127,9 @@ export default {
     tagList() {
       return this.$store.state.config.projectTags
     },
+    tagMap() {
+      return this.$store.state.config.projectTagMap
+    },
     priorityList() {
       return this.$store.state.config.priorities
     },
@@ -145,6 +148,7 @@ export default {
   },
   data() {
     return {
+      tagNameMap: {},
       activeDetail: '',
       caseInfo: {},
       selectTags: [],
@@ -172,11 +176,11 @@ export default {
       if (!itemTags) {
         return
       }
-      const tagNames = []
+      const tagIds = []
       for (let i = 0; i < itemTags.length; i++) {
-        tagNames.push(itemTags[i].name)
+        tagIds.push(itemTags[i]['tag_id'])
       }
-      this.selectTags = tagNames
+      this.selectTags = tagIds
       this.cacheSelect = JSON.stringify(this.selectTags)
     },
     handlerTimeout(timeoutStr) {
@@ -209,6 +213,12 @@ export default {
       } else if (priorityName === 'P3') {
         return '#337ecc'
       }
+    },
+    getTagNameById(tagId) {
+      if (tagId in this.tagMap) {
+        return this.tagMap[tagId]
+      }
+      return 'N'
     },
     handlerOrder(orderNumber) {
       this.orderNumber = ''
@@ -246,16 +256,21 @@ export default {
       if (cacheTags.length >= values.length) {
         return
       }
-      const params = {
-        operate: 'add',
-        tagName: values.pop()
+      const tag = values.pop()
+      const params = {}
+      if (typeof tag === "string") {
+        params.operate = 'new'
+        params.tag = tag
+      } else {
+        params.operate = 'add'
+        params.tag = tag
       }
       this.$emit('updateTag', params)
     },
-    deleteCaseTag(tagName) {
+    deleteCaseTag(tagId) {
       const params = {
         operate: 'del',
-        tagName: tagName
+        tag: tagId
       }
       this.$emit('updateTag', params)
     },
