@@ -40,3 +40,10 @@ export function getDebugLog(buildId) {
   })
 }
 
+export function buildStop(data) {
+  return request({
+    url: '/builder/stop',
+    method: 'post',
+    data: data
+  })
+}

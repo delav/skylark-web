@@ -57,7 +57,7 @@ import { deepCopy } from "@/utils/dcopy";
 import { guid } from "@/utils/other";
 import { updateEntities } from "@/api/entity";
 import { setCursorStyle } from "@/utils/hover";
-import { buildDebug, getBuildProgress, getDebugLog } from "@/api/builder";
+import { buildDebug, getBuildProgress, getDebugLog, buildStop } from "@/api/builder";
 
 export default {
   name: 'Action',
@@ -266,6 +266,11 @@ export default {
     },
     stopBuild() {
       this.$store.commit('action/SET_RUNNING', false)
+      const params = {
+        'mode': 'debug',
+        'task_id': this.buildId
+      }
+      buildStop(params).then(() => {})
     },
     showReport() {
       // this.showLogDialog = true
