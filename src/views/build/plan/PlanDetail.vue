@@ -214,9 +214,10 @@ export default {
       }
       .related-record {
         .record-desc {
-          font-size: 14px;
-          margin: 20px 0 8px 0;
-          color: #606060;
+          font-size: 13px;
+          margin: 20px 0 5px 0;
+          color: #787878;
+          font-weight: 600;
         }
       }
     }

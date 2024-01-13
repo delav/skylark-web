@@ -95,6 +95,7 @@
 
 <script>
 import { copyVariableByEnv, fetchVariables } from "@/api/variable";
+import { deepCopy } from "@/utils/dcopy";
 
 export default {
   name: 'VariableCopy',
@@ -165,17 +166,28 @@ export default {
       this.$emit('cancel')
     },
     confirmCopy() {
+      const params = deepCopy(this.copyParams)
       if (this.selectVariables.length !== 0) {
         let variableIds = []
         for (let i = 0; i < this.selectVariables.length; i++) {
           variableIds.push(this.selectVariables[i]['id'])
         }
-        this.copyParams['variable_id_list'] = variableIds
+        params['variable_id_list'] = variableIds
       }
-      this.copyParams['module_id'] = this.moduleInfo.module_id
-      this.copyParams['module_type'] = this.moduleInfo.module_type
-      copyVariableByEnv(this.copyParams).then(() => {
-        this.$emit('confirm', this.copyParams.to_env_id)
+      if (params.from_env_id === '' || params.to_env_id === '') {
+        this.$message.warning('请选择环境')
+        return
+      }
+      if (params.from_region_id === '') {
+        delete params.from_region_id
+      }
+      if (params.to_region_id === '') {
+        delete params.to_region_id
+      }
+      params['module_id'] = this.moduleInfo.id
+      params['module_type'] = this.moduleInfo.type
+      copyVariableByEnv(params).then(() => {
+        this.$emit('confirm', params.to_env_id)
       })
     },
   }

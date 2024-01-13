@@ -39,10 +39,11 @@
         </div>
       </div>
       <div class="card-body">
-        <el-empty
-          v-if="commonVariables.length===0 && regionVariables.length===0"
-          description="找不到该项目的变量"
-        />
+<!--        <el-empty-->
+<!--          v-if="(commonVariables===undefined || commonVariables.length===0)-->
+<!--          && (regionVariables===undefined || regionVariables.length===0)"-->
+<!--          description="找不到该项目的变量"-->
+<!--        />-->
         <div class="common-env" v-show="commonVariables.length>0">
           <el-table
             :data="commonVariables"
@@ -83,7 +84,7 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="region-env" v-show="regionVariables.length>0">
+        <div class="region-env" v-show="showRegion">
           <div class="region-head">
             <el-radio-group v-model="selectRegionId" @change="changeRegionList">
               <el-radio v-for="item in regionList" :key="item.id" :label="item.id">{{ item['name'] }}</el-radio>
@@ -253,6 +254,8 @@ export default {
       let variablesDict = {}
       fetchVariables(this.selectProjectId, NODE.ModuleType.PROJECT, envId).then(response => {
         const resList = response.data
+        this.commonVariables = []
+        this.regionVariables = []
         if (resList.length === 0) {
           return
         }

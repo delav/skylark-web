@@ -244,7 +244,7 @@ export default {
     .card-header {
       padding: 18px 20px;
       border-bottom: 1px solid #e4e7ed;
-      color: $textColor;
+      //color: $textColor;
     }
     .card-body {
       margin-top: 20px;
